@@ -2439,6 +2439,10 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 5950900417413901945, guid: 63205ce8758744557bd76c9c4ae36d23, type: 3}
+      propertyPath: waitTime
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950900417413901945, guid: 63205ce8758744557bd76c9c4ae36d23, type: 3}
       propertyPath: isBallholder
       value: 1
       objectReference: {fileID: 0}

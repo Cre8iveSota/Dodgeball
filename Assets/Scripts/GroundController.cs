@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,11 +6,20 @@ using UnityEngine;
 public class GroundController : MonoBehaviour
 {
     public List<GameObject> grounds;
+    private GameObject ball;
 
     private void Start()
     {
         grounds.Sort(SortByNumber);
-        // PrintListOrder();
+        ball = GameObject.FindGameObjectWithTag("Ball");
+    }
+
+    private void Update()
+    {
+        GameObject ballposition = grounds.Find(i => Vector3.Distance(i.transform.position, ball.transform.position) < 10f);
+        ballposition.transform.GetChild(0).gameObject.SetActive(true);
+        List<GameObject> noBallArea = grounds.FindAll(i => Vector3.Distance(i.transform.position, ball.transform.position) > 10f);
+        noBallArea.ForEach(i => i.transform.GetChild(0).gameObject.SetActive(false));
     }
 
     int SortByNumber(GameObject a, GameObject b)
@@ -23,12 +33,5 @@ public class GroundController : MonoBehaviour
     {
         string numberPart = System.Text.RegularExpressions.Regex.Match(name, @"\d+").Value;
         return int.Parse(numberPart);
-    }
-    void PrintListOrder()
-    {
-        for (int i = 0; i < grounds.Count; i++)
-        {
-            Debug.Log("Index " + i + ": " + grounds[i].name);
-        }
     }
 }

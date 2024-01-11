@@ -7,13 +7,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    float playerMovement;
-    bool isRight = false;
-    bool isLeft = false;
-    bool isWorking = false;
+    bool isMoveWorking = false;
     private bool isBallholder = true;
-    [SerializeField] float waitTime = 5f;
-    GameObject ball;
+    private GameObject ball;
     GameObject[] playerTeam;
     // Start is called before the first frame update
     void Start()
@@ -27,11 +23,11 @@ public class PlayerController : MonoBehaviour
     {
         CheckAmIballholder();
         Debug.Log("chrkball" + isBallholder);
-        playerMovement = Input.GetAxisRaw("Horizontal");
-        if (!isWorking && this.isBallholder)
+
+        if (!isMoveWorking && this.isBallholder)
         {
-            isWorking = true;
-            StartCoroutine(MoveMainPlayer());
+            isMoveWorking = true;
+            MoveMainPlayer();
         }
         else if (!this.isBallholder)
         {
@@ -39,37 +35,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private IEnumerator MoveMainPlayer()
+    private void MoveMainPlayer()
     {
-        yield return new WaitForSeconds(0.1f * Time.deltaTime * waitTime);
-        if (playerMovement > 0)
-        {
-            isRight = true;
-        }
-        if (playerMovement < 0)
-        {
-            isLeft = true;
-        }
-        if (isRight && transform.position.x < 15)
+
+        if (Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x < 15)
         {
             transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z);
-            isRight = false;
         }
-        if (isRight && transform.position.x > 15)
-        {
-            playerMovement = 0;
-        }
-        if (isLeft && transform.position.x > -15)
+        if (Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x > -15)
         {
             transform.position = new Vector3(transform.position.x - 10, transform.position.y, transform.position.z);
-            isLeft = false;
         }
-        if (isLeft && transform.position.x < -15)
-        {
-            playerMovement = 0;
-        }
-        yield return new WaitForSeconds(0.05f * Time.deltaTime * waitTime);
-        isWorking = false;
+        isMoveWorking = false;
     }
 
     private void CheckAmIballholder()
