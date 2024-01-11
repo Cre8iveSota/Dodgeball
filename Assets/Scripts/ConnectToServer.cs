@@ -14,6 +14,6 @@ public class ConnectToServer : MonoBehaviourPunCallbacks
     // Once we are successfully connected to just go ahead load up our maim menu
     public override void OnConnectedToMaster()
     {
-        SceneManager.LoadScene("Main Menu");
+        SceneManager.LoadScene("Waiting Player");
     }
 }
