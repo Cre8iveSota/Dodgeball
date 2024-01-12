@@ -8,7 +8,6 @@ public class BallController : MonoBehaviour
     public bool isMovingBall;
     public float ballSpeed = 1f;
     public Vector3 ballDestination = Vector3.zero;
-    PlayerController mainPlayer;
     GameObject[] players;
 
 
@@ -22,10 +21,6 @@ public class BallController : MonoBehaviour
     void Update()
     {
         SetDestination(ballDestination);
-        // if (players.FirstOrDefault(i => i.GetComponent<PlayerController>().isBallholder) != null && players.FirstOrDefault(i => i.GetComponent<PlayerController>().isBallholder).GetComponent<PlayerController>() != null)
-        // {
-        //     mainPlayer = players.FirstOrDefault(i => i.GetComponent<PlayerController>().isBallholder).GetComponent<PlayerController>();
-        // }
     }
 
     public void SetDestination(Vector3 destination)

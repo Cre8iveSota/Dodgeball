@@ -24,10 +24,5 @@ public class PassMountainsBall : MonoBehaviour
     {
         ballController.ballDestination = new Vector3(fellow.transform.position.x - ball.transform.position.x, 0f, fellow.transform.position.z - ball.transform.position.z);
         ballController.isMovingBall = true;
-        // if (playerController.isBallholder) ball = transform.Find("Ball").gameObject;
-        // if (ball != null)
-        // {
-        //     ball.transform.SetParent(fellow.transform, false);
-        // }
     }
 }

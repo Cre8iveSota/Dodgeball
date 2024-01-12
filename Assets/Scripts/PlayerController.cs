@@ -7,7 +7,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    bool isMoveWorking = false;
     public bool isActiveCharacter = true;
     private GameObject ball;
     GameObject[] playerTeam;
@@ -46,12 +45,8 @@ public class PlayerController : MonoBehaviour
     private void NormalPass()
     {
         if (!Input.GetKeyDown(KeyCode.Space)) return;
-        Debug.Log("Here");
         if (ballController != null)
         {
-            Debug.Log("gameManager!" + gameManager);
-            Debug.Log("gameManager!sub" + gameManager.subChara);
-
             ballController.ballDestination = gameManager.subChara.transform.position;
             ballController.isMovingBall = true;
             ball.transform.SetParent(gameManager.subChara.transform, false);
@@ -69,7 +64,6 @@ public class PlayerController : MonoBehaviour
         {
             transform.position = new Vector3(transform.position.x - 10, transform.position.y, transform.position.z);
         }
-        isMoveWorking = false;
     }
 
     private void JudgeActivePlayer()
