@@ -9,20 +9,13 @@ public class PlayerController : MonoBehaviour
 {
     public bool isActiveCharacter = true;
     private GameObject ball;
-    GameObject[] playerTeam;
-    PlayerController mem0, mem1;
-    PassMountainsBall passMountainsBall;
     BallController ballController;
     GameManager gameManager;
     // Start is called before the first frame update
     void Start()
     {
         ball = GameObject.FindGameObjectWithTag("Ball");
-        playerTeam = GameObject.FindGameObjectsWithTag("Player");
-        passMountainsBall = GetComponent<PassMountainsBall>();
         ballController = ball.GetComponent<BallController>();
-        mem0 = playerTeam[0].GetComponent<PlayerController>();
-        mem1 = playerTeam[1].GetComponent<PlayerController>();
         gameManager = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<GameManager>();
     }
 
