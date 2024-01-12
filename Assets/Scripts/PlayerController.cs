@@ -56,14 +56,23 @@ public class PlayerController : MonoBehaviour
     private void MoveMainPlayer()
     {
         if (!this.isActiveCharacter) return;
-        if (Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x < 15)
+        if (Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x < 15 && transform.position.z < -10)
         {
             transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z);
         }
-        if (Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x > -15)
+        else if (Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x < 10 && 4 < transform.position.z && transform.position.z < 6)
+        {
+            transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z);
+        }
+        if (Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x > -15 && transform.position.z < -10)
         {
             transform.position = new Vector3(transform.position.x - 10, transform.position.y, transform.position.z);
         }
+        else if (Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x > -10 && 4 < transform.position.z && transform.position.z < 6)
+        {
+            transform.position = new Vector3(transform.position.x - 10, transform.position.y, transform.position.z);
+        }
+
     }
 
     private void JudgeActivePlayer()
