@@ -8,36 +8,59 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     bool isMoveWorking = false;
-    private bool isBallholder = true;
+    public bool isActiveCharacter = true;
     private GameObject ball;
     GameObject[] playerTeam;
+    PlayerController mem0, mem1;
+    PassMountainsBall passMountainsBall;
+    BallController ballController;
+    GameManager gameManager;
     // Start is called before the first frame update
     void Start()
     {
         ball = GameObject.FindGameObjectWithTag("Ball");
         playerTeam = GameObject.FindGameObjectsWithTag("Player");
+        passMountainsBall = GetComponent<PassMountainsBall>();
+        ballController = ball.GetComponent<BallController>();
+        mem0 = playerTeam[0].GetComponent<PlayerController>();
+        mem1 = playerTeam[1].GetComponent<PlayerController>();
+        gameManager = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<GameManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        CheckAmIballholder();
-        Debug.Log("chrkball" + isBallholder);
-
-        if (!isMoveWorking && this.isBallholder)
+        JudgeActivePlayer();
+        if (isActiveCharacter)
         {
-            isMoveWorking = true;
+            // move and throw is allowed
             MoveMainPlayer();
+            NormalPass();
         }
-        else if (!this.isBallholder)
+        else
         {
-            MoveBallHolderTeamSubPlayer();
+            // exchange components within team
+        }
+    }
+
+    private void NormalPass()
+    {
+        if (!Input.GetKeyDown(KeyCode.Space)) return;
+        Debug.Log("Here");
+        if (ballController != null)
+        {
+            Debug.Log("gameManager!" + gameManager);
+            Debug.Log("gameManager!sub" + gameManager.subChara);
+
+            ballController.ballDestination = gameManager.subChara.transform.position;
+            ballController.isMovingBall = true;
+            ball.transform.SetParent(gameManager.subChara.transform, false);
         }
     }
 
     private void MoveMainPlayer()
     {
-
+        if (!this.isActiveCharacter) return;
         if (Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x < 15)
         {
             transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z);
@@ -49,29 +72,17 @@ public class PlayerController : MonoBehaviour
         isMoveWorking = false;
     }
 
-    private void CheckAmIballholder()
+    private void JudgeActivePlayer()
     {
         Debug.Log($"{this.name}  {Vector3.Distance(this.transform.position, ball.transform.position)}");
         if (Vector3.Distance(this.transform.position, ball.transform.position) < 6f)
         {
-            isBallholder = true;
-            Debug.Log("come");
+            isActiveCharacter = true;
         }
-        else { isBallholder = false; }
-    }
-
-    void MoveBallHolderTeamSubPlayer()
-    {
-        if (GetMainTeamMember().transform.position.x <= 10 && GetMainTeamMember().transform.position.x >= -10)
+        else
         {
-            transform.position = new Vector3(GetMainTeamMember().transform.position.x, this.transform.position.y, this.transform.position.z);
+            isActiveCharacter = false;
+            gameManager.isChangeActiveCharacter = true;
         }
-    }
-
-
-    // 現状ではボールを持っているチームの味方しか取得できないため、修正必要
-    GameObject GetMainTeamMember()
-    {
-        return playerTeam.FirstOrDefault(player => player.GetComponent<PlayerController>().isBallholder);
     }
 }

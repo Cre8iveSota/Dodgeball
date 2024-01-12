@@ -16,8 +16,11 @@ public class GroundController : MonoBehaviour
 
     private void Update()
     {
-        GameObject ballposition = grounds.Find(i => Vector3.Distance(i.transform.position, ball.transform.position) < 10f);
-        ballposition.transform.GetChild(0).gameObject.SetActive(true);
+        if (grounds.Find(i => Vector3.Distance(i.transform.position, ball.transform.position) < 10f) != null)
+        {
+            GameObject ballposition = grounds.Find(i => Vector3.Distance(i.transform.position, ball.transform.position) < 10f);
+            ballposition.transform.GetChild(0).gameObject.SetActive(true);
+        }
         List<GameObject> noBallArea = grounds.FindAll(i => Vector3.Distance(i.transform.position, ball.transform.position) > 10f);
         noBallArea.ForEach(i => i.transform.GetChild(0).gameObject.SetActive(false));
     }
