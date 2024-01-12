@@ -6,6 +6,7 @@ using UnityEngine;
 public class SubPlayerController : MonoBehaviour
 {
     GameManager gameManager;
+    public bool isPositionAuto = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,7 +21,11 @@ public class SubPlayerController : MonoBehaviour
 
     void MoveBallHolderTeamSubPlayer()
     {
-        if (gameManager.mainChara != null && gameManager.mainChara.transform.position.x <= 10 && gameManager.mainChara.transform.position.x >= -10)
+        if (transform.position.x > 15 || transform.position.x < -15)
+        {
+
+        }
+        else if (isPositionAuto && gameManager.mainChara != null && gameManager.mainChara.transform.position.x <= 10 && gameManager.mainChara.transform.position.x >= -10)
         {
             transform.position = new Vector3(gameManager.mainChara.transform.position.x, this.transform.position.y, this.transform.position.z);
         }

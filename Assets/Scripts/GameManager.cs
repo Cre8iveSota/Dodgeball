@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
             mainChara.GetComponent<SubPlayerController>().enabled = true;
             subChara.GetComponent<PlayerController>().enabled = true;
             mainChara.GetComponent<PlayerController>().enabled = false;
+
             isChangeActiveCharacter = false;
             GameObject tmp = mainChara;
             mainChara = subChara;
