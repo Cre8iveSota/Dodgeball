@@ -7,27 +7,62 @@ public class SubPlayerController : MonoBehaviour
 {
     GameManager gameManager;
     public bool isPositionAuto = true;
+    BallController ballController;
+
+    GroundController groundController;
     // Start is called before the first frame update
     void Start()
     {
-        gameManager = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<GameManager>();
+        GameObject gameManagerObj = GameObject.FindGameObjectWithTag("GameManager");
+        if (gameManagerObj != null) gameManager = gameManagerObj.GetComponent<GameManager>();
+        GameObject ball = GameObject.FindGameObjectWithTag("Ball");
+        if (ball != null) ballController = ball.GetComponent<BallController>();
+        GameObject ground = GameObject.FindGameObjectWithTag("Ground");
+        if (ground != null) groundController = ground.GetComponent<GroundController>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        MoveBallHolderTeamSubPlayer();
+        if (groundController != null)
+        {
+            gameManager.CountingTimeOfHoldingShiftKey();
+            MoveSubPlayer();
+            StartCoroutine(ballController.NormalPass(gameManager.subChara, gameManager.mainChara));
+            // MoveBallHolderTeamSubPlayer();
+            Catch();
+        }
+    }
+    private void MoveSubPlayer()
+    {
+        if (gameManager.duration < gameManager.Threshold) return;
+        if (Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x < 15)
+        {
+            transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z);
+        }
+        if (Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x > -15)
+        {
+            transform.position = new Vector3(transform.position.x - 10, transform.position.y, transform.position.z);
+        }
     }
 
-    void MoveBallHolderTeamSubPlayer()
+    private void Catch()
     {
-        if (transform.position.x > 15 || transform.position.x < -15)
+        if (Vector3.Distance(groundController.ballposition.transform.position, transform.position) < 6f)
         {
-
+            Debug.Log("You can catch");
         }
-        else if (isPositionAuto && gameManager.mainChara != null && gameManager.mainChara.transform.position.x <= 10 && gameManager.mainChara.transform.position.x >= -10)
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.name == "Ball" && ballController != null && ballController.IsPlayerThrowing())
         {
-            transform.position = new Vector3(gameManager.mainChara.transform.position.x, this.transform.position.y, this.transform.position.z);
+            ballController.IsReceiverCatchSuccess = true;
+        }
+        if (other.gameObject.name == "Ball" && ballController != null && !ballController.IsPlayerThrowing())
+        {
+            ballController.IsReceiverCatchSuccess = false;
         }
     }
 }

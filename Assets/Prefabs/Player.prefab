@@ -713,19 +713,10 @@ PrefabInstance:
       addedObject: {fileID: 2437027044974595226}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9f045e63c555a4d439dd74ee9f836fc7, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5950900417413901945}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9f045e63c555a4d439dd74ee9f836fc7, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 229698037380952738}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9f045e63c555a4d439dd74ee9f836fc7, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 7991052489609011697}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9f045e63c555a4d439dd74ee9f836fc7, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4778840535984206397}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9f045e63c555a4d439dd74ee9f836fc7, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: -8466830885417105715}
+      addedObject: {fileID: -5198018147309158877}
   m_SourcePrefab: {fileID: 100100000, guid: 9f045e63c555a4d439dd74ee9f836fc7, type: 3}
 --- !u!1 &5199059239656598423 stripped
 GameObject:
@@ -753,46 +744,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &5950900417413901945
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5199059239656598423}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ec9897d5db32401ea1c9cb6300e94f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isActiveCharacter: 1
---- !u!54 &229698037380952738
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5199059239656598423}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!65 &7991052489609011697
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -814,27 +765,16 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &4778840535984206397
+--- !u!114 &-5198018147309158877
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5199059239656598423}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c060b22d6d20d4a43a6075d47fc2e973, type: 3}
+  m_Script: {fileID: 11500000, guid: 8ae47dfb23e28444d834fb530d404aae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-8466830885417105715
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5199059239656598423}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30efbd29d75254f2fba2f639835075a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  isActiveCharacter: 1
