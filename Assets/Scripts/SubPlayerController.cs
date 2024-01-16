@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Photon.Pun;
 using UnityEngine;
 
 public class SubPlayerController : MonoBehaviour
@@ -8,7 +9,7 @@ public class SubPlayerController : MonoBehaviour
     GameManager gameManager;
     public bool isPositionAuto = true;
     BallController ballController;
-
+    PhotonView photonView;
     GroundController groundController;
     // Start is called before the first frame update
     void Start()
@@ -19,18 +20,22 @@ public class SubPlayerController : MonoBehaviour
         if (ball != null) ballController = ball.GetComponent<BallController>();
         GameObject ground = GameObject.FindGameObjectWithTag("Ground");
         if (ground != null) groundController = ground.GetComponent<GroundController>();
+        photonView = GetComponent<PhotonView>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (groundController != null)
+        if (photonView.IsMine)
         {
-            gameManager.CountingTimeOfHoldingShiftKey();
-            MoveSubPlayer();
-            StartCoroutine(ballController.NormalPass(gameManager.subChara, gameManager.mainChara));
-            // MoveBallHolderTeamSubPlayer();
-            Catch();
+            if (groundController != null)
+            {
+                gameManager.CountingTimeOfHoldingShiftKey();
+                MoveSubPlayer();
+                // StartCoroutine(ballController.NormalPass(gameManager.subChara, gameManager.mainChara));
+                // MoveBallHolderTeamSubPlayer();
+                // Catch();
+            }
         }
     }
     private void MoveSubPlayer()

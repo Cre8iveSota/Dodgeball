@@ -1,31 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
 public class MainPlayerController : MonoBehaviour
 {
     public bool isActiveCharacter = true;
-    private GameObject ball;
     BallController ballController;
     GameManager gameManager;
-
+    public PhotonView photonView;
     SubPlayerController subPlayerController;
     // Start is called before the first frame update
     void Start()
     {
-        ball = GameObject.FindGameObjectWithTag("Ball");
-        ballController = ball.GetComponent<BallController>();
+        photonView = GetComponent<PhotonView>();
         gameManager = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<GameManager>();
+        if (gameManager.realBallInstance != null) ballController = gameManager.realBallInstance.GetComponent<BallController>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        gameManager.CountingTimeOfHoldingShiftKey();
-        MoveMainPlayer();
-        Debug.Log("so far in main" + gameManager.subChara);
-        StartCoroutine(ballController.NormalPass(gameManager.mainChara, gameManager.subChara));
-        TurnMainPlayer();
+        if (photonView.IsMine)
+        {
+            gameManager.CountingTimeOfHoldingShiftKey();
+            MoveMainPlayer();
+            Debug.Log("so far in main" + gameManager.subChara);
+            Debug.Log("ballControllerExist: " + ballController != null);
+            // if (ballController != null) StartCoroutine(ballController.NormalPass(gameManager.mainChara, gameManager.subChara));
+            TurnMainPlayer();
+        }
     }
     // private void NormalPassOrTurn()
     // {

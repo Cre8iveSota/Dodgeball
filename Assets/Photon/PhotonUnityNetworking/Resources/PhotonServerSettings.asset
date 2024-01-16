@@ -40,6 +40,10 @@ MonoBehaviour:
   - Fire
   - RespawnSpaceship
   - ChangeScene
+  - CreateBallRPC
+  - InitializeBall
+  - InitializeCharacter
+  - InitializeInstance
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

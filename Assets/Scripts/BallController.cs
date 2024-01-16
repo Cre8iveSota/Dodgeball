@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Photon.Pun;
 using UnityEngine;
 
 public class BallController : MonoBehaviour
@@ -18,6 +19,9 @@ public class BallController : MonoBehaviour
     GameObject tmpBallHolder;
     GameObject ThrowMan;
     GameObject Reciever;
+    PhotonView photonView;
+    public bool isBallReady;
+
 
     Vector3 defeinedSpeed;
 
@@ -30,13 +34,14 @@ public class BallController : MonoBehaviour
         gammeManagerObj = GameObject.FindGameObjectWithTag("GameManager");
         gameManager = gammeManagerObj.GetComponent<GameManager>();
         rb = GetComponent<Rigidbody>();
+        photonView = GetComponent<PhotonView>();
     }
 
     // Update is called once per frame
     void Update()
     {
         SetDestination(ballDestination);
-        if (IsReceiverCatchSuccess)
+        if (IsReceiverCatchSuccess && photonView.IsMine)
         {
             isMovingBall = false;
             transform.SetParent(Reciever.transform, false);
@@ -58,19 +63,25 @@ public class BallController : MonoBehaviour
     {
         if (gameManager.CheckHaveBallAsChildren(passerGameObject))
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                ThrowMan = passerGameObject;
-                Reciever = recieverGameObject;
-                ballDestination = recieverGameObject.transform.position;
-                isMovingBall = true;
-                tmpBallHolder = Instantiate(tmpBallPosition, passerGameObject.transform.position, Quaternion.identity);
-                transform.SetParent(tmpBallHolder.transform, false);
-                if (ThrowMan == gameManager.mainChara) transform.localPosition = new Vector3(0f, 1f, 0.4f);
-                if (ThrowMan == gameManager.subChara) transform.localPosition = new Vector3(0f, 1f, -0.4f);
-                defeinedSpeed = new Vector3((ballDestination.x - transform.position.x) * ballSpeed, 0f, (ballDestination.z - transform.position.z) * ballSpeed);
-                yield return new WaitForSeconds(1f);
-            }
+            // if (Input.GetKeyDown(KeyCode.Space))
+            // {
+            //     ThrowMan = passerGameObject;
+            //     Reciever = recieverGameObject;
+            //     ballDestination = recieverGameObject.transform.position;
+            //     isMovingBall = true;
+            //     tmpBallHolder = PhotonNetwork.Instantiate(tmpBallPosition.name, passerGameObject.transform.position, Quaternion.identity);
+            //     transform.SetParent(tmpBallHolder.transform, false);
+            //     //        if (tmpBallHolderPhotonView.IsMine)
+            //     // {
+            //     //     tmpBallHolder.transform.SetParent(passerGameObject.transform, false);
+            //     // }
+            //     if (ThrowMan == gameManager.mainChara) transform.localPosition = new Vector3(0f, 1f, 0.4f);
+            //     if (ThrowMan == gameManager.subChara) transform.localPosition = new Vector3(0f, 1f, -0.4f);
+            //     defeinedSpeed = new Vector3((ballDestination.x - transform.position.x) * ballSpeed, 0f, (ballDestination.z - transform.position.z) * ballSpeed);
+            //     yield return new WaitForSeconds(1f);
+            // }
+            Debug.Log("presssed space");
+            yield return new WaitForSeconds(1f);
         }
     }
 
