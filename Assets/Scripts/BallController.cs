@@ -16,7 +16,7 @@ public class BallController : MonoBehaviour
     public Rigidbody rb;
     public Vector3 ballForce;
     public bool IsReceiverCatchSuccess;
-    GameObject tmpBallHolder;
+    public GameObject tmpBallHolder;
     GameObject ThrowMan;
     GameObject Reciever;
     PhotonView photonView;
@@ -41,11 +41,11 @@ public class BallController : MonoBehaviour
     void Update()
     {
         SetDestination(ballDestination);
-        if (IsReceiverCatchSuccess && photonView.IsMine)
+        // if (IsReceiverCatchSuccess && photonView.IsMine) //エラー出た
+        if (IsReceiverCatchSuccess && PhotonNetwork.IsMasterClient)//狩り
         {
             isMovingBall = false;
-            transform.SetParent(Reciever.transform, false);
-            transform.localPosition = new Vector3(0f, 1f, 0.4f);
+            photonView.RPC("DestroyTmpBallHolder", RpcTarget.All, Reciever.GetPhotonView().ViewID);
             Destroy(tmpBallHolder);
             IsReceiverCatchSuccess = false;
         }
@@ -61,29 +61,42 @@ public class BallController : MonoBehaviour
 
     public IEnumerator NormalPass(GameObject passerGameObject, GameObject recieverGameObject)
     {
-        if (gameManager.CheckHaveBallAsChildren(passerGameObject))
+
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            // if (Input.GetKeyDown(KeyCode.Space))
-            // {
-            //     ThrowMan = passerGameObject;
-            //     Reciever = recieverGameObject;
-            //     ballDestination = recieverGameObject.transform.position;
-            //     isMovingBall = true;
-            //     tmpBallHolder = PhotonNetwork.Instantiate(tmpBallPosition.name, passerGameObject.transform.position, Quaternion.identity);
-            //     transform.SetParent(tmpBallHolder.transform, false);
-            //     //        if (tmpBallHolderPhotonView.IsMine)
-            //     // {
-            //     //     tmpBallHolder.transform.SetParent(passerGameObject.transform, false);
-            //     // }
-            //     if (ThrowMan == gameManager.mainChara) transform.localPosition = new Vector3(0f, 1f, 0.4f);
-            //     if (ThrowMan == gameManager.subChara) transform.localPosition = new Vector3(0f, 1f, -0.4f);
-            //     defeinedSpeed = new Vector3((ballDestination.x - transform.position.x) * ballSpeed, 0f, (ballDestination.z - transform.position.z) * ballSpeed);
-            //     yield return new WaitForSeconds(1f);
-            // }
+            if (gameManager.CheckHaveBallAsChildren(passerGameObject))
+            {
+                ThrowMan = passerGameObject;
+                Reciever = recieverGameObject;
+                ballDestination = recieverGameObject.transform.position;
+                isMovingBall = true;
+                tmpBallHolder = Instantiate(tmpBallPosition, passerGameObject.transform.position, Quaternion.identity);
+                transform.SetParent(tmpBallHolder.transform, false);
+                if (ThrowMan == gameManager.mainCharaInstance) transform.localPosition = new Vector3(0f, 1f, 0.4f);
+                if (ThrowMan == gameManager.subCharaInstance) transform.localPosition = new Vector3(0f, 1f, -0.4f);
+                defeinedSpeed = new Vector3((ballDestination.x - transform.position.x) * ballSpeed, 0f, (ballDestination.z - transform.position.z) * ballSpeed);
+                yield return new WaitForSeconds(1f);
+            }
             Debug.Log("presssed space");
             yield return new WaitForSeconds(1f);
         }
     }
+
+    [PunRPC]
+    private void DestroyTmpBallHolder(int viewID)
+    {
+        Debug.Log("DestroyTmpBallHolder RPC called on client. ViewID: " + viewID);
+
+        PhotonView recieverView = PhotonView.Find(viewID);
+        if (recieverView != null)
+        {
+            GameObject tmpReciever = recieverView.gameObject;
+            transform.SetParent(tmpReciever.transform, false);
+            transform.localPosition = new Vector3(0f, 1f, 0.4f);
+        }
+    }
+
+
 
     private void OnTriggerEnter(Collider other)
     {

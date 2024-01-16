@@ -128,6 +128,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   ballForce: {x: 0, y: 0, z: 0}
   IsReceiverCatchSuccess: 0
+  tmpBallHolder: {fileID: 0}
   isBallReady: 0
 --- !u!54 &545763186324929306
 Rigidbody:

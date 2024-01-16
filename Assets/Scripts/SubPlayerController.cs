@@ -16,8 +16,7 @@ public class SubPlayerController : MonoBehaviour
     {
         GameObject gameManagerObj = GameObject.FindGameObjectWithTag("GameManager");
         if (gameManagerObj != null) gameManager = gameManagerObj.GetComponent<GameManager>();
-        GameObject ball = GameObject.FindGameObjectWithTag("Ball");
-        if (ball != null) ballController = ball.GetComponent<BallController>();
+        if (gameManager.realBallInstance != null) ballController = gameManager.realBallInstance.GetComponent<BallController>();
         GameObject ground = GameObject.FindGameObjectWithTag("Ground");
         if (ground != null) groundController = ground.GetComponent<GroundController>();
         photonView = GetComponent<PhotonView>();
@@ -32,7 +31,7 @@ public class SubPlayerController : MonoBehaviour
             {
                 gameManager.CountingTimeOfHoldingShiftKey();
                 MoveSubPlayer();
-                // StartCoroutine(ballController.NormalPass(gameManager.subChara, gameManager.mainChara));
+                StartCoroutine(ballController.NormalPass(gameManager.subCharaInstance, gameManager.mainCharaInstance));
                 // MoveBallHolderTeamSubPlayer();
                 // Catch();
             }
@@ -61,11 +60,12 @@ public class SubPlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.name == "Ball" && ballController != null && ballController.IsPlayerThrowing())
+        if (other.gameObject.tag == "Ball" && ballController != null && ballController.IsPlayerThrowing())
         {
+            Debug.Log("Catch start");
             ballController.IsReceiverCatchSuccess = true;
         }
-        if (other.gameObject.name == "Ball" && ballController != null && !ballController.IsPlayerThrowing())
+        if (other.gameObject.tag == "Ball" && ballController != null && !ballController.IsPlayerThrowing())
         {
             ballController.IsReceiverCatchSuccess = false;
         }

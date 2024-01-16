@@ -30,10 +30,10 @@ public class GameManager : MonoBehaviour
         photonView = GetComponent<PhotonView>();
         if (PhotonNetwork.IsMasterClient)
         {
-            subChara = PhotonNetwork.Instantiate(subChara.name, new Vector3(0, 0, 16f), Quaternion.identity);
+            subCharaInstance = PhotonNetwork.Instantiate(subChara.name, new Vector3(0, 0, 16f), Quaternion.identity);
             mainCharaInstance = PhotonNetwork.Instantiate(mainChara.name, new Vector3(0, 0, -6f), Quaternion.identity);
-
-            photonView.RPC("InitializeInstance", RpcTarget.Others, mainCharaInstance.GetPhotonView().ViewID);
+            photonView.RPC("InitializeInstanceMainChara", RpcTarget.Others, mainCharaInstance.GetPhotonView().ViewID);
+            photonView.RPC("InitializeInstanceSubChara", RpcTarget.Others, subCharaInstance.GetPhotonView().ViewID);
             StartCoroutine(JustWaitForCreationTargetInstance(mainCharaInstance, WaitFor));
         }
         else
@@ -131,7 +131,7 @@ public class GameManager : MonoBehaviour
     }
 
     [PunRPC]
-    private void InitializeInstance(int viewID)
+    private void InitializeInstanceMainChara(int viewID)
     {
         PhotonView targetPhotonView = PhotonView.Find(viewID);
         if (targetPhotonView != null)
@@ -140,38 +140,23 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
-
-    private void CreateBallRPC()
-    {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            photonView.RPC("InitializeBall", RpcTarget.All);
-        }
-    }
-
     [PunRPC]
-    private void InitializeBall()
+    private void InitializeInstanceSubChara(int viewID)
     {
-        if (realBall == null) { Debug.Log("real ball is null"); return; }
-
-        realBallInstance = PhotonNetwork.Instantiate(realBall.name, Vector3.zero, Quaternion.identity);
-        // realBallInstance.transform.localScale = realBall.transform.localScale * 0.5f;
-
-        // ボールの PhotonView から所有権の設定を行う
-        PhotonView photonView = realBall.GetComponent<PhotonView>();
-        photonView.OwnershipTransfer = OwnershipOption.Takeover;
-        BallController playingBall = realBallInstance.GetComponent<BallController>();
-        if (playingBall != null)
+        PhotonView targetPhotonView = PhotonView.Find(viewID);
+        if (targetPhotonView != null)
         {
-            playingBall.isBallReady = true;
-            Debug.Log("isBallReady? " + playingBall.isBallReady);
+            subCharaInstance = targetPhotonView.gameObject;
         }
     }
+
+
+
 
     // Update is called once per frame
     public bool CheckHaveBallAsChildren(GameObject targetObject)
     {
+        if (!PhotonNetwork.IsMasterClient) return false; // 狩り
         Transform[] allChildren = targetObject.GetComponentsInChildren<Transform>();
         bool ballExists = false;
         foreach (Transform child in allChildren)

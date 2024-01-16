@@ -25,9 +25,9 @@ public class MainPlayerController : MonoBehaviour
         {
             gameManager.CountingTimeOfHoldingShiftKey();
             MoveMainPlayer();
-            Debug.Log("so far in main" + gameManager.subChara);
+            Debug.Log("so far in main" + gameManager.subCharaInstance);
             Debug.Log("ballControllerExist: " + ballController != null);
-            // if (ballController != null) StartCoroutine(ballController.NormalPass(gameManager.mainChara, gameManager.subChara));
+            if (ballController != null) StartCoroutine(ballController.NormalPass(gameManager.mainCharaInstance, gameManager.subCharaInstance));
             TurnMainPlayer();
         }
     }
@@ -38,7 +38,7 @@ public class MainPlayerController : MonoBehaviour
     //     {
     //         ballController.ballDestination = gameManager.subChara.transform.position;
     //         ballController.isMovingBall = true;
-    //         ball.transform.SetParent(gameManager.subChara.transform, false);
+    //         gameManager.realBallInstance.transform.SetParent(gameManager.subChara.transform, false);
     //     }
     // }
 
@@ -57,7 +57,7 @@ public class MainPlayerController : MonoBehaviour
 
     private void TurnMainPlayer()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !gameManager.CheckHaveBallAsChildren(this.gameObject) && !gameManager.CheckHaveBallAsChildren(gameManager.subChara))
+        if (Input.GetKeyDown(KeyCode.Space) && !gameManager.CheckHaveBallAsChildren(this.gameObject) && !gameManager.CheckHaveBallAsChildren(gameManager.subCharaInstance))
         {
 
         }
@@ -65,11 +65,11 @@ public class MainPlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.name == "Ball" && ballController != null && ballController.IsPlayerThrowing())
+        if (other.gameObject.tag == "Ball" && ballController != null && ballController.IsPlayerThrowing())
         {
             ballController.IsReceiverCatchSuccess = true;
         }
-        if (other.gameObject.name == "Ball" && ballController != null && !ballController.IsPlayerThrowing())
+        if (other.gameObject.tag == "Ball" && ballController != null && !ballController.IsPlayerThrowing())
         {
             ballController.IsReceiverCatchSuccess = false;
         }
