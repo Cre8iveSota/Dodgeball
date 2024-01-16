@@ -25,22 +25,10 @@ public class MainPlayerController : MonoBehaviour
         {
             gameManager.CountingTimeOfHoldingShiftKey();
             MoveMainPlayer();
-            Debug.Log("so far in main" + gameManager.subCharaInstance);
-            Debug.Log("ballControllerExist: " + ballController != null);
             if (ballController != null) StartCoroutine(ballController.NormalPass(gameManager.mainCharaInstance, gameManager.subCharaInstance));
             TurnMainPlayer();
         }
     }
-    // private void NormalPassOrTurn()
-    // {
-    //     if (!Input.GetKeyDown(KeyCode.Space)) return;
-    //     if (ballController != null && gameManager.CheckHaveBallAsChildren(this.gameObject))
-    //     {
-    //         ballController.ballDestination = gameManager.subChara.transform.position;
-    //         ballController.isMovingBall = true;
-    //         gameManager.realBallInstance.transform.SetParent(gameManager.subChara.transform, false);
-    //     }
-    // }
 
     private void MoveMainPlayer()
     {

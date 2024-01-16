@@ -25,8 +25,6 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("Start method called on client. IsMasterClient: " + PhotonNetwork.IsMasterClient);
-
         photonView = GetComponent<PhotonView>();
         if (PhotonNetwork.IsMasterClient)
         {
@@ -39,16 +37,10 @@ public class GameManager : MonoBehaviour
         else
         {
             StartCoroutine(WaitForRealBallInstanceAndContinue());
-            if (realBallInstance != null)
-            {
-                Debug.Log("Not null realBall");
-            }
         }
     }
     public IEnumerator WaitForRealBallInstanceAndContinue()
     {
-        Debug.Log("WaitForRealBallInstanceAndContinue method called on client.");
-
         while (realBallInstance == null)
         {
             yield return null;
@@ -66,8 +58,6 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator WaitForGenerateBall()
     {
-        Debug.Log("WaitForGenerateBall method called on client.");
-
         GameObject ground = GameObject.FindGameObjectWithTag("Ground");
         ground.SetActive(false);
         MainPlayerController mainPlayerController = mainChara.GetComponent<MainPlayerController>();
@@ -91,11 +81,6 @@ public class GameManager : MonoBehaviour
             GameObject initializedRealBall = PhotonNetwork.Instantiate(realBall.name, Vector3.zero, Quaternion.identity);
             realBallInstance = initializedRealBall;
             photonView.RPC("InitializeBall", RpcTarget.All, realBallInstance.GetPhotonView().ViewID);
-            Debug.Log("Not null realBall");
-        }
-        else
-        {
-            Debug.LogError("mainChara or realBall is null.");
         }
         yield return null;
     }
@@ -104,29 +89,17 @@ public class GameManager : MonoBehaviour
     [PunRPC]
     private void InitializeBall(int viewID)
     {
-        Debug.Log("InitializeBall RPC called on client. ViewID: " + viewID);
-
         PhotonView ballView = PhotonView.Find(viewID);
         if (ballView != null)
         {
             realBallInstance = ballView.gameObject;
             BallController playingBall = realBallInstance.GetComponent<BallController>();
-            Debug.Log("mainCharaTransform" + mainCharaInstance.transform);
             if (playingBall != null)
             {
                 realBallInstance.transform.SetParent(mainCharaInstance.transform, false);
                 realBallInstance.transform.localPosition = new Vector3(0f, 1f, 0.4f);
                 playingBall.isBallReady = true;
-                Debug.Log("isBallReady? " + playingBall.isBallReady);
             }
-            else
-            {
-                Debug.LogError("mainChara is null.");
-            }
-        }
-        else
-        {
-            Debug.LogError("Ball PhotonView not found.");
         }
     }
 

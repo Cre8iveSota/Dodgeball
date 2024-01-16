@@ -85,8 +85,6 @@ public class BallController : MonoBehaviour
     [PunRPC]
     private void DestroyTmpBallHolder(int viewID)
     {
-        Debug.Log("DestroyTmpBallHolder RPC called on client. ViewID: " + viewID);
-
         PhotonView recieverView = PhotonView.Find(viewID);
         if (recieverView != null)
         {
@@ -107,7 +105,6 @@ public class BallController : MonoBehaviour
     {
         if (tmpBallHolder == null)
         {
-            Debug.Log("tmpBallHolder Not find Be carefull this might be not intended" + tmpBallHolder);
             return false;
         }
         Debug.Log("Player throw ball; the player name is" + ThrowMan);
