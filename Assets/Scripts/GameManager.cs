@@ -22,14 +22,19 @@ public class GameManager : MonoBehaviour
 
     public int Threshold { get => threshold; }
     PhotonView photonView;
-    Quaternion inverseRotation;
+    public Quaternion normalRotation, normalRightRotation, normalLeftRotation, inverseRotation, inverseRightRotation, inverseLeftRotation;
 
     [SerializeField] Camera mainCamera;
     [SerializeField] Camera subCamera;
 
     void Start()
     {
+        normalRotation = Quaternion.Euler(0f, 0f, 0f);
+        normalRightRotation = Quaternion.Euler(0f, 45f, 0f);
+        normalLeftRotation = Quaternion.Euler(0f, 315f, 0f);
         inverseRotation = Quaternion.Euler(0f, 180f, 0f);
+        inverseRightRotation = Quaternion.Euler(0f, 225f, 0f);
+        inverseLeftRotation = Quaternion.Euler(0f, 135f, 0f);
 
         photonView = GetComponent<PhotonView>();
         if (PhotonNetwork.IsMasterClient)
@@ -81,8 +86,10 @@ public class GameManager : MonoBehaviour
         ground.SetActive(true);
         if (!PhotonNetwork.IsMasterClient)
         {
-            mainChara2 = PhotonNetwork.Instantiate(mainChara2.name, new Vector3(0, 0, 6f), inverseRotation);
-            subChara2 = PhotonNetwork.Instantiate(subChara2.name, new Vector3(0, 0, -16f), Quaternion.identity);
+            mainChara2Instance = PhotonNetwork.Instantiate(mainChara2.name, new Vector3(0, 0, 6f), inverseRotation);
+            subChara2Instance = PhotonNetwork.Instantiate(subChara2.name, new Vector3(0, 0, -16f), Quaternion.identity);
+            photonView.RPC("InitializeInstanceMainChara", RpcTarget.Others, mainChara2Instance.GetPhotonView().ViewID);
+            photonView.RPC("InitializeInstanceSubChara", RpcTarget.Others, subChara2Instance.GetPhotonView().ViewID);
         }
     }
     public IEnumerator WaitFor()
@@ -134,7 +141,25 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    [PunRPC]
+    private void InitializeInstanceMainChara2(int viewID)
+    {
+        PhotonView targetPhotonView = PhotonView.Find(viewID);
+        if (targetPhotonView != null)
+        {
+            mainChara2Instance = targetPhotonView.gameObject;
+        }
+    }
 
+    [PunRPC]
+    private void InitializeInstanceSubChara2(int viewID)
+    {
+        PhotonView targetPhotonView = PhotonView.Find(viewID);
+        if (targetPhotonView != null)
+        {
+            subChara2Instance = targetPhotonView.gameObject;
+        }
+    }
 
 
     // Update is called once per frame

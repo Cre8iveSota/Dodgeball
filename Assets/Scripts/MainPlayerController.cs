@@ -11,6 +11,7 @@ public class MainPlayerController : MonoBehaviour
     public PhotonView photonView;
     SubPlayerController subPlayerController;
     public bool iAmThrowing;
+    public bool isfaccingFront;
 
     // Start is called before the first frame update
     void Start()
@@ -18,6 +19,7 @@ public class MainPlayerController : MonoBehaviour
         photonView = GetComponent<PhotonView>();
         gameManager = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<GameManager>();
         if (gameManager.realBallInstance != null) ballController = gameManager.realBallInstance.GetComponent<BallController>();
+        isfaccingFront = true;
     }
 
     // Update is called once per frame
@@ -39,8 +41,8 @@ public class MainPlayerController : MonoBehaviour
             if (!iAmThrowing)
             {
                 MoveMainPlayer();
+                TurnMainPlayer();
             }
-            TurnMainPlayer();
         }
     }
 
@@ -75,9 +77,34 @@ public class MainPlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && !gameManager.CheckHaveBallAsChildren(this.gameObject) && !gameManager.CheckHaveBallAsChildren(gameManager.subCharaInstance))
         {
-
+            isfaccingFront = !isfaccingFront;
+            if (this.gameObject.transform.localRotation == gameManager.normalRotation)
+            {
+                this.gameObject.transform.localRotation = gameManager.normalRightRotation;
+            }
+            else if (this.gameObject.transform.localRotation == gameManager.normalRightRotation)
+            {
+                this.gameObject.transform.localRotation = gameManager.inverseLeftRotation;
+            }
+            else if (this.gameObject.transform.localRotation == gameManager.inverseLeftRotation)
+            {
+                this.gameObject.transform.localRotation = gameManager.inverseRotation;
+            }
+            else if (this.gameObject.transform.localRotation == gameManager.inverseRotation)
+            {
+                this.gameObject.transform.localRotation = gameManager.inverseRightRotation;
+            }
+            else if (this.gameObject.transform.localRotation == gameManager.inverseRightRotation)
+            {
+                this.gameObject.transform.localRotation = gameManager.normalLeftRotation;
+            }
+            else if (this.gameObject.transform.localRotation == gameManager.normalLeftRotation)
+            {
+                this.gameObject.transform.localRotation = gameManager.normalRotation;
+            }
         }
     }
+
 
     private void OnTriggerEnter(Collider other)
     {

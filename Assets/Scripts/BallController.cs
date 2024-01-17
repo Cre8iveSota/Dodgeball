@@ -26,7 +26,10 @@ public class BallController : MonoBehaviour
     MainPlayerController mainCharaController;
     SubPlayerController subCharaController;
 
-
+    /*
+    Dotweenでballを動かす
+    ballのポジションの動悸するシステム
+    */
 
     // Start is called before the first frame update
     void Start()
@@ -43,6 +46,8 @@ public class BallController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (this.gameObject.GetPhotonView() != null && PhotonNetwork.IsMasterClient) photonView.RPC("SyncronizeBallPosition", RpcTarget.All, this.gameObject.GetPhotonView().ViewID);
+
         SetDestination(ballDestination);
         // if (IsReceiverCatchSuccess && photonView.IsMine) //エラー出た
         if (IsReceiverCatchSuccess && PhotonNetwork.IsMasterClient)//狩り
@@ -111,6 +116,15 @@ public class BallController : MonoBehaviour
         }
     }
 
+    [PunRPC]
+    private void SyncronizeBallPosition(int viewID)
+    {
+        PhotonView ballPhotonView = PhotonView.Find(viewID);
+        if (ballPhotonView != null)
+        {
+            gameManager.realBallInstance = ballPhotonView.gameObject;
+        }
+    }
 
 
     private void OnTriggerEnter(Collider other)

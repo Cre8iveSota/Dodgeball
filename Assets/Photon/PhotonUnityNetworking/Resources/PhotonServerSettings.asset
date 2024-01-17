@@ -48,6 +48,10 @@ MonoBehaviour:
   - InitializeInstanceSubChara
   - CreateTmpBallHolder
   - DestroyTmpBallHolder
+  - SyncronizeBallPosition
+  - InitializeInstanceMainChara2
+  - InitializeInstanceSubChara2
+  - SyncronizeMainPlayerRotation
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

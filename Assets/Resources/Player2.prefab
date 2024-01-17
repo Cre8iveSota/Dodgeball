@@ -786,6 +786,7 @@ MonoBehaviour:
   isActiveCharacter: 1
   photonView: {fileID: 0}
   iAmThrowing: 0
+  isfaccingFront: 0
 --- !u!114 &-8009930704040341176
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -810,9 +811,9 @@ MonoBehaviour:
     ExtrapolateIncludingRoundTripTime: 1
     ExtrapolateNumberOfStoredPositions: 1
   m_RotationModel:
-    SynchronizeEnabled: 0
+    SynchronizeEnabled: 1
     InterpolateOption: 1
-    InterpolateRotateTowardsSpeed: 180
+    InterpolateRotateTowardsSpeed: 10000
     InterpolateLerpSpeed: 5
   m_ScaleModel:
     SynchronizeEnabled: 0
