@@ -38,14 +38,13 @@ public class SubPlayerController : MonoBehaviour
                     if (gameManager.CheckHaveBallAsChildren(this.gameObject))
                     {
                         iAmThrowing = true;
-                        StartCoroutine(ballController.NormalPass(gameManager.subCharaInstance, gameManager.mainCharaInstance));
+                        if (this.gameObject == gameManager.subCharaInstance) StartCoroutine(ballController.NormalPass(gameManager.subCharaInstance, gameManager.mainCharaInstance));
+                        if (this.gameObject == gameManager.subChara2Instance) StartCoroutine(ballController.NormalPass(gameManager.subChara2Instance, gameManager.mainChara2Instance));
                     }
                 }
                 if (!iAmThrowing)
                 {
                     MoveSubPlayer();
-                    // MoveBallHolderTeamSubPlayer();
-                    // Catch();
                 }
             }
         }
@@ -87,12 +86,12 @@ public class SubPlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Ball" && ballController != null && ballController.IsPlayerThrowing())
+        if (other.gameObject.tag == "Ball" && ballController != null && ballController.IsSomeoneThrowing())
         {
             Debug.Log("Catch start");
             ballController.IsReceiverCatchSuccess = true;
         }
-        if (other.gameObject.tag == "Ball" && ballController != null && !ballController.IsPlayerThrowing())
+        if (other.gameObject.tag == "Ball" && ballController != null && !ballController.IsSomeoneThrowing())
         {
             ballController.IsReceiverCatchSuccess = false;
         }

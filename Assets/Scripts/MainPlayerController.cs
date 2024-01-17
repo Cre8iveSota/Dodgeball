@@ -29,19 +29,31 @@ public class MainPlayerController : MonoBehaviour
         {
             gameManager.CountingTimeOfHoldingShiftKey();
             if (ballController == null) return;
-            // ballcontrollerのspace key押したときと、ボール持ってるチェックを移動する
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 if (gameManager.CheckHaveBallAsChildren(this.gameObject))
                 {
                     iAmThrowing = true;
-                    StartCoroutine(ballController.NormalPass(gameManager.mainCharaInstance, gameManager.subCharaInstance));
+                    if (this.gameObject == gameManager.mainCharaInstance) StartCoroutine(ballController.NormalPass(gameManager.mainCharaInstance, gameManager.subCharaInstance));
+                    if (this.gameObject == gameManager.mainChara2Instance) StartCoroutine(ballController.NormalPass(gameManager.mainChara2Instance, gameManager.subChara2Instance));
                 }
             }
             if (!iAmThrowing)
             {
                 MoveMainPlayer();
                 TurnMainPlayer();
+            }
+
+            // 自分がボールを持っていたら相手の方向を向く
+            if (gameManager.GetBallHolderTeamPlayer(true) == gameManager.mainCharaInstance && gameManager.mainCharaInstance == this.gameObject)
+            {
+                this.gameObject.transform.rotation = gameManager.normalRotation;
+                this.gameObject.transform.position = new Vector3(transform.position.x, 0, -6f);
+            }
+            else if (gameManager.GetBallHolderTeamPlayer(true) == gameManager.mainChara2Instance && gameManager.mainChara2Instance == this.gameObject)
+            {
+                this.gameObject.transform.rotation = gameManager.inverseRotation;
+                this.gameObject.transform.position = new Vector3(transform.position.x, 0, 6f);
             }
         }
     }
@@ -75,8 +87,10 @@ public class MainPlayerController : MonoBehaviour
 
     private void TurnMainPlayer()
     {
-        // 狩り 現在はPlayer2のみ反転可能
-        if (gameManager.Threshold < gameManager.duration && Input.GetKeyDown(KeyCode.Space) && this.gameObject == gameManager.mainChara2Instance && !gameManager.CheckHaveBallAsChildren(this.gameObject) && !gameManager.CheckHaveBallAsChildren(gameManager.subChara2Instance))
+        if (!Input.GetKeyDown(KeyCode.Space)) return;
+
+        // ball持っていない時
+        if (gameManager.Threshold < gameManager.duration && this.gameObject == gameManager.mainCharaInstance && !gameManager.CheckHaveBallAsChildren(this.gameObject) && !gameManager.CheckHaveBallAsChildren(gameManager.subCharaInstance))
         {
             if (this.gameObject.transform.localRotation == gameManager.normalRotation)
             {
@@ -101,15 +115,13 @@ public class MainPlayerController : MonoBehaviour
             {
                 this.gameObject.transform.localRotation = gameManager.normalRightRotation;
                 this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z - 2f);
-
             }
             else if (this.gameObject.transform.localRotation == gameManager.normalRightRotation)
             {
                 this.gameObject.transform.localRotation = gameManager.normalRotation;
             }
-
         }
-        else if (Input.GetKeyDown(KeyCode.Space) && this.gameObject == gameManager.mainChara2Instance && !gameManager.CheckHaveBallAsChildren(this.gameObject) && !gameManager.CheckHaveBallAsChildren(gameManager.subChara2Instance))
+        else if (this.gameObject == gameManager.mainCharaInstance && !gameManager.CheckHaveBallAsChildren(this.gameObject) && !gameManager.CheckHaveBallAsChildren(gameManager.subCharaInstance))
         {
             if (this.gameObject.transform.localRotation == gameManager.normalRotation)
             {
@@ -139,18 +151,113 @@ public class MainPlayerController : MonoBehaviour
                 this.gameObject.transform.localRotation = gameManager.normalRotation;
             }
         }
+
+        if (gameManager.Threshold < gameManager.duration && this.gameObject == gameManager.mainChara2Instance && !gameManager.CheckHaveBallAsChildren(this.gameObject) && !gameManager.CheckHaveBallAsChildren(gameManager.subChara2Instance))
+        {
+            if (this.gameObject.transform.localRotation == gameManager.normalRotation)
+            {
+                this.gameObject.transform.localRotation = gameManager.normalLeftRotation;
+            }
+            else if (this.gameObject.transform.localRotation == gameManager.normalLeftRotation)
+            {
+                this.gameObject.transform.localRotation = gameManager.inverseRightRotation;
+                this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z + 2f);
+            }
+            else if (this.gameObject.transform.localRotation == gameManager.inverseRightRotation)
+            {
+                this.gameObject.transform.localRotation = gameManager.inverseRotation;
+            }
+            else if (this.gameObject.transform.localRotation == gameManager.inverseRotation)
+            {
+                this.gameObject.transform.localRotation = gameManager.inverseLeftRotation;
+            }
+            else if (this.gameObject.transform.localRotation == gameManager.inverseLeftRotation)
+            {
+                this.gameObject.transform.localRotation = gameManager.normalRightRotation;
+                this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z - 2f);
+
+            }
+            else if (this.gameObject.transform.localRotation == gameManager.normalRightRotation)
+            {
+                this.gameObject.transform.localRotation = gameManager.normalRotation;
+            }
+
+        }
+        else if (this.gameObject == gameManager.mainChara2Instance && !gameManager.CheckHaveBallAsChildren(this.gameObject) && !gameManager.CheckHaveBallAsChildren(gameManager.subChara2Instance))
+        {
+            if (this.gameObject.transform.localRotation == gameManager.normalRotation)
+            {
+                this.gameObject.transform.localRotation = gameManager.normalRightRotation;
+            }
+            else if (this.gameObject.transform.localRotation == gameManager.normalRightRotation)
+            {
+                this.gameObject.transform.localRotation = gameManager.inverseLeftRotation;
+                this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z + 2f);
+            }
+            else if (this.gameObject.transform.localRotation == gameManager.inverseLeftRotation)
+            {
+                this.gameObject.transform.localRotation = gameManager.inverseRotation;
+            }
+            else if (this.gameObject.transform.localRotation == gameManager.inverseRotation)
+            {
+                this.gameObject.transform.localRotation = gameManager.inverseRightRotation;
+            }
+            else if (this.gameObject.transform.localRotation == gameManager.inverseRightRotation)
+            {
+                this.gameObject.transform.localRotation = gameManager.normalLeftRotation;
+                this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z - 2f);
+            }
+            else if (this.gameObject.transform.localRotation == gameManager.normalLeftRotation)
+            {
+                this.gameObject.transform.localRotation = gameManager.normalRotation;
+            }
+        }
     }
 
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Ball" && ballController != null && ballController.IsPlayerThrowing())
+        if (other.gameObject.tag == "Ball" && ballController != null && ballController.IsSomeoneThrowing())
         {
             ballController.IsReceiverCatchSuccess = true;
         }
-        if (other.gameObject.tag == "Ball" && ballController != null && !ballController.IsPlayerThrowing())
+        if (other.gameObject.tag == "Ball" && ballController != null && !ballController.IsSomeoneThrowing())
         {
             ballController.IsReceiverCatchSuccess = false;
+        }
+
+        bool isExecuted = false;
+        if (ballController == null && !PhotonNetwork.IsMasterClient && !isExecuted)
+        {
+            isExecuted = true;
+            ballController = gameManager.realBallInstance.GetComponent<BallController>();
+        }
+
+        //main playerのキャッチ
+        if ((ballController.ThrowMan == gameManager.mainCharaInstance
+        || ballController.ThrowMan == gameManager.subCharaInstance)
+         & this.gameObject == gameManager.mainChara2Instance)
+        {
+            // this.gameObject.SetActive(false);
+        }
+        if (ballController != null && ballController.enableCatchBall)
+        {
+            ballController.IsReceiverCatchSuccess = true;
+            // ballController.enableBallInterupt = true;
+        }
+
+
+        //sub playerのキャッチ
+        if ((ballController.ThrowMan == gameManager.mainChara2Instance
+        || ballController.ThrowMan == gameManager.subChara2Instance)
+      & this.gameObject == gameManager.mainCharaInstance)
+        {
+            // this.gameObject.SetActive(false);
+        }
+        if (ballController != null && ballController.enableCatchBall)
+        {
+            ballController.IsReceiverCatchSuccess = true;
+            // ballController.enableBallInterupt = true;
         }
     }
 }

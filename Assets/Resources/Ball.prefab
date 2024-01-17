@@ -129,7 +129,9 @@ MonoBehaviour:
   ballForce: {x: 0, y: 0, z: 0}
   IsReceiverCatchSuccess: 0
   tmpBallHolder: {fileID: 0}
+  ThrowMan: {fileID: 0}
   isBallReady: 0
+  enableBallIntercept: 0
 --- !u!54 &545763186324929306
 Rigidbody:
   m_ObjectHideFlags: 0

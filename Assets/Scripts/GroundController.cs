@@ -8,7 +8,7 @@ public class GroundController : MonoBehaviour
 {
     public List<GameObject> grounds;
     public GameObject ballposition;
-    GameObject defenciblePosition;
+    public GameObject defenciblePosition;
     GameManager gameManager;
     Transform mainCharaDefenciblePoint, mainChara2DefenciblePoint;
 
@@ -20,15 +20,11 @@ public class GroundController : MonoBehaviour
 
     private void Update()
     {
-
         StartCoroutine(WaitForRealBallInstanceAndContinue());
-        // Debug.Log("realBallInstance position from client perspective : " + gameManager.realBallInstance.transform.position);
-
     }
     private IEnumerator WaitForRealBallInstanceAndContinue()
     {
         bool isExecuted = false;
-        // while (gameManager.realBallInstance == null)
         while (gameManager.realBallInstance == null || gameManager.mainChara2Instance == null)
         {
             yield return null;
@@ -38,6 +34,7 @@ public class GroundController : MonoBehaviour
             Debug.Log("gameManager.mainChara2Instance " + gameManager.mainChara2Instance);
             Debug.Log("gameManager.mainChara2Instance " + gameManager.mainChara2Instance.transform.Find("Defencivle Point"));
             mainChara2DefenciblePoint = gameManager.mainChara2Instance.transform.Find("Defencivle Point");
+            mainCharaDefenciblePoint = gameManager.mainCharaInstance.transform.Find("Defencivle Point");
             isExecuted = true;
         }
 
@@ -49,13 +46,26 @@ public class GroundController : MonoBehaviour
         List<GameObject> noBallArea = grounds.FindAll(i => Vector3.Distance(i.transform.position, gameManager.realBallInstance.transform.position) > 10f);
         noBallArea.ForEach(i => i.transform.GetChild(0).gameObject.SetActive(false));
 
-        if (gameManager.mainChara2Instance != null && grounds.Find(i => Vector3.Distance(i.transform.position, mainChara2DefenciblePoint.transform.position) < 3f))
+        if (gameManager.GetBallHolderTeamPlayer(true) == gameManager.mainCharaInstance || gameManager.GetBallHolderTeamPlayer(true) == gameManager.subCharaInstance)
         {
-            defenciblePosition = grounds.Find(i => Vector3.Distance(i.transform.position, mainChara2DefenciblePoint.transform.position) < 3f);
-            defenciblePosition.transform.GetChild(1).gameObject.SetActive(true);
+            if (gameManager.mainChara2Instance != null && grounds.Find(i => Vector3.Distance(i.transform.position, mainChara2DefenciblePoint.transform.position) < 3f))
+            {
+                defenciblePosition = grounds.Find(i => Vector3.Distance(i.transform.position, mainChara2DefenciblePoint.transform.position) < 3f);
+                defenciblePosition.transform.GetChild(1).gameObject.SetActive(true);
+            }
+            List<GameObject> noDefencibleArea = grounds.FindAll(i => Vector3.Distance(i.transform.position, mainChara2DefenciblePoint.transform.position) > 3f);
+            noDefencibleArea.ForEach(i => i.transform.GetChild(1).gameObject.SetActive(false));
         }
-        List<GameObject> noDefencibleArea = grounds.FindAll(i => Vector3.Distance(i.transform.position, mainChara2DefenciblePoint.transform.position) > 3f);
-        noDefencibleArea.ForEach(i => i.transform.GetChild(1).gameObject.SetActive(false));
+        else if (gameManager.GetBallHolderTeamPlayer(true) == gameManager.mainChara2Instance || gameManager.GetBallHolderTeamPlayer(true) == gameManager.subChara2Instance)
+        {
+            if (gameManager.mainCharaInstance != null && grounds.Find(i => Vector3.Distance(i.transform.position, mainCharaDefenciblePoint.transform.position) < 3f))
+            {
+                defenciblePosition = grounds.Find(i => Vector3.Distance(i.transform.position, mainCharaDefenciblePoint.transform.position) < 3f);
+                defenciblePosition.transform.GetChild(1).gameObject.SetActive(true);
+            }
+            List<GameObject> noDefencibleArea = grounds.FindAll(i => Vector3.Distance(i.transform.position, mainCharaDefenciblePoint.transform.position) > 3f);
+            noDefencibleArea.ForEach(i => i.transform.GetChild(1).gameObject.SetActive(false));
+        }
     }
     int SortByNumber(GameObject a, GameObject b)
     {

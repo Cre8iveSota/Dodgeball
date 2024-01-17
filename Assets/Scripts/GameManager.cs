@@ -166,7 +166,6 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     public bool CheckHaveBallAsChildren(GameObject targetObject)
     {
-        if (!PhotonNetwork.IsMasterClient) return false; // 狩り
         Transform[] allChildren = targetObject.GetComponentsInChildren<Transform>();
         bool ballExists = false;
         foreach (Transform child in allChildren)
@@ -179,7 +178,7 @@ public class GameManager : MonoBehaviour
         }
         return ballExists;
     }
-    public GameObject GetBallHolderPlayer(bool isBallholder)
+    public GameObject GetBallHolderTeamPlayer(bool isBallholder)
     {
         if (isBallholder)
         {
@@ -187,27 +186,36 @@ public class GameManager : MonoBehaviour
             {
                 return mainCharaInstance;
             }
-            if (CheckHaveBallAsChildren(subCharaInstance))
+            else if (CheckHaveBallAsChildren(subCharaInstance))
             {
                 return subCharaInstance;
             }
-            return enemyTeamMember;
-        }
-        else
-        {
-            if (!CheckHaveBallAsChildren(subCharaInstance))
+            else if (CheckHaveBallAsChildren(mainChara2Instance))
             {
-                return subCharaInstance;
-            }
-            else if (!CheckHaveBallAsChildren(mainCharaInstance))
-            {
-                return mainCharaInstance;
+                return mainChara2Instance;
             }
             else
             {
-                // return mainChara as default
-                Debug.LogWarning("You may get inappropriate gameObject");
+                return subChara2Instance;
+            }
+        }
+        else
+        {
+            if (CheckHaveBallAsChildren(mainCharaInstance))
+            {
+                return subCharaInstance;
+            }
+            else if (CheckHaveBallAsChildren(subCharaInstance))
+            {
                 return mainCharaInstance;
+            }
+            else if (CheckHaveBallAsChildren(mainChara2Instance))
+            {
+                return subChara2Instance;
+            }
+            else
+            {
+                return mainChara2Instance;
             }
         }
     }
