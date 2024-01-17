@@ -2010,6 +2010,12 @@ MonoBehaviour:
   mainChara2Instance: {fileID: 0}
   subChara2Instance: {fileID: 0}
   duration: 0
+  normalRotation: {x: 0, y: 0, z: 0, w: 0}
+  normalRightRotation: {x: 0, y: 0, z: 0, w: 0}
+  normalLeftRotation: {x: 0, y: 0, z: 0, w: 0}
+  inverseRotation: {x: 0, y: 0, z: 0, w: 0}
+  inverseRightRotation: {x: 0, y: 0, z: 0, w: 0}
+  inverseLeftRotation: {x: 0, y: 0, z: 0, w: 0}
   mainCamera: {fileID: 1595512564}
   subCamera: {fileID: 1180232446}
 --- !u!114 &463763812

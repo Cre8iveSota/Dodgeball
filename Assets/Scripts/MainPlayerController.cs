@@ -75,9 +75,42 @@ public class MainPlayerController : MonoBehaviour
 
     private void TurnMainPlayer()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !gameManager.CheckHaveBallAsChildren(this.gameObject) && !gameManager.CheckHaveBallAsChildren(gameManager.subCharaInstance))
+        // 狩り 現在はPlayer2のみ反転可能
+        if (gameManager.Threshold < gameManager.duration && Input.GetKeyDown(KeyCode.Space) && this.gameObject == gameManager.mainChara2Instance && !gameManager.CheckHaveBallAsChildren(this.gameObject) && !gameManager.CheckHaveBallAsChildren(gameManager.subChara2Instance))
         {
-            isfaccingFront = !isfaccingFront;
+            if (this.gameObject.transform.localRotation == gameManager.normalRotation)
+            {
+                {
+                    this.gameObject.transform.localRotation = gameManager.normalLeftRotation;
+                }
+            }
+            else if (this.gameObject.transform.localRotation == gameManager.normalLeftRotation)
+            {
+                this.gameObject.transform.localRotation = gameManager.inverseRightRotation;
+                this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z + 2f);
+            }
+            else if (this.gameObject.transform.localRotation == gameManager.inverseRightRotation)
+            {
+                this.gameObject.transform.localRotation = gameManager.inverseRotation;
+            }
+            else if (this.gameObject.transform.localRotation == gameManager.inverseRotation)
+            {
+                this.gameObject.transform.localRotation = gameManager.inverseLeftRotation;
+            }
+            else if (this.gameObject.transform.localRotation == gameManager.inverseLeftRotation)
+            {
+                this.gameObject.transform.localRotation = gameManager.normalRightRotation;
+                this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z - 2f);
+
+            }
+            else if (this.gameObject.transform.localRotation == gameManager.normalRightRotation)
+            {
+                this.gameObject.transform.localRotation = gameManager.normalRotation;
+            }
+
+        }
+        else if (Input.GetKeyDown(KeyCode.Space) && this.gameObject == gameManager.mainChara2Instance && !gameManager.CheckHaveBallAsChildren(this.gameObject) && !gameManager.CheckHaveBallAsChildren(gameManager.subChara2Instance))
+        {
             if (this.gameObject.transform.localRotation == gameManager.normalRotation)
             {
                 this.gameObject.transform.localRotation = gameManager.normalRightRotation;
@@ -85,6 +118,7 @@ public class MainPlayerController : MonoBehaviour
             else if (this.gameObject.transform.localRotation == gameManager.normalRightRotation)
             {
                 this.gameObject.transform.localRotation = gameManager.inverseLeftRotation;
+                this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z + 2f);
             }
             else if (this.gameObject.transform.localRotation == gameManager.inverseLeftRotation)
             {
@@ -97,6 +131,8 @@ public class MainPlayerController : MonoBehaviour
             else if (this.gameObject.transform.localRotation == gameManager.inverseRightRotation)
             {
                 this.gameObject.transform.localRotation = gameManager.normalLeftRotation;
+                this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z - 2f);
+
             }
             else if (this.gameObject.transform.localRotation == gameManager.normalLeftRotation)
             {

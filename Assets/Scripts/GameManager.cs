@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     public GameObject mainCharaInstance, subCharaInstance, mainChara2Instance, subChara2Instance;
 
     public int duration = 0;
-    private int threshold = 30;
+    private int threshold = 10;
 
     public int Threshold { get => threshold; }
     PhotonView photonView;
@@ -83,14 +83,15 @@ public class GameManager : MonoBehaviour
         {
             yield return null;
         }
-        ground.SetActive(true);
+        // ground.SetActive(true);
         if (!PhotonNetwork.IsMasterClient)
         {
             mainChara2Instance = PhotonNetwork.Instantiate(mainChara2.name, new Vector3(0, 0, 6f), inverseRotation);
             subChara2Instance = PhotonNetwork.Instantiate(subChara2.name, new Vector3(0, 0, -16f), Quaternion.identity);
-            photonView.RPC("InitializeInstanceMainChara", RpcTarget.Others, mainChara2Instance.GetPhotonView().ViewID);
-            photonView.RPC("InitializeInstanceSubChara", RpcTarget.Others, subChara2Instance.GetPhotonView().ViewID);
+            photonView.RPC("InitializeInstanceMainChara2", RpcTarget.Others, mainChara2Instance.GetPhotonView().ViewID);
+            photonView.RPC("InitializeInstanceSubChara2", RpcTarget.Others, subChara2Instance.GetPhotonView().ViewID);
         }
+        ground.SetActive(true);
     }
     public IEnumerator WaitFor()
     {
