@@ -11,6 +11,8 @@ public class SubPlayerController : MonoBehaviour
     BallController ballController;
     PhotonView photonView;
     GroundController groundController;
+    public bool iAmThrowing;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,23 +32,48 @@ public class SubPlayerController : MonoBehaviour
             if (groundController != null)
             {
                 gameManager.CountingTimeOfHoldingShiftKey();
-                MoveSubPlayer();
-                StartCoroutine(ballController.NormalPass(gameManager.subCharaInstance, gameManager.mainCharaInstance));
-                // MoveBallHolderTeamSubPlayer();
-                // Catch();
+                if (ballController == null) return;
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    if (gameManager.CheckHaveBallAsChildren(this.gameObject))
+                    {
+                        iAmThrowing = true;
+                        StartCoroutine(ballController.NormalPass(gameManager.subCharaInstance, gameManager.mainCharaInstance));
+                    }
+                }
+                if (!iAmThrowing)
+                {
+                    MoveSubPlayer();
+                    // MoveBallHolderTeamSubPlayer();
+                    // Catch();
+                }
             }
         }
     }
     private void MoveSubPlayer()
     {
         if (gameManager.duration < gameManager.Threshold) return;
-        if (Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x < 15)
+        if (PhotonNetwork.IsMasterClient)
         {
-            transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z);
+            if (Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x < 15)
+            {
+                transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z);
+            }
+            if (Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x > -15)
+            {
+                transform.position = new Vector3(transform.position.x - 10, transform.position.y, transform.position.z);
+            }
         }
-        if (Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x > -15)
+        else
         {
-            transform.position = new Vector3(transform.position.x - 10, transform.position.y, transform.position.z);
+            if (Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x > -15)
+            {
+                transform.position = new Vector3(transform.position.x - 10, transform.position.y, transform.position.z);
+            }
+            if (Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x < 15)
+            {
+                transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z);
+            }
         }
     }
 

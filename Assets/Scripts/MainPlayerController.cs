@@ -10,6 +10,8 @@ public class MainPlayerController : MonoBehaviour
     GameManager gameManager;
     public PhotonView photonView;
     SubPlayerController subPlayerController;
+    public bool iAmThrowing;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,8 +26,20 @@ public class MainPlayerController : MonoBehaviour
         if (photonView.IsMine)
         {
             gameManager.CountingTimeOfHoldingShiftKey();
-            MoveMainPlayer();
-            if (ballController != null) StartCoroutine(ballController.NormalPass(gameManager.mainCharaInstance, gameManager.subCharaInstance));
+            if (ballController == null) return;
+            // ballcontrollerのspace key押したときと、ボール持ってるチェックを移動する
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                if (gameManager.CheckHaveBallAsChildren(this.gameObject))
+                {
+                    iAmThrowing = true;
+                    StartCoroutine(ballController.NormalPass(gameManager.mainCharaInstance, gameManager.subCharaInstance));
+                }
+            }
+            if (!iAmThrowing)
+            {
+                MoveMainPlayer();
+            }
             TurnMainPlayer();
         }
     }
@@ -33,13 +47,27 @@ public class MainPlayerController : MonoBehaviour
     private void MoveMainPlayer()
     {
         if (gameManager.duration > gameManager.Threshold) return;
-        if (Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x < 10)
+        if (PhotonNetwork.IsMasterClient)
         {
-            transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z);
+            if (Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x < 10)
+            {
+                transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z);
+            }
+            if (Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x > -10)
+            {
+                transform.position = new Vector3(transform.position.x - 10, transform.position.y, transform.position.z);
+            }
         }
-        if (Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x > -10)
+        else
         {
-            transform.position = new Vector3(transform.position.x - 10, transform.position.y, transform.position.z);
+            if (Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x > -10)
+            {
+                transform.position = new Vector3(transform.position.x - 10, transform.position.y, transform.position.z);
+            }
+            if (Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x < 10)
+            {
+                transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z);
+            }
         }
     }
 

@@ -785,6 +785,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isActiveCharacter: 1
   photonView: {fileID: 0}
+  iAmThrowing: 0
 --- !u!114 &-7822296549910807153
 MonoBehaviour:
   m_ObjectHideFlags: 0

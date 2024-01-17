@@ -22,13 +22,22 @@ public class GameManager : MonoBehaviour
 
     public int Threshold { get => threshold; }
     PhotonView photonView;
+    Quaternion inverseRotation;
+
+    [SerializeField] Camera mainCamera;
+    [SerializeField] Camera subCamera;
 
     void Start()
     {
+        inverseRotation = Quaternion.Euler(0f, 180f, 0f);
+
         photonView = GetComponent<PhotonView>();
         if (PhotonNetwork.IsMasterClient)
         {
-            subCharaInstance = PhotonNetwork.Instantiate(subChara.name, new Vector3(0, 0, 16f), Quaternion.identity);
+            mainCamera.gameObject.SetActive(true);
+            subCamera.gameObject.SetActive(false);
+
+            subCharaInstance = PhotonNetwork.Instantiate(subChara.name, new Vector3(0, 0, 16f), inverseRotation);
             mainCharaInstance = PhotonNetwork.Instantiate(mainChara.name, new Vector3(0, 0, -6f), Quaternion.identity);
             photonView.RPC("InitializeInstanceMainChara", RpcTarget.Others, mainCharaInstance.GetPhotonView().ViewID);
             photonView.RPC("InitializeInstanceSubChara", RpcTarget.Others, subCharaInstance.GetPhotonView().ViewID);
@@ -36,6 +45,8 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            mainCamera.gameObject.SetActive(false);
+            subCamera.gameObject.SetActive(true);
             StartCoroutine(WaitForRealBallInstanceAndContinue());
         }
     }
@@ -70,7 +81,7 @@ public class GameManager : MonoBehaviour
         ground.SetActive(true);
         if (!PhotonNetwork.IsMasterClient)
         {
-            mainChara2 = PhotonNetwork.Instantiate(mainChara2.name, new Vector3(0, 0, 6f), Quaternion.identity);
+            mainChara2 = PhotonNetwork.Instantiate(mainChara2.name, new Vector3(0, 0, 6f), inverseRotation);
             subChara2 = PhotonNetwork.Instantiate(subChara2.name, new Vector3(0, 0, -16f), Quaternion.identity);
         }
     }
@@ -146,31 +157,31 @@ public class GameManager : MonoBehaviour
     {
         if (isBallholder)
         {
-            if (CheckHaveBallAsChildren(mainChara))
+            if (CheckHaveBallAsChildren(mainCharaInstance))
             {
-                return mainChara;
+                return mainCharaInstance;
             }
-            if (CheckHaveBallAsChildren(subChara))
+            if (CheckHaveBallAsChildren(subCharaInstance))
             {
-                return subChara;
+                return subCharaInstance;
             }
             return enemyTeamMember;
         }
         else
         {
-            if (!CheckHaveBallAsChildren(subChara))
+            if (!CheckHaveBallAsChildren(subCharaInstance))
             {
-                return subChara;
+                return subCharaInstance;
             }
-            else if (!CheckHaveBallAsChildren(mainChara))
+            else if (!CheckHaveBallAsChildren(mainCharaInstance))
             {
-                return mainChara;
+                return mainCharaInstance;
             }
             else
             {
                 // return mainChara as default
                 Debug.LogWarning("You may get inappropriate gameObject");
-                return mainChara;
+                return mainCharaInstance;
             }
         }
     }

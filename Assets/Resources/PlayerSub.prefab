@@ -788,6 +788,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPositionAuto: 0
+  iAmThrowing: 0
 --- !u!114 &7927685812174541269
 MonoBehaviour:
   m_ObjectHideFlags: 0
