@@ -58,7 +58,6 @@ public class BallController : MonoBehaviour
 
         // sita
         // if (this.gameObject.GetPhotonView() != null && PhotonNetwork.IsMasterClient) photonView.RPC("SyncronizeBallPosition", RpcTarget.All, this.gameObject.GetPhotonView().ViewID);
-        // photonView.RPC("SyncronizeBallPosition", RpcTarget.All, this.gameObject.GetPhotonView().ViewID);
 
         SetDestination(ballDestination);
         // if (IsReceiverCatchSuccess && photonView.IsMine) //エラー出た
@@ -73,6 +72,7 @@ public class BallController : MonoBehaviour
             photonView.RPC("DestroyTmpBallHolder", RpcTarget.All, Reciever.GetPhotonView().ViewID);
             IsReceiverCatchSuccess = false;
             enableCatchBall = false;
+            photonView.RPC("SyncronizeBallPosition", RpcTarget.All);
         }
     }
 
@@ -119,7 +119,7 @@ public class BallController : MonoBehaviour
         // transform.SetParent(tmpBallHolder.transform, false);
         if (ThrowMan == gameManager.mainCharaInstance || ThrowMan == gameManager.subChara2Instance) transform.localPosition = new Vector3(0f, 1f, 0.4f);
         if (ThrowMan == gameManager.subCharaInstance || ThrowMan == gameManager.mainChara2Instance) transform.localPosition = new Vector3(0f, 1f, -0.4f);
-        defeinedSpeed = new Vector3((ballDestination.x - transform.position.x) * ballSpeed, 0f, (ballDestination.z - transform.position.z) * ballSpeed);
+        defeinedSpeed = new Vector3((ballDestination.x - transform.position.x) * ballSpeed * Time.deltaTime, 0f, (ballDestination.z - transform.position.z) * ballSpeed * Time.deltaTime);
         yield return new WaitForSeconds(1f);
 
         Debug.Log("presssed space");
@@ -154,16 +154,16 @@ public class BallController : MonoBehaviour
         }
     }
 
+
     [PunRPC]
-    private void SyncronizeBallPosition(int viewID)
+    private void SyncronizeBallPosition()
     {
-        PhotonView ballPhotonView = PhotonView.Find(viewID);
+        PhotonView ballPhotonView = PhotonView.Find(this.gameObject.GetPhotonView().ViewID);
         if (ballPhotonView != null)
         {
             gameManager.realBallInstance = ballPhotonView.gameObject;
         }
     }
-
 
     private void OnTriggerEnter(Collider other)
     {

@@ -12,6 +12,8 @@ public class MainPlayerController : MonoBehaviour
     SubPlayerController subPlayerController;
     public bool iAmThrowing;
     public bool isfaccingFront;
+    PhotonView ballView;
+
 
     // Start is called before the first frame update
     void Start()
@@ -31,6 +33,9 @@ public class MainPlayerController : MonoBehaviour
             if (ballController == null) return;
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                ballView = gameManager.realBallInstance.GetPhotonView();
+                if (gameManager.GetBallHolderTeamPlayer(true) == gameManager.mainCharaInstance || gameManager.GetBallHolderTeamPlayer(true) == gameManager.subCharaInstance) ballView.TransferOwnership(PhotonNetwork.MasterClient);
+                if (gameManager.GetBallHolderTeamPlayer(true) == gameManager.mainChara2Instance || gameManager.GetBallHolderTeamPlayer(true) == gameManager.subChara2Instance) ballView.TransferOwnership(PhotonNetwork.LocalPlayer);
                 if (gameManager.CheckHaveBallAsChildren(this.gameObject))
                 {
                     iAmThrowing = true;
@@ -217,14 +222,14 @@ public class MainPlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Ball" && ballController != null && ballController.IsSomeoneThrowing())
-        {
-            ballController.IsReceiverCatchSuccess = true;
-        }
-        if (other.gameObject.tag == "Ball" && ballController != null && !ballController.IsSomeoneThrowing())
-        {
-            ballController.IsReceiverCatchSuccess = false;
-        }
+        // if (other.gameObject.tag == "Ball" && ballController != null && ballController.IsSomeoneThrowing())
+        // {
+        //     ballController.IsReceiverCatchSuccess = true;
+        // }
+        // if (other.gameObject.tag == "Ball" && ballController != null && !ballController.IsSomeoneThrowing())
+        // {
+        //     ballController.IsReceiverCatchSuccess = false;
+        // }
 
         bool isExecuted = false;
         if (ballController == null && !PhotonNetwork.IsMasterClient && !isExecuted)
