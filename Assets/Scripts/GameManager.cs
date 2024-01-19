@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public bool isChangeActiveCharacter;
+    public bool hasPlayer1TeamBall;
     GameObject[] playerTeamMembers;
     GameObject enemyTeamMember;
     public GameObject mainChara, subChara, mainChara2, subChara2;
@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     public GameObject realBall;
     public GameObject realBallInstance;
     public GameObject mainCharaInstance, subCharaInstance, mainChara2Instance, subChara2Instance;
+    BallController ballControllerForMaster;
 
     public int duration = 0;
     private int threshold = 10;
@@ -54,6 +55,13 @@ public class GameManager : MonoBehaviour
             subCamera.gameObject.SetActive(true);
             StartCoroutine(WaitForRealBallInstanceAndContinue());
         }
+    }
+
+    private void Update()
+    {
+        if (mainChara2Instance == null || subChara2Instance == null) return;
+        if (GetBallHolderTeamPlayer(true) == mainCharaInstance || GetBallHolderTeamPlayer(true) == subCharaInstance) hasPlayer1TeamBall = true;
+        if (GetBallHolderTeamPlayer(true) == mainChara2Instance || GetBallHolderTeamPlayer(true) == subChara2Instance) hasPlayer1TeamBall = false;
     }
     public IEnumerator WaitForRealBallInstanceAndContinue()
     {
@@ -180,27 +188,41 @@ public class GameManager : MonoBehaviour
     }
     public GameObject GetBallHolderTeamPlayer(bool isBallholder)
     {
+        bool isExecuted = false;
+        if (ballControllerForMaster == null && !isExecuted)
+        {
+            isExecuted = true;
+            GameObject ball = GameObject.FindGameObjectWithTag("Ball");
+            if (ball != null) ballControllerForMaster = ball.GetComponent<BallController>();
+        }
+
         if (isBallholder)
         {
-            if (CheckHaveBallAsChildren(mainCharaInstance))
+            if (CheckHaveBallAsChildren(mainCharaInstance) || ballControllerForMaster.ThrowMan == mainCharaInstance)
             {
                 return mainCharaInstance;
             }
-            else if (CheckHaveBallAsChildren(subCharaInstance))
+            else if (CheckHaveBallAsChildren(subCharaInstance) || ballControllerForMaster.ThrowMan == subCharaInstance)
             {
                 return subCharaInstance;
             }
-            else if (CheckHaveBallAsChildren(mainChara2Instance))
+            else if (CheckHaveBallAsChildren(mainChara2Instance) || ballControllerForMaster.ThrowMan == mainChara2Instance)
             {
                 return mainChara2Instance;
             }
-            else
+            else if (CheckHaveBallAsChildren(subChara2Instance) || ballControllerForMaster.ThrowMan == subChara2Instance)
             {
                 return subChara2Instance;
+            }
+            else
+            {
+                Debug.Log("Warrning: You maight get unitended result from GetBallHolderTeamPlayer");
+                return enemyTeamMember;
             }
         }
         else
         {
+            // todo tmp ball holderにボールがある時は考慮していない
             if (CheckHaveBallAsChildren(mainCharaInstance))
             {
                 return subCharaInstance;

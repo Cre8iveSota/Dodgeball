@@ -121,7 +121,7 @@ public class BallController : MonoBehaviour
         if (ThrowMan == gameManager.subCharaInstance || ThrowMan == gameManager.mainChara2Instance) transform.localPosition = new Vector3(0f, 1f, -0.4f);
         defeinedSpeed = new Vector3((ballDestination.x - transform.position.x) * ballSpeed * Time.deltaTime, 0f, (ballDestination.z - transform.position.z) * ballSpeed * Time.deltaTime);
         yield return new WaitForSeconds(1f);
-
+        ThrowMan = null;
         Debug.Log("presssed space");
     }
 

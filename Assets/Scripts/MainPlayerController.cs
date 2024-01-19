@@ -94,128 +94,91 @@ public class MainPlayerController : MonoBehaviour
     {
         if (!Input.GetKeyDown(KeyCode.Space)) return;
 
-        // ball持っていない時
-        if (gameManager.Threshold < gameManager.duration && this.gameObject == gameManager.mainCharaInstance && !gameManager.CheckHaveBallAsChildren(this.gameObject) && !gameManager.CheckHaveBallAsChildren(gameManager.subCharaInstance))
+        if (this.gameObject == gameManager.mainChara2Instance)
         {
-            if (this.gameObject.transform.localRotation == gameManager.normalRotation)
+            // ball持っていない時
+            if (gameManager.Threshold < gameManager.duration && gameManager.hasPlayer1TeamBall)
             {
-                {
-                    this.gameObject.transform.localRotation = gameManager.normalLeftRotation;
-                }
+                ClockWiseTurn();
             }
-            else if (this.gameObject.transform.localRotation == gameManager.normalLeftRotation)
+            else if (gameManager.Threshold > gameManager.duration && gameManager.hasPlayer1TeamBall)
             {
-                this.gameObject.transform.localRotation = gameManager.inverseRightRotation;
-                this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z + 2f);
-            }
-            else if (this.gameObject.transform.localRotation == gameManager.inverseRightRotation)
-            {
-                this.gameObject.transform.localRotation = gameManager.inverseRotation;
-            }
-            else if (this.gameObject.transform.localRotation == gameManager.inverseRotation)
-            {
-                this.gameObject.transform.localRotation = gameManager.inverseLeftRotation;
-            }
-            else if (this.gameObject.transform.localRotation == gameManager.inverseLeftRotation)
-            {
-                this.gameObject.transform.localRotation = gameManager.normalRightRotation;
-                this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z - 2f);
-            }
-            else if (this.gameObject.transform.localRotation == gameManager.normalRightRotation)
-            {
-                this.gameObject.transform.localRotation = gameManager.normalRotation;
-            }
-        }
-        else if (this.gameObject == gameManager.mainCharaInstance && !gameManager.CheckHaveBallAsChildren(this.gameObject) && !gameManager.CheckHaveBallAsChildren(gameManager.subCharaInstance))
-        {
-            if (this.gameObject.transform.localRotation == gameManager.normalRotation)
-            {
-                this.gameObject.transform.localRotation = gameManager.normalRightRotation;
-            }
-            else if (this.gameObject.transform.localRotation == gameManager.normalRightRotation)
-            {
-                this.gameObject.transform.localRotation = gameManager.inverseLeftRotation;
-                this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z + 2f);
-            }
-            else if (this.gameObject.transform.localRotation == gameManager.inverseLeftRotation)
-            {
-                this.gameObject.transform.localRotation = gameManager.inverseRotation;
-            }
-            else if (this.gameObject.transform.localRotation == gameManager.inverseRotation)
-            {
-                this.gameObject.transform.localRotation = gameManager.inverseRightRotation;
-            }
-            else if (this.gameObject.transform.localRotation == gameManager.inverseRightRotation)
-            {
-                this.gameObject.transform.localRotation = gameManager.normalLeftRotation;
-                this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z - 2f);
-
-            }
-            else if (this.gameObject.transform.localRotation == gameManager.normalLeftRotation)
-            {
-                this.gameObject.transform.localRotation = gameManager.normalRotation;
+                AntiClockWiseTurn();
             }
         }
 
-        if (gameManager.Threshold < gameManager.duration && this.gameObject == gameManager.mainChara2Instance && !gameManager.CheckHaveBallAsChildren(this.gameObject) && !gameManager.CheckHaveBallAsChildren(gameManager.subChara2Instance))
+        if (this.gameObject == gameManager.mainCharaInstance)
         {
-            if (this.gameObject.transform.localRotation == gameManager.normalRotation)
+            // ball持っていない時
+            if (gameManager.Threshold < gameManager.duration && !gameManager.hasPlayer1TeamBall)
             {
-                this.gameObject.transform.localRotation = gameManager.normalLeftRotation;
+                ClockWiseTurn();
             }
-            else if (this.gameObject.transform.localRotation == gameManager.normalLeftRotation)
+            else if (gameManager.Threshold > gameManager.duration && !gameManager.hasPlayer1TeamBall)
             {
-                this.gameObject.transform.localRotation = gameManager.inverseRightRotation;
-                this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z + 2f);
+                AntiClockWiseTurn();
             }
-            else if (this.gameObject.transform.localRotation == gameManager.inverseRightRotation)
-            {
-                this.gameObject.transform.localRotation = gameManager.inverseRotation;
-            }
-            else if (this.gameObject.transform.localRotation == gameManager.inverseRotation)
-            {
-                this.gameObject.transform.localRotation = gameManager.inverseLeftRotation;
-            }
-            else if (this.gameObject.transform.localRotation == gameManager.inverseLeftRotation)
-            {
-                this.gameObject.transform.localRotation = gameManager.normalRightRotation;
-                this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z - 2f);
+        }
+    }
 
-            }
-            else if (this.gameObject.transform.localRotation == gameManager.normalRightRotation)
-            {
-                this.gameObject.transform.localRotation = gameManager.normalRotation;
-            }
+    private void AntiClockWiseTurn()
+    {
+        if (this.gameObject.transform.localRotation == gameManager.normalRotation)
+        {
+            this.gameObject.transform.localRotation = gameManager.normalRightRotation;
+        }
+        else if (this.gameObject.transform.localRotation == gameManager.normalRightRotation)
+        {
+            this.gameObject.transform.localRotation = gameManager.inverseLeftRotation;
+            this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z + 2f);
+        }
+        else if (this.gameObject.transform.localRotation == gameManager.inverseLeftRotation)
+        {
+            this.gameObject.transform.localRotation = gameManager.inverseRotation;
+        }
+        else if (this.gameObject.transform.localRotation == gameManager.inverseRotation)
+        {
+            this.gameObject.transform.localRotation = gameManager.inverseRightRotation;
+        }
+        else if (this.gameObject.transform.localRotation == gameManager.inverseRightRotation)
+        {
+            this.gameObject.transform.localRotation = gameManager.normalLeftRotation;
+            this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z - 2f);
 
         }
-        else if (this.gameObject == gameManager.mainChara2Instance && !gameManager.CheckHaveBallAsChildren(this.gameObject) && !gameManager.CheckHaveBallAsChildren(gameManager.subChara2Instance))
+        else if (this.gameObject.transform.localRotation == gameManager.normalLeftRotation)
         {
-            if (this.gameObject.transform.localRotation == gameManager.normalRotation)
-            {
-                this.gameObject.transform.localRotation = gameManager.normalRightRotation;
-            }
-            else if (this.gameObject.transform.localRotation == gameManager.normalRightRotation)
-            {
-                this.gameObject.transform.localRotation = gameManager.inverseLeftRotation;
-                this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z + 2f);
-            }
-            else if (this.gameObject.transform.localRotation == gameManager.inverseLeftRotation)
-            {
-                this.gameObject.transform.localRotation = gameManager.inverseRotation;
-            }
-            else if (this.gameObject.transform.localRotation == gameManager.inverseRotation)
-            {
-                this.gameObject.transform.localRotation = gameManager.inverseRightRotation;
-            }
-            else if (this.gameObject.transform.localRotation == gameManager.inverseRightRotation)
-            {
-                this.gameObject.transform.localRotation = gameManager.normalLeftRotation;
-                this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z - 2f);
-            }
-            else if (this.gameObject.transform.localRotation == gameManager.normalLeftRotation)
-            {
-                this.gameObject.transform.localRotation = gameManager.normalRotation;
-            }
+            this.gameObject.transform.localRotation = gameManager.normalRotation;
+        }
+    }
+
+    private void ClockWiseTurn()
+    {
+        if (this.gameObject.transform.localRotation == gameManager.normalRotation)
+        {
+            this.gameObject.transform.localRotation = gameManager.normalLeftRotation;
+        }
+        else if (this.gameObject.transform.localRotation == gameManager.normalLeftRotation)
+        {
+            this.gameObject.transform.localRotation = gameManager.inverseRightRotation;
+            this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z + 2f);
+        }
+        else if (this.gameObject.transform.localRotation == gameManager.inverseRightRotation)
+        {
+            this.gameObject.transform.localRotation = gameManager.inverseRotation;
+        }
+        else if (this.gameObject.transform.localRotation == gameManager.inverseRotation)
+        {
+            this.gameObject.transform.localRotation = gameManager.inverseLeftRotation;
+        }
+        else if (this.gameObject.transform.localRotation == gameManager.inverseLeftRotation)
+        {
+            this.gameObject.transform.localRotation = gameManager.normalRightRotation;
+            this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z - 2f);
+        }
+        else if (this.gameObject.transform.localRotation == gameManager.normalRightRotation)
+        {
+            this.gameObject.transform.localRotation = gameManager.normalRotation;
         }
     }
 
