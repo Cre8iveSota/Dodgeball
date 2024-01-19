@@ -26,8 +26,9 @@ public class BallController : MonoBehaviour
     MainPlayerController mainCharaController, mainChara2Controller;
     SubPlayerController subCharaController, subChara2Controller;
     GroundController groundController;
-    public bool enableCatchBall;/*, enableBallInterupt;*/ // 相手のボーるをキャッチしたことを知らせるフラグと、パスをインタラプトしたときに知らせるフラグ
+    public bool enableCatchBall, enableBallInterupt;// 相手のボーるをキャッチしたことを知らせるフラグと、パスをインタラプトしたときに知らせるフラグ
 
+    int cnt = 0;
     /*
     Dotweenでballを動かす
     ballのポジションの動悸するシステム
@@ -62,7 +63,25 @@ public class BallController : MonoBehaviour
         SetDestination(ballDestination);
         // if (IsReceiverCatchSuccess && photonView.IsMine) //エラー出た
         // if (IsReceiverCatchSuccess && PhotonNetwork.IsMasterClient)//狩り
-        if (IsReceiverCatchSuccess)//狩り
+        if (enableBallInterupt)
+        {
+            if (ThrowMan == gameManager.mainCharaInstance || ThrowMan == gameManager.subCharaInstance) Reciever = gameManager.mainChara2Instance;
+            if (ThrowMan == gameManager.mainChara2Instance || ThrowMan == gameManager.subChara2Instance) Reciever = gameManager.mainCharaInstance;
+            Debug.Log("ThrowMan" + ThrowMan);
+            Debug.Log("changed reciever: " + Reciever);
+            isMovingBall = false;
+            if (mainCharaController != null && mainCharaController.iAmThrowing == true) mainCharaController.iAmThrowing = false;
+            if (subCharaController != null && subCharaController.iAmThrowing == true) subCharaController.iAmThrowing = false;
+            if (mainChara2Controller != null && mainChara2Controller.iAmThrowing == true) mainChara2Controller.iAmThrowing = false;
+            if (subChara2Controller != null && subChara2Controller.iAmThrowing == true) subChara2Controller.iAmThrowing = false;
+            photonView.RPC("DestroyTmpBallHolder", RpcTarget.All, Reciever.GetPhotonView().ViewID);
+            IsReceiverCatchSuccess = false;
+            enableCatchBall = false;
+            photonView.RPC("SyncronizeBallPosition", RpcTarget.All);
+            enableBallInterupt = false;
+            ThrowMan = null;
+        }
+        else if (IsReceiverCatchSuccess)//狩り
         {
             isMovingBall = false;
             if (mainCharaController != null && mainCharaController.iAmThrowing == true) mainCharaController.iAmThrowing = false;
@@ -73,7 +92,11 @@ public class BallController : MonoBehaviour
             IsReceiverCatchSuccess = false;
             enableCatchBall = false;
             photonView.RPC("SyncronizeBallPosition", RpcTarget.All);
+            ThrowMan = null;
         }
+
+        if (cnt % 6 == 0) photonView.RPC("SyncronizeBallPosition", RpcTarget.All);
+        cnt++;
     }
 
     public void SetDestination(Vector3 destination)
@@ -86,29 +109,33 @@ public class BallController : MonoBehaviour
 
     public IEnumerator NormalPass(GameObject passerGameObject, GameObject recieverGameObject)
     {
+        cnt = 0;
+        ThrowMan = passerGameObject;
+
         GameObject ground = GameObject.FindGameObjectWithTag("Ground");
-        // if (ground != null && enableBallInterupt)
+        // if (ground != null)
         if (ground != null)
         {
             groundController = ground.GetComponent<GroundController>();
+            Debug.Log("groundController.defenciblePosition ball : " + groundController.defenciblePosition);
+            Debug.Log("groundController.defenciblePosition bal : " + groundController.ballposition);
+
             if ((groundController.defenciblePosition.transform.position.z == -5f || groundController.defenciblePosition.transform.position.z == 15f)
             && groundController.defenciblePosition == groundController.ballposition)
             {
+                Debug.Log("come on");
                 // メインプレイヤーの攻撃時、メインのプレイヤーのzの位置の平行ラインにdefencive pointがあり かつ defensive pint とボールの位置が被っている
-                recieverGameObject = gameManager.mainChara2Instance;
                 enableCatchBall = true;
             }
             else if ((groundController.defenciblePosition.transform.position.z == 5f || groundController.defenciblePosition.transform.position.z == -15f)
             && groundController.defenciblePosition == groundController.ballposition)
             {
+                Debug.Log("come on2");
                 // メイン2プレイヤーの攻撃時、メインのプレイヤーのzの位置の平行ラインにdefencive pointがあり かつ defensive pint とボールの位置が被っている
-                recieverGameObject = gameManager.mainCharaInstance;
                 enableCatchBall = true;
             }
-            // enableBallInterupt = false;
         }
 
-        ThrowMan = passerGameObject;
         Reciever = recieverGameObject;
         ballDestination = recieverGameObject.transform.position;
         isMovingBall = true;
@@ -121,7 +148,6 @@ public class BallController : MonoBehaviour
         if (ThrowMan == gameManager.subCharaInstance || ThrowMan == gameManager.mainChara2Instance) transform.localPosition = new Vector3(0f, 1f, -0.4f);
         defeinedSpeed = new Vector3((ballDestination.x - transform.position.x) * ballSpeed * Time.deltaTime, 0f, (ballDestination.z - transform.position.z) * ballSpeed * Time.deltaTime);
         yield return new WaitForSeconds(1f);
-        ThrowMan = null;
         Debug.Log("presssed space");
     }
 

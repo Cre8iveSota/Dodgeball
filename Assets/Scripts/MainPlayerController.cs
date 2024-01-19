@@ -33,9 +33,13 @@ public class MainPlayerController : MonoBehaviour
             if (ballController == null) return;
             if (Input.GetKeyDown(KeyCode.Space))
             {
+
+                // Client側がボールを投げる時、マスター側でボールが消えないようにBallのパスを行うための所有権をボール所持側に譲渡する
                 ballView = gameManager.realBallInstance.GetPhotonView();
                 if (gameManager.GetBallHolderTeamPlayer(true) == gameManager.mainCharaInstance || gameManager.GetBallHolderTeamPlayer(true) == gameManager.subCharaInstance) ballView.TransferOwnership(PhotonNetwork.MasterClient);
                 if (gameManager.GetBallHolderTeamPlayer(true) == gameManager.mainChara2Instance || gameManager.GetBallHolderTeamPlayer(true) == gameManager.subChara2Instance) ballView.TransferOwnership(PhotonNetwork.LocalPlayer);
+
+
                 if (gameManager.CheckHaveBallAsChildren(this.gameObject))
                 {
                     iAmThrowing = true;
@@ -185,15 +189,6 @@ public class MainPlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // if (other.gameObject.tag == "Ball" && ballController != null && ballController.IsSomeoneThrowing())
-        // {
-        //     ballController.IsReceiverCatchSuccess = true;
-        // }
-        // if (other.gameObject.tag == "Ball" && ballController != null && !ballController.IsSomeoneThrowing())
-        // {
-        //     ballController.IsReceiverCatchSuccess = false;
-        // }
-
         bool isExecuted = false;
         if (ballController == null && !PhotonNetwork.IsMasterClient && !isExecuted)
         {
@@ -201,31 +196,31 @@ public class MainPlayerController : MonoBehaviour
             ballController = gameManager.realBallInstance.GetComponent<BallController>();
         }
 
-        //main playerのキャッチ
-        if ((ballController.ThrowMan == gameManager.mainCharaInstance
-        || ballController.ThrowMan == gameManager.subCharaInstance)
-         & this.gameObject == gameManager.mainChara2Instance)
+        if (other.gameObject.tag == "Ball" && ballController != null && !ballController.IsSomeoneThrowing() && !ballController.enableCatchBall)
         {
-            // this.gameObject.SetActive(false);
-        }
-        if (ballController != null && ballController.enableCatchBall)
-        {
-            ballController.IsReceiverCatchSuccess = true;
-            // ballController.enableBallInterupt = true;
+            ballController.IsReceiverCatchSuccess = false;
         }
 
-
-        //sub playerのキャッチ
-        if ((ballController.ThrowMan == gameManager.mainChara2Instance
-        || ballController.ThrowMan == gameManager.subChara2Instance)
-      & this.gameObject == gameManager.mainCharaInstance)
+        Debug.Log("ballController.enableCatchBall" + ballController.enableCatchBall);
+        if (other.gameObject.tag == "Ball" && ballController != null && ballController.enableCatchBall && gameManager.hasPlayer1TeamBall && this.gameObject == gameManager.mainChara2Instance)
         {
-            // this.gameObject.SetActive(false);
+            ballController.enableBallInterupt = true;
         }
-        if (ballController != null && ballController.enableCatchBall)
+        else if (other.gameObject.tag == "Ball" && ballController != null && ballController.enableCatchBall && !gameManager.hasPlayer1TeamBall && this.gameObject == gameManager.mainCharaInstance)
+        {
+            ballController.enableBallInterupt = true;
+        }
+        else if (other.gameObject.tag == "Ball" && ballController != null && ballController.IsSomeoneThrowing() && gameManager.hasPlayer1TeamBall && this.gameObject == gameManager.mainCharaInstance)
         {
             ballController.IsReceiverCatchSuccess = true;
-            // ballController.enableBallInterupt = true;
+        }
+        else if (other.gameObject.tag == "Ball" && ballController != null && ballController.IsSomeoneThrowing() && !gameManager.hasPlayer1TeamBall && this.gameObject == gameManager.mainChara2Instance)
+        {
+            ballController.IsReceiverCatchSuccess = true;
+        }
+        else
+        {
+            Debug.Log("Hit");
         }
     }
 }
