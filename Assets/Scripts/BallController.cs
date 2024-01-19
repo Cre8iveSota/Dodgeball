@@ -49,6 +49,19 @@ public class BallController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (transform.position.z > 80f)
+        {
+            //subchara
+            Reciever = gameManager.subCharaInstance;
+            FixBallPosition();
+        }
+        else if (transform.position.z < -80f)
+        {
+            //aub2
+            Reciever = gameManager.subChara2Instance;
+            FixBallPosition();
+        }
+
         bool isExecuted = false;
         if (gameManager.mainChara2Instance != null && gameManager.subChara2Instance != null && !isExecuted)
         {
@@ -69,34 +82,30 @@ public class BallController : MonoBehaviour
             if (ThrowMan == gameManager.mainChara2Instance || ThrowMan == gameManager.subChara2Instance) Reciever = gameManager.mainCharaInstance;
             Debug.Log("ThrowMan" + ThrowMan);
             Debug.Log("changed reciever: " + Reciever);
-            isMovingBall = false;
-            if (mainCharaController != null && mainCharaController.iAmThrowing == true) mainCharaController.iAmThrowing = false;
-            if (subCharaController != null && subCharaController.iAmThrowing == true) subCharaController.iAmThrowing = false;
-            if (mainChara2Controller != null && mainChara2Controller.iAmThrowing == true) mainChara2Controller.iAmThrowing = false;
-            if (subChara2Controller != null && subChara2Controller.iAmThrowing == true) subChara2Controller.iAmThrowing = false;
-            photonView.RPC("DestroyTmpBallHolder", RpcTarget.All, Reciever.GetPhotonView().ViewID);
-            IsReceiverCatchSuccess = false;
-            enableCatchBall = false;
-            photonView.RPC("SyncronizeBallPosition", RpcTarget.All);
+            FixBallPosition();
             enableBallInterupt = false;
-            ThrowMan = null;
         }
         else if (IsReceiverCatchSuccess)//狩り
         {
-            isMovingBall = false;
-            if (mainCharaController != null && mainCharaController.iAmThrowing == true) mainCharaController.iAmThrowing = false;
-            if (subCharaController != null && subCharaController.iAmThrowing == true) subCharaController.iAmThrowing = false;
-            if (mainChara2Controller != null && mainChara2Controller.iAmThrowing == true) mainChara2Controller.iAmThrowing = false;
-            if (subChara2Controller != null && subChara2Controller.iAmThrowing == true) subChara2Controller.iAmThrowing = false;
-            photonView.RPC("DestroyTmpBallHolder", RpcTarget.All, Reciever.GetPhotonView().ViewID);
-            IsReceiverCatchSuccess = false;
-            enableCatchBall = false;
-            photonView.RPC("SyncronizeBallPosition", RpcTarget.All);
-            ThrowMan = null;
+            FixBallPosition();
         }
 
         if (cnt % 6 == 0) photonView.RPC("SyncronizeBallPosition", RpcTarget.All);
         cnt++;
+    }
+
+    private void FixBallPosition()
+    {
+        isMovingBall = false;
+        if (mainCharaController != null && mainCharaController.iAmThrowing == true) mainCharaController.iAmThrowing = false;
+        if (subCharaController != null && subCharaController.iAmThrowing == true) subCharaController.iAmThrowing = false;
+        if (mainChara2Controller != null && mainChara2Controller.iAmThrowing == true) mainChara2Controller.iAmThrowing = false;
+        if (subChara2Controller != null && subChara2Controller.iAmThrowing == true) subChara2Controller.iAmThrowing = false;
+        photonView.RPC("DestroyTmpBallHolder", RpcTarget.All, Reciever.GetPhotonView().ViewID);
+        IsReceiverCatchSuccess = false;
+        enableCatchBall = false;
+        photonView.RPC("SyncronizeBallPosition", RpcTarget.All);
+        ThrowMan = null;
     }
 
     public void SetDestination(Vector3 destination)
@@ -143,9 +152,7 @@ public class BallController : MonoBehaviour
 
         photonView.RPC("CreateTmpBallHolder", RpcTarget.All, tmpBallHolder.GetPhotonView().ViewID);
 
-        // transform.SetParent(tmpBallHolder.transform, false);
-        if (ThrowMan == gameManager.mainCharaInstance || ThrowMan == gameManager.subChara2Instance) transform.localPosition = new Vector3(0f, 1f, 0.4f);
-        if (ThrowMan == gameManager.subCharaInstance || ThrowMan == gameManager.mainChara2Instance) transform.localPosition = new Vector3(0f, 1f, -0.4f);
+        transform.localPosition = new Vector3(0f, 1f, 0.4f);
         defeinedSpeed = new Vector3((ballDestination.x - transform.position.x) * ballSpeed * Time.deltaTime, 0f, (ballDestination.z - transform.position.z) * ballSpeed * Time.deltaTime);
         yield return new WaitForSeconds(1f);
         Debug.Log("presssed space");
@@ -175,8 +182,8 @@ public class BallController : MonoBehaviour
             transform.SetParent(tmpBallHolder.gameObject.transform, false);
             // transform.localPosition = new Vector3(0f, 1f, 0.4f);
             Debug.Log("gameManager.GetBallHolderPlayer(true)" + gameManager.GetBallHolderTeamPlayer(true));
-            if (tmpBallHolder.transform.position.z == -6 && tmpBallHolder.transform.position.z == 6) transform.localPosition = new Vector3(0f, 1f, 0.4f);
-            if (tmpBallHolder.transform.position.z == 16 && tmpBallHolder.transform.position.z == -16) transform.localPosition = new Vector3(0f, 1f, -0.4f);
+            if (tmpBallHolder.transform.position.z == -6 && tmpBallHolder.transform.position.z == -16) transform.localPosition = new Vector3(0f, 1f, 0.4f);
+            if (tmpBallHolder.transform.position.z == 16 && tmpBallHolder.transform.position.z == 6) transform.localPosition = new Vector3(0f, 1f, -0.4f);
         }
     }
 

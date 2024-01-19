@@ -747,9 +747,6 @@ PrefabInstance:
       addedObject: {fileID: 6201467742436575594}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9f045e63c555a4d439dd74ee9f836fc7, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1305646990951874437}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9f045e63c555a4d439dd74ee9f836fc7, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 2245128828609721552}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9f045e63c555a4d439dd74ee9f836fc7, type: 3}
       insertIndex: -1
@@ -757,6 +754,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9f045e63c555a4d439dd74ee9f836fc7, type: 3}
       insertIndex: -1
       addedObject: {fileID: -4172612750172250544}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9f045e63c555a4d439dd74ee9f836fc7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8834273001519930778}
   m_SourcePrefab: {fileID: 100100000, guid: 9f045e63c555a4d439dd74ee9f836fc7, type: 3}
 --- !u!4 &1287447919480002693 stripped
 Transform:
@@ -789,27 +789,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!65 &1305646990951874437
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1915788662312501823}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &2245128828609721552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -882,3 +861,24 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!65 &8834273001519930778
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1915788662312501823}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1.5, z: 0.6}
+  m_Center: {x: -0, y: 1, z: 0.1}
