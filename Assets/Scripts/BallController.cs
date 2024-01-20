@@ -86,7 +86,7 @@ public class BallController : MonoBehaviour
             FixBallPosition();
         }
 
-        if (cnt % 6 == 0) photonView.RPC("SyncronizeBallPosition", RpcTarget.All);
+        // if (cnt % 2 == 0) photonView.RPC("SyncronizeBallPosition", RpcTarget.All);
         cnt++;
     }
 

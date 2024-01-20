@@ -15,6 +15,7 @@ public class MainPlayerController : MonoBehaviour
     PhotonView ballView;
     public Animator animator;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -29,6 +30,7 @@ public class MainPlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!photonView.IsMine) return;
         gameManager.CountingTimeOfHoldingShiftKey();
         if (ballController == null) return;
         if (Input.GetKeyDown(KeyCode.Space))
@@ -180,6 +182,7 @@ public class MainPlayerController : MonoBehaviour
     private void ProcedureOfHit()
     {
         animator.SetBool("isHit", true);
+        gameManager.main2score++;
     }
 
     private void StandUpChara()

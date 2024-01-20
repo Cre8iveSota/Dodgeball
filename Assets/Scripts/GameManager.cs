@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -27,6 +28,10 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] Camera mainCamera;
     [SerializeField] Camera subCamera;
+
+    public TMP_Text timer, score;
+    float elapsedTime;
+    public int main1score, main2score = 0;
 
     void Start()
     {
@@ -59,6 +64,15 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        elapsedTime += Time.deltaTime;
+        timer.text = $"Time: {(30 - elapsedTime):0}";
+        score.text = $"{main1score} - {main2score}";
+
+        if (30 - elapsedTime < 0)
+        {
+            Debug.Log("GameEnd");
+        }
+
         if (mainChara2Instance == null || subChara2Instance == null) return;
         if (GetBallHolderTeamPlayer(true) == mainCharaInstance || GetBallHolderTeamPlayer(true) == subCharaInstance) hasPlayer1TeamBall = true;
         if (GetBallHolderTeamPlayer(true) == mainChara2Instance || GetBallHolderTeamPlayer(true) == subChara2Instance) hasPlayer1TeamBall = false;
