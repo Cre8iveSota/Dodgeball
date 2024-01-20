@@ -127,7 +127,7 @@ MonoBehaviour:
   ballDestination: {x: 0, y: 0, z: 0}
   rb: {fileID: 0}
   ballForce: {x: 0, y: 0, z: 0}
-  IsReceiverCatchSuccess: 0
+  isReceiverCatchSuccess: 0
   tmpBallHolder: {fileID: 0}
   ThrowMan: {fileID: 0}
   isBallReady: 0

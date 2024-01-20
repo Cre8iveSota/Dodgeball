@@ -89,11 +89,11 @@ public class SubPlayerController : MonoBehaviour
         if (other.gameObject.tag == "Ball" && ballController != null && ballController.IsSomeoneThrowing())
         {
             Debug.Log("Catch start");
-            ballController.IsReceiverCatchSuccess = true;
+            ballController.isReceiverCatchSuccess = true;
         }
         if (other.gameObject.tag == "Ball" && ballController != null && !ballController.IsSomeoneThrowing())
         {
-            ballController.IsReceiverCatchSuccess = false;
+            ballController.isReceiverCatchSuccess = false;
         }
     }
 }

@@ -52,6 +52,10 @@ MonoBehaviour:
   - InitializeInstanceMainChara2
   - InitializeInstanceSubChara2
   - SyncronizeMainPlayerRotation
+  - SyncronizePlayer2
+  - TakeDamageRPC
+  - SetTrueForEnableBallCatch
+  - ProcedureOfHit
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

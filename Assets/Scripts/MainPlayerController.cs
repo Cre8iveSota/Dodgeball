@@ -13,7 +13,7 @@ public class MainPlayerController : MonoBehaviour
     public bool iAmThrowing;
     public bool isfaccingFront;
     PhotonView ballView;
-
+    public Animator animator;
 
     // Start is called before the first frame update
     void Start()
@@ -22,107 +22,72 @@ public class MainPlayerController : MonoBehaviour
         gameManager = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<GameManager>();
         if (gameManager.realBallInstance != null) ballController = gameManager.realBallInstance.GetComponent<BallController>();
         isfaccingFront = true;
+
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (photonView.IsMine)
+        gameManager.CountingTimeOfHoldingShiftKey();
+        if (ballController == null) return;
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            gameManager.CountingTimeOfHoldingShiftKey();
-            if (ballController == null) return;
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
 
-                // Client側がボールを投げる時、マスター側でボールが消えないようにBallのパスを行うための所有権をボール所持側に譲渡する
-                ballView = gameManager.realBallInstance.GetPhotonView();
-                if (gameManager.GetBallHolderTeamPlayer(true) == gameManager.mainCharaInstance || gameManager.GetBallHolderTeamPlayer(true) == gameManager.subCharaInstance) ballView.TransferOwnership(PhotonNetwork.MasterClient);
-                if (gameManager.GetBallHolderTeamPlayer(true) == gameManager.mainChara2Instance || gameManager.GetBallHolderTeamPlayer(true) == gameManager.subChara2Instance) ballView.TransferOwnership(PhotonNetwork.LocalPlayer);
+            // Client側がボールを投げる時、マスター側でボールが消えないようにBallのパスを行うための所有権をボール所持側に譲渡する
+            ballView = gameManager.realBallInstance.GetPhotonView();
+            if (gameManager.GetBallHolderTeamPlayer(true) == gameManager.mainCharaInstance || gameManager.GetBallHolderTeamPlayer(true) == gameManager.subCharaInstance) ballView.TransferOwnership(PhotonNetwork.MasterClient);
+            if (gameManager.GetBallHolderTeamPlayer(true) == gameManager.mainChara2Instance || gameManager.GetBallHolderTeamPlayer(true) == gameManager.subChara2Instance) ballView.TransferOwnership(PhotonNetwork.LocalPlayer);
 
 
-                if (gameManager.CheckHaveBallAsChildren(this.gameObject))
-                {
-                    iAmThrowing = true;
-                    if (this.gameObject == gameManager.mainCharaInstance) StartCoroutine(ballController.NormalPass(gameManager.mainCharaInstance, gameManager.subCharaInstance));
-                    if (this.gameObject == gameManager.mainChara2Instance) StartCoroutine(ballController.NormalPass(gameManager.mainChara2Instance, gameManager.subChara2Instance));
-                }
-            }
-            if (!iAmThrowing)
+            if (gameManager.CheckHaveBallAsChildren(this.gameObject))
             {
-                MoveMainPlayer();
-                TurnMainPlayer();
-            }
-
-            // 自分がボールを持っていたら相手の方向を向く
-            if (gameManager.GetBallHolderTeamPlayer(true) == gameManager.mainCharaInstance && gameManager.mainCharaInstance == this.gameObject)
-            {
-                this.gameObject.transform.rotation = gameManager.normalRotation;
-                this.gameObject.transform.position = new Vector3(transform.position.x, 0, -6f);
-            }
-            else if (gameManager.GetBallHolderTeamPlayer(true) == gameManager.mainChara2Instance && gameManager.mainChara2Instance == this.gameObject)
-            {
-                this.gameObject.transform.rotation = gameManager.inverseRotation;
-                this.gameObject.transform.position = new Vector3(transform.position.x, 0, 6f);
+                iAmThrowing = true;
+                StartCoroutine(ballController.NormalPass(gameManager.mainCharaInstance, gameManager.subCharaInstance));
             }
         }
+        if (!iAmThrowing)
+        {
+            MoveMainPlayer();
+            TurnMainPlayer();
+        }
+
+        // 自分がボールを持っていたら相手の方向を向く
+        if (gameManager.GetBallHolderTeamPlayer(true) == gameManager.mainCharaInstance)
+        {
+            this.gameObject.transform.rotation = gameManager.normalRotation;
+            this.gameObject.transform.position = new Vector3(transform.position.x, 0, -6f); //new Vector3(transform.position.x, 0, 6f);
+        }
+
     }
 
     private void MoveMainPlayer()
     {
         if (gameManager.duration > gameManager.Threshold) return;
-        if (PhotonNetwork.IsMasterClient)
+
+        if (Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x < 10)
         {
-            if (Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x < 10)
-            {
-                transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z);
-            }
-            if (Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x > -10)
-            {
-                transform.position = new Vector3(transform.position.x - 10, transform.position.y, transform.position.z);
-            }
+            transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z);
         }
-        else
+        if (Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x > -10)
         {
-            if (Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x > -10)
-            {
-                transform.position = new Vector3(transform.position.x - 10, transform.position.y, transform.position.z);
-            }
-            if (Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x < 10)
-            {
-                transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z);
-            }
+            transform.position = new Vector3(transform.position.x - 10, transform.position.y, transform.position.z);
         }
     }
 
     private void TurnMainPlayer()
     {
         if (!Input.GetKeyDown(KeyCode.Space)) return;
-
-        if (this.gameObject == gameManager.mainChara2Instance)
+        // ball持っていない時
+        if (gameManager.Threshold < gameManager.duration && !gameManager.hasPlayer1TeamBall)
         {
-            // ball持っていない時
-            if (gameManager.Threshold < gameManager.duration && gameManager.hasPlayer1TeamBall)
-            {
-                ClockWiseTurn();
-            }
-            else if (gameManager.Threshold > gameManager.duration && gameManager.hasPlayer1TeamBall)
-            {
-                AntiClockWiseTurn();
-            }
+            ClockWiseTurn();
+        }
+        else if (gameManager.Threshold > gameManager.duration && !gameManager.hasPlayer1TeamBall)
+        {
+            AntiClockWiseTurn();
         }
 
-        if (this.gameObject == gameManager.mainCharaInstance)
-        {
-            // ball持っていない時
-            if (gameManager.Threshold < gameManager.duration && !gameManager.hasPlayer1TeamBall)
-            {
-                ClockWiseTurn();
-            }
-            else if (gameManager.Threshold > gameManager.duration && !gameManager.hasPlayer1TeamBall)
-            {
-                AntiClockWiseTurn();
-            }
-        }
     }
 
     private void AntiClockWiseTurn()
@@ -189,38 +154,40 @@ public class MainPlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+
         bool isExecuted = false;
         if (ballController == null && !PhotonNetwork.IsMasterClient && !isExecuted)
         {
             isExecuted = true;
             ballController = gameManager.realBallInstance.GetComponent<BallController>();
         }
+        Debug.Log("ballController.enableCatchBall sd" + ballController.enableCatchBall);
+        Debug.Log("gameManager.hasPlayer1TeamBall 00: " + gameManager.hasPlayer1TeamBall);
 
-        if (other.gameObject.tag == "Ball" && ballController != null && !ballController.IsSomeoneThrowing() && !ballController.enableCatchBall)
-        {
-            ballController.IsReceiverCatchSuccess = false;
-        }
-
-        Debug.Log("ballController.enableCatchBall" + ballController.enableCatchBall);
-        if (other.gameObject.tag == "Ball" && ballController != null && ballController.enableCatchBall && gameManager.hasPlayer1TeamBall && this.gameObject == gameManager.mainChara2Instance)
+        if (gameManager.GetBallHolderTeamPlayer(true) == this.gameObject) return;
+        if (gameManager.hasPlayer1TeamBall) { ballController.isReceiverCatchSuccess = true; return; }
+        if (ballController.enableCatchBall)
         {
             ballController.enableBallInterupt = true;
-        }
-        else if (other.gameObject.tag == "Ball" && ballController != null && ballController.enableCatchBall && !gameManager.hasPlayer1TeamBall && this.gameObject == gameManager.mainCharaInstance)
-        {
-            ballController.enableBallInterupt = true;
-        }
-        else if (other.gameObject.tag == "Ball" && ballController != null && ballController.IsSomeoneThrowing() && gameManager.hasPlayer1TeamBall && this.gameObject == gameManager.mainCharaInstance)
-        {
-            ballController.IsReceiverCatchSuccess = true;
-        }
-        else if (other.gameObject.tag == "Ball" && ballController != null && ballController.IsSomeoneThrowing() && !gameManager.hasPlayer1TeamBall && this.gameObject == gameManager.mainChara2Instance)
-        {
-            ballController.IsReceiverCatchSuccess = true;
         }
         else
         {
-            Debug.Log("Hit");
+            photonView.RPC("ProcedureOfHit", RpcTarget.All);
+        }
+    }
+
+    [PunRPC]
+    private void ProcedureOfHit()
+    {
+        animator.SetBool("isHit", true);
+    }
+
+    private void StandUpChara()
+    {
+        if (photonView.IsMine)
+        {
+            animator.SetBool("isHit", false);
+            ballController.ChangeBallOwnerToMain1();
         }
     }
 }

@@ -31,8 +31,8 @@ public class GroundController : MonoBehaviour
         }
         if (!isExecuted)
         {
-            Debug.Log("gameManager.mainChara2Instance " + gameManager.mainChara2Instance);
-            Debug.Log("gameManager.mainChara2Instance " + gameManager.mainChara2Instance.transform.Find("Defencivle Point"));
+            // Debug.Log("gameManager.mainChara2Instance " + gameManager.mainChara2Instance);
+            // Debug.Log("gameManager.mainChara2Instance " + gameManager.mainChara2Instance.transform.Find("Defencivle Point"));
             mainChara2DefenciblePoint = gameManager.mainChara2Instance.transform.Find("Defencivle Point");
             mainCharaDefenciblePoint = gameManager.mainCharaInstance.transform.Find("Defencivle Point");
             isExecuted = true;
