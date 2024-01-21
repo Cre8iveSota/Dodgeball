@@ -18,13 +18,16 @@ public class SPballController : MonoBehaviour
     SinglePlayManager singlePlayManager;
     SinglePlayMainPlayerController singlePlayMainPlayerController;
     GameObject ground;
-
+    SpsubController spsubController;
     // Start is called before the first frame update
     void Start()
     {
         ground = GameObject.FindGameObjectWithTag("Ground");
         if (ground != null) sPgroundController = ground.GetComponent<SpGroundController>();
-
+        GameObject gammeManagerObj = GameObject.FindGameObjectWithTag("GameManager");
+        singlePlayManager = gammeManagerObj.GetComponent<SinglePlayManager>();
+        singlePlayMainPlayerController = singlePlayManager.mainCharaInstance.GetComponent<SinglePlayMainPlayerController>();
+        spsubController = singlePlayManager.subCharaInstance.GetComponent<SpsubController>();
     }
 
     // Update is called once per frame
@@ -33,6 +36,12 @@ public class SPballController : MonoBehaviour
         if (isMovingBall)
         {
             transform.position += defeinedSpeed;
+        }
+
+        // enableBallInterupt
+        if (isReceiverCatchSuccess)
+        {
+            FixBallPosition();
         }
     }
 
@@ -65,10 +74,16 @@ public class SPballController : MonoBehaviour
     {
         isMovingBall = false;
         if (singlePlayMainPlayerController != null && singlePlayMainPlayerController.iAmThrowing == true) singlePlayMainPlayerController.iAmThrowing = false;
-        // if (subCharaController != null && subCharaController.iAmThrowing == true) subCharaController.iAmThrowing = false;
+        if (spsubController != null && spsubController.iAmThrowing == true) spsubController.iAmThrowing = false;
         // if (mainChara2Controller != null && mainChara2Controller.iAmThrowing == true) mainChara2Controller.iAmThrowing = false;
         // if (subChara2Controller != null && subChara2Controller.iAmThrowing == true) subChara2Controller.iAmThrowing = false;
-        // photonView.RPC("DestroyTmpBallHolder", RpcTarget.All, Reciever.GetPhotonView().ViewID);
+
+        GameObject tmpReciever = Reciever;
+        transform.SetParent(tmpReciever.transform, false);
+        transform.localPosition = new Vector3(0f, 1f, 0.4f);
+
+        Destroy(tmpBallHolder);
+
         isReceiverCatchSuccess = false;
         enableCatchBall = false;
         ThrowMan = null;
@@ -78,5 +93,19 @@ public class SPballController : MonoBehaviour
     {
         Reciever = singlePlayManager.mainCharaInstance;
         FixBallPosition();
+    }
+
+    public bool IsSomeoneThrowing()
+    {
+        if (tmpBallHolder == null)
+        {
+            return false;
+        }
+        Debug.Log("Player throw ball; the player name is" + ThrowMan);
+        if (tmpBallHolder != null)
+        {
+            return true;
+        }
+        return false;
     }
 }
