@@ -1,0 +1,99 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using Photon.Pun;
+using UnityEngine;
+
+public class SubPlayerController : MonoBehaviour
+{
+    GameManager gameManager;
+    public bool isPositionAuto = true;
+    BallController ballController;
+    PhotonView photonView;
+    GroundController groundController;
+    public bool iAmThrowing;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        GameObject gameManagerObj = GameObject.FindGameObjectWithTag("GameManager");
+        if (gameManagerObj != null) gameManager = gameManagerObj.GetComponent<GameManager>();
+        if (gameManager.realBallInstance != null) ballController = gameManager.realBallInstance.GetComponent<BallController>();
+        GameObject ground = GameObject.FindGameObjectWithTag("Ground");
+        if (ground != null) groundController = ground.GetComponent<GroundController>();
+        photonView = GetComponent<PhotonView>();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (photonView.IsMine)
+        {
+            if (groundController != null)
+            {
+                gameManager.CountingTimeOfHoldingShiftKey();
+                if (ballController == null) return;
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    if (gameManager.CheckHaveBallAsChildren(this.gameObject))
+                    {
+                        iAmThrowing = true;
+                        if (this.gameObject == gameManager.subCharaInstance) StartCoroutine(ballController.NormalPass(gameManager.subCharaInstance, gameManager.mainCharaInstance));
+                        if (this.gameObject == gameManager.subChara2Instance) StartCoroutine(ballController.NormalPass(gameManager.subChara2Instance, gameManager.mainChara2Instance));
+                    }
+                }
+                if (!iAmThrowing)
+                {
+                    MoveSubPlayer();
+                }
+            }
+        }
+    }
+    private void MoveSubPlayer()
+    {
+        if (gameManager.duration < gameManager.Threshold) return;
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if (Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x < 15)
+            {
+                transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z);
+            }
+            if (Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x > -15)
+            {
+                transform.position = new Vector3(transform.position.x - 10, transform.position.y, transform.position.z);
+            }
+        }
+        else
+        {
+            if (Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x > -15)
+            {
+                transform.position = new Vector3(transform.position.x - 10, transform.position.y, transform.position.z);
+            }
+            if (Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x < 15)
+            {
+                transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z);
+            }
+        }
+    }
+
+    private void Catch()
+    {
+        if (Vector3.Distance(groundController.ballposition.transform.position, transform.position) < 6f)
+        {
+            Debug.Log("You can catch");
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Ball" && ballController != null && ballController.IsSomeoneThrowing())
+        {
+            Debug.Log("Catch start");
+            ballController.isReceiverCatchSuccess = true;
+        }
+        if (other.gameObject.tag == "Ball" && ballController != null && !ballController.IsSomeoneThrowing())
+        {
+            ballController.isReceiverCatchSuccess = false;
+        }
+    }
+}

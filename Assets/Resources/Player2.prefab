@@ -909,4 +909,3 @@ MonoBehaviour:
   isfaccingFront: 0
   animator: {fileID: 0}
   pleaseEnable: 0
-  canThrow: 1

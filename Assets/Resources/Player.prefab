@@ -830,7 +830,6 @@ MonoBehaviour:
   iAmThrowing: 0
   isfaccingFront: 0
   animator: {fileID: 0}
-  canThrow: 1
 --- !u!114 &-7822296549910807153
 MonoBehaviour:
   m_ObjectHideFlags: 0
