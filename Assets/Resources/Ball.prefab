@@ -123,7 +123,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tmpBallPosition: {fileID: 2043612275371719635, guid: 7f2246951b41442a08eb746faecd6de7, type: 3}
   isMovingBall: 0
-  ballSpeed: 1
+  ballSpeed: 0.5
   ballDestination: {x: 0, y: 0, z: 0}
   rb: {fileID: 0}
   ballForce: {x: 0, y: 0, z: 0}

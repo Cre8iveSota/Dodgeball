@@ -69,7 +69,7 @@ public class BallController : MonoBehaviour
         // sita
         // if (this.gameObject.GetPhotonView() != null && PhotonNetwork.IsMasterClient) photonView.RPC("SyncronizeBallPosition", RpcTarget.All, this.gameObject.GetPhotonView().ViewID);
 
-        SetDestination(ballDestination);
+        photonView.RPC("SetDestination", RpcTarget.All);
         // if (IsReceiverCatchSuccess && photonView.IsMine) //エラー出た
         // if (IsReceiverCatchSuccess && PhotonNetwork.IsMasterClient)//狩り
         if (enableBallInterupt)
@@ -100,11 +100,12 @@ public class BallController : MonoBehaviour
         photonView.RPC("DestroyTmpBallHolder", RpcTarget.All, Reciever.GetPhotonView().ViewID);
         isReceiverCatchSuccess = false;
         enableCatchBall = false;
-        photonView.RPC("SyncronizeBallPosition", RpcTarget.All);
+        // photonView.RPC("SyncronizeBallPosition", RpcTarget.All);
         ThrowMan = null;
     }
 
-    public void SetDestination(Vector3 destination)
+    [PunRPC]
+    public void SetDestination()
     {
         if (isMovingBall)
         {

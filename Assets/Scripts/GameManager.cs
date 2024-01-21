@@ -6,6 +6,7 @@ using Photon.Pun;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -32,6 +33,7 @@ public class GameManager : MonoBehaviour
     public TMP_Text timer, score;
     float elapsedTime;
     public int main1score, main2score = 0;
+    public GameObject FinishPanel;
 
     void Start()
     {
@@ -70,7 +72,9 @@ public class GameManager : MonoBehaviour
 
         if (30 - elapsedTime < 0)
         {
+            timer.text = "Time: 00";
             Debug.Log("GameEnd");
+            FinishPanel.SetActive(true);
         }
 
         if (mainChara2Instance == null || subChara2Instance == null) return;
