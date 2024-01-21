@@ -670,8 +670,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -10}
-  m_SizeDelta: {x: 130, y: 50}
+  m_AnchoredPosition: {x: -50, y: -20}
+  m_SizeDelta: {x: 700, y: 100}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &175070428
 MonoBehaviour:
@@ -693,7 +693,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 99 - 99
+  m_text: You 99 - 99 Enemy
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -720,15 +720,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 72
+  m_fontSizeBase: 72
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 4
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -922,28 +922,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 180786661}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e18b79b244d4847ce804360eac2233e2, type: 3}
+  m_Script: {fileID: 11500000, guid: 12fff374cc54e4cb389462cc7d5f08d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grounds:
-  - {fileID: 1809463856}
-  - {fileID: 633762132}
-  - {fileID: 287422928}
-  - {fileID: 730860840}
-  - {fileID: 272603799}
-  - {fileID: 125515377}
-  - {fileID: 1803349803}
-  - {fileID: 46917001}
-  - {fileID: 1549637837}
-  - {fileID: 1076778529}
-  - {fileID: 380891915}
-  - {fileID: 2081281633}
-  - {fileID: 1015594617}
-  - {fileID: 1695310853}
-  - {fileID: 363657374}
-  - {fileID: 1823406084}
-  ballposition: {fileID: 0}
-  defenciblePosition: {fileID: 0}
 --- !u!1 &208430492
 GameObject:
   m_ObjectHideFlags: 0
@@ -2378,6 +2359,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75fdf5a09243e46bd97d97d080dfd41a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hasPlayer1TeamBall: 0
+  normalRotation: {x: 0, y: 0, z: 0, w: 0}
+  normalRightRotation: {x: 0, y: 0, z: 0, w: 0}
+  normalLeftRotation: {x: 0, y: 0, z: 0, w: 0}
+  inverseRotation: {x: 0, y: 0, z: 0, w: 0}
+  inverseRightRotation: {x: 0, y: 0, z: 0, w: 0}
+  inverseLeftRotation: {x: 0, y: 0, z: 0, w: 0}
+  mainChara: {fileID: 5199059239656598423, guid: ae0ec00ad7e9a4ebe99716b02be916fa, type: 3}
+  subChara: {fileID: 7580201760323037392, guid: 51a86b9842a094de89d0e4a95ff06099, type: 3}
+  enemy: {fileID: 1915788662312501823, guid: 3ad0ca9d440b04d4dacc7561064f05e5, type: 3}
+  enemySub: {fileID: 1915788662312501823, guid: 200745d031ff345d2a84506337d1f151, type: 3}
+  mainCharaInstance: {fileID: 0}
+  subCharaInstance: {fileID: 0}
+  enemyInstance: {fileID: 0}
+  subEnemyInstance: {fileID: 0}
+  realBall: {fileID: 837818206858460503, guid: 17031ccd2c780475aa6b119421ac2b0d, type: 3}
+  realBallInstance: {fileID: 0}
+  scoreText: {fileID: 175070428}
+  enemyLvText: {fileID: 1235153589}
+  playerScore: 0
+  enemyScore: 0
+  enemyLv: 1
+  duration: 0
 --- !u!1 &472733136
 GameObject:
   m_ObjectHideFlags: 0
@@ -4583,7 +4587,7 @@ GameObject:
   - component: {fileID: 1235153590}
   - component: {fileID: 1235153589}
   m_Layer: 5
-  m_Name: Timer
+  m_Name: EnemyLv
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4605,8 +4609,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 10, y: -10}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 30, y: -30}
+  m_SizeDelta: {x: 200, y: 110}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1235153589
 MonoBehaviour:
@@ -4628,7 +4632,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Time: 00'
+  m_text: 'Enemy
+
+    Lv. 1'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4655,8 +4661,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 48
+  m_fontSizeBase: 48
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
 {
     public bool hasPlayer1TeamBall;
     GameObject[] playerTeamMembers;
-    GameObject enemyTeamMember;
+    public GameObject enemyTeamMember;
     public GameObject mainChara, subChara, mainChara2, subChara2;
     // public GameObject ball;
     public GameObject realBall;

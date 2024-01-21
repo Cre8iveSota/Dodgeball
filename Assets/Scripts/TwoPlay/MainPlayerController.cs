@@ -58,7 +58,7 @@ public class MainPlayerController : MonoBehaviour
         if (gameManager.GetBallHolderTeamPlayer(true) == gameManager.mainCharaInstance)
         {
             this.gameObject.transform.rotation = gameManager.normalRotation;
-            this.gameObject.transform.position = new Vector3(transform.position.x, 0, -6f); //new Vector3(transform.position.x, 0, 6f);
+            this.gameObject.transform.position = new Vector3(transform.position.x, 0, -6f);
         }
 
     }
@@ -165,6 +165,7 @@ public class MainPlayerController : MonoBehaviour
         }
         Debug.Log("ballController.enableCatchBall sd" + ballController.enableCatchBall);
         Debug.Log("gameManager.hasPlayer1TeamBall 00: " + gameManager.hasPlayer1TeamBall);
+        if (gameManager == null || gameManager.GetBallHolderTeamPlayer(true) == gameManager.enemyTeamMember) return;
 
         if (gameManager.GetBallHolderTeamPlayer(true) == this.gameObject) return;
         if (gameManager.hasPlayer1TeamBall) { ballController.isReceiverCatchSuccess = true; return; }

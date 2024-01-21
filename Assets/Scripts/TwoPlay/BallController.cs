@@ -8,7 +8,7 @@ public class BallController : MonoBehaviour
 {
     [SerializeField] private GameObject tmpBallPosition;
     public bool isMovingBall;
-    public float ballSpeed = 0.01f;
+    public float ballSpeed = 0.5f;
     public Vector3 ballDestination = Vector3.zero;
     GameObject[] players;
     GameObject gammeManagerObj;
