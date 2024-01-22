@@ -38,12 +38,12 @@ public class GroundController : MonoBehaviour
             isExecuted = true;
         }
 
-        if (gameManager.realBallInstance != null && grounds.Find(i => Vector3.Distance(i.transform.position, gameManager.realBallInstance.transform.position) < 10f))
+        if (gameManager.realBallInstance != null && grounds.Find(i => Vector3.Distance(i.transform.position, gameManager.realBallInstance.transform.position) < 8f))
         {
-            ballposition = grounds.Find(i => Vector3.Distance(i.transform.position, gameManager.realBallInstance.transform.position) < 10f);
+            ballposition = grounds.Find(i => Vector3.Distance(i.transform.position, gameManager.realBallInstance.transform.position) < 8f);
             ballposition.transform.GetChild(0).gameObject.SetActive(true);
         }
-        List<GameObject> noBallArea = grounds.FindAll(i => Vector3.Distance(i.transform.position, gameManager.realBallInstance.transform.position) > 10f);
+        List<GameObject> noBallArea = grounds.FindAll(i => Vector3.Distance(i.transform.position, gameManager.realBallInstance.transform.position) > 8f);
         noBallArea.ForEach(i => i.transform.GetChild(0).gameObject.SetActive(false));
 
         if (gameManager.GetBallHolderTeamPlayer(true) == gameManager.mainCharaInstance || gameManager.GetBallHolderTeamPlayer(true) == gameManager.subCharaInstance)
