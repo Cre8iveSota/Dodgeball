@@ -4,33 +4,46 @@ using UnityEngine;
 
 public class SpMainPlayerController : MonoBehaviour
 {
-    SpManager singlePlayManager;
+    SpManager spManager;
     SpBallController spBallController;
     public Animator animator;
     public bool iAmThrowing;
-
+    GameObject caution;
+    SpGroundController spGroundController;
+    SpEnemyController spEnemyController;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        singlePlayManager = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<SpManager>();
-        if (singlePlayManager.realBallInstance != null) spBallController = singlePlayManager.realBallInstance.GetComponent<SpBallController>();
+        spManager = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<SpManager>();
+        caution = spManager.mainCharaInstance.transform.Find("Caution").gameObject;
+        if (spManager.realBallInstance != null) spBallController = spManager.realBallInstance.GetComponent<SpBallController>();
         animator = GetComponent<Animator>();
+        GameObject ground = GameObject.FindGameObjectWithTag("Ground");
+        if (ground != null) spGroundController = ground.GetComponent<SpGroundController>();
+        spEnemyController = spManager.enemyInstance.GetComponent<SpEnemyController>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        singlePlayManager.CountingTimeOfHoldingShiftKey();
+        if (!iAmThrowing && !spManager.subCharaInstance.GetComponent<SpsubController>().iAmThrowing) spEnemyController.EnableDisplayCaution(false);
+
+        spManager.CountingTimeOfHoldingShiftKey();
         if (spBallController == null) return;
         if (Input.GetKeyDown(KeyCode.Space))
         {
 
-            if (singlePlayManager.CheckHaveBallAsChildren(this.gameObject))
+            if (spManager.CheckHaveBallAsChildren(this.gameObject))
             {
+                if (spGroundController.ballposition != spGroundController.defenciblePosition && !spBallController.enableCatchBall)
+                {
+                    spEnemyController.EnableDisplayCaution(true);
+                }
+
                 iAmThrowing = true;
-                StartCoroutine(spBallController.NormalPass(singlePlayManager.mainCharaInstance, singlePlayManager.subCharaInstance));
+                StartCoroutine(spBallController.NormalPass(spManager.mainCharaInstance, spManager.subCharaInstance));
             }
         }
         if (!iAmThrowing)
@@ -40,16 +53,15 @@ public class SpMainPlayerController : MonoBehaviour
         }
 
         // 自分がボールを持っていたら相手の方向を向く
-        if (singlePlayManager.GetBallHolderTeamPlayer(true) == singlePlayManager.mainCharaInstance)
+        if (spManager.GetBallHolderTeamPlayer(true) == spManager.mainCharaInstance)
         {
-            this.gameObject.transform.rotation = singlePlayManager.normalRotation;
+            this.gameObject.transform.rotation = spManager.normalRotation;
             this.gameObject.transform.position = new Vector3(transform.position.x, 0, -6f); //new Vector3(transform.position.x, 0, 6f);
         }
-
     }
     private void MoveMainPlayer()
     {
-        if (singlePlayManager.duration > singlePlayManager.Threshold) return;
+        if (spManager.duration > spManager.Threshold) return;
 
         if (Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x < 10)
         {
@@ -65,11 +77,11 @@ public class SpMainPlayerController : MonoBehaviour
     {
         if (!Input.GetKeyDown(KeyCode.Space)) return;
         // ball持っていない時
-        if (singlePlayManager.Threshold < singlePlayManager.duration && !singlePlayManager.hasPlayer1TeamBall)
+        if (spManager.Threshold < spManager.duration && !spManager.hasPlayer1TeamBall)
         {
             ClockWiseTurn();
         }
-        else if (singlePlayManager.Threshold > singlePlayManager.duration && !singlePlayManager.hasPlayer1TeamBall)
+        else if (spManager.Threshold > spManager.duration && !spManager.hasPlayer1TeamBall)
         {
             AntiClockWiseTurn();
         }
@@ -77,70 +89,71 @@ public class SpMainPlayerController : MonoBehaviour
 
     private void ClockWiseTurn()
     {
-        if (this.gameObject.transform.localRotation == singlePlayManager.normalRotation)
+        if (this.gameObject.transform.localRotation == spManager.normalRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.normalLeftRotation;
+            this.gameObject.transform.localRotation = spManager.normalLeftRotation;
+
         }
-        else if (this.gameObject.transform.localRotation == singlePlayManager.normalLeftRotation)
+        else if (this.gameObject.transform.localRotation == spManager.normalLeftRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.inverseRightRotation;
+            this.gameObject.transform.localRotation = spManager.inverseRightRotation;
             this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z + 2f);
         }
-        else if (this.gameObject.transform.localRotation == singlePlayManager.inverseRightRotation)
+        else if (this.gameObject.transform.localRotation == spManager.inverseRightRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.inverseRotation;
+            this.gameObject.transform.localRotation = spManager.inverseRotation;
         }
-        else if (this.gameObject.transform.localRotation == singlePlayManager.inverseRotation)
+        else if (this.gameObject.transform.localRotation == spManager.inverseRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.inverseLeftRotation;
+            this.gameObject.transform.localRotation = spManager.inverseLeftRotation;
         }
-        else if (this.gameObject.transform.localRotation == singlePlayManager.inverseLeftRotation)
+        else if (this.gameObject.transform.localRotation == spManager.inverseLeftRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.normalRightRotation;
+            this.gameObject.transform.localRotation = spManager.normalRightRotation;
             this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z - 2f);
         }
-        else if (this.gameObject.transform.localRotation == singlePlayManager.normalRightRotation)
+        else if (this.gameObject.transform.localRotation == spManager.normalRightRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.normalRotation;
+            this.gameObject.transform.localRotation = spManager.normalRotation;
         }
     }
 
     private void AntiClockWiseTurn()
     {
-        if (this.gameObject.transform.localRotation == singlePlayManager.normalRotation)
+        if (this.gameObject.transform.localRotation == spManager.normalRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.normalRightRotation;
+            this.gameObject.transform.localRotation = spManager.normalRightRotation;
         }
-        else if (this.gameObject.transform.localRotation == singlePlayManager.normalRightRotation)
+        else if (this.gameObject.transform.localRotation == spManager.normalRightRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.inverseLeftRotation;
+            this.gameObject.transform.localRotation = spManager.inverseLeftRotation;
             this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z + 2f);
         }
-        else if (this.gameObject.transform.localRotation == singlePlayManager.inverseLeftRotation)
+        else if (this.gameObject.transform.localRotation == spManager.inverseLeftRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.inverseRotation;
+            this.gameObject.transform.localRotation = spManager.inverseRotation;
         }
-        else if (this.gameObject.transform.localRotation == singlePlayManager.inverseRotation)
+        else if (this.gameObject.transform.localRotation == spManager.inverseRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.inverseRightRotation;
+            this.gameObject.transform.localRotation = spManager.inverseRightRotation;
         }
-        else if (this.gameObject.transform.localRotation == singlePlayManager.inverseRightRotation)
+        else if (this.gameObject.transform.localRotation == spManager.inverseRightRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.normalLeftRotation;
+            this.gameObject.transform.localRotation = spManager.normalLeftRotation;
             this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z - 2f);
 
         }
-        else if (this.gameObject.transform.localRotation == singlePlayManager.normalLeftRotation)
+        else if (this.gameObject.transform.localRotation == spManager.normalLeftRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.normalRotation;
+            this.gameObject.transform.localRotation = spManager.normalRotation;
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (singlePlayManager == null || singlePlayManager.GetBallHolderTeamPlayer(true) == singlePlayManager.empty) return;
-        if (singlePlayManager.GetBallHolderTeamPlayer(true) == this.gameObject) return;
-        if (singlePlayManager.hasPlayer1TeamBall) { spBallController.isReceiverCatchSuccess = true; return; }
+        if (spManager == null || spManager.GetBallHolderTeamPlayer(true) == spManager.empty) return;
+        if (spManager.GetBallHolderTeamPlayer(true) == this.gameObject) return;
+        if (spManager.hasPlayer1TeamBall) { spBallController.isReceiverCatchSuccess = true; return; }
         if (spBallController.enableCatchBall)
         {
             spBallController.enableBallInterupt = true;
@@ -160,5 +173,10 @@ public class SpMainPlayerController : MonoBehaviour
     {
         animator.SetBool("isHit", false);
         spBallController.ChangeBallOwnerToPlayer();
+    }
+
+    public void EnableDisplayCaution(bool isActivate)
+    {
+        caution.gameObject.SetActive(isActivate);
     }
 }

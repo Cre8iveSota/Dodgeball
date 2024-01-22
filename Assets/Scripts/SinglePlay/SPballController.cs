@@ -9,7 +9,7 @@ public class SpBallController : MonoBehaviour
     public Vector3 ballDestination = Vector3.zero;
     Vector3 defeinedSpeed;
     public float ballSpeed = 0.5f;
-    public GameObject ThrowMan, Reciever;
+    public GameObject throwMan, reciever;
     SpGroundController sPgroundController;
     public bool isMovingBall;
     public bool enableCatchBall, enableBallInterupt;// 相手のボーるをキャッチしたことを知らせるフラグと、パスをインタラプトしたときに知らせるフラグ
@@ -40,13 +40,13 @@ public class SpBallController : MonoBehaviour
         if (transform.position.z > 50f)
         {
             //subchara
-            Reciever = singlePlayManager.subCharaInstance;
+            reciever = singlePlayManager.subCharaInstance;
             FixBallPosition();
         }
         else if (transform.position.z < -50f)
         {
             //aub2
-            Reciever = singlePlayManager.subEnemyInstance;
+            reciever = singlePlayManager.subEnemyInstance;
             FixBallPosition();
         }
 
@@ -57,8 +57,8 @@ public class SpBallController : MonoBehaviour
 
         if (enableBallInterupt)
         {
-            if (ThrowMan == singlePlayManager.mainCharaInstance || ThrowMan == singlePlayManager.subCharaInstance) Reciever = singlePlayManager.enemyInstance;
-            if (ThrowMan == singlePlayManager.enemyInstance || ThrowMan == singlePlayManager.subEnemyInstance) Reciever = singlePlayManager.mainCharaInstance;
+            if (throwMan == singlePlayManager.mainCharaInstance || throwMan == singlePlayManager.subCharaInstance) reciever = singlePlayManager.enemyInstance;
+            if (throwMan == singlePlayManager.enemyInstance || throwMan == singlePlayManager.subEnemyInstance) reciever = singlePlayManager.mainCharaInstance;
             FixBallPosition();
             enableBallInterupt = false;
         }
@@ -71,7 +71,7 @@ public class SpBallController : MonoBehaviour
     public IEnumerator NormalPass(GameObject passerGameObject, GameObject recieverGameObject)
     {
         cnt = 0;
-        ThrowMan = passerGameObject;
+        throwMan = passerGameObject;
 
         if (sPgroundController != null)
         {
@@ -81,7 +81,7 @@ public class SpBallController : MonoBehaviour
             }
         }
 
-        Reciever = recieverGameObject;
+        reciever = recieverGameObject;
         ballDestination = recieverGameObject.transform.position;
         isMovingBall = true;
         // defeinedSpeed = new Vector3((ballDestination.x - transform.position.x) * ballSpeed * Time.deltaTime, 0f, (ballDestination.z - transform.position.z) * ballSpeed * Time.deltaTime);
@@ -97,25 +97,25 @@ public class SpBallController : MonoBehaviour
         if (spEnemyController != null && spEnemyController.iAmThrowing == true) spEnemyController.iAmThrowing = false;
         if (spSubEnemyController != null && spSubEnemyController.iAmThrowing == true) spSubEnemyController.iAmThrowing = false;
 
-        GameObject tmpReciever = Reciever;
+        GameObject tmpReciever = reciever;
         transform.SetParent(tmpReciever.transform, false);
         transform.localPosition = new Vector3(0f, 1f, 0.4f);
 
         isReceiverCatchSuccess = false;
         enableCatchBall = false;
-        ThrowMan = null;
+        throwMan = null;
     }
 
     public void ChangeBallOwnerToPlayer()
     {
-        Reciever = singlePlayManager.mainCharaInstance;
+        reciever = singlePlayManager.mainCharaInstance;
         FixBallPosition();
         singlePlayManager.ResetPosition();
         StartCoroutine(WaitSetStartPrepareForTarget(singlePlayManager.mainCharaInstance));
     }
     public void ChangeBallOwnerToEnemy()
     {
-        Reciever = singlePlayManager.enemyInstance;
+        reciever = singlePlayManager.enemyInstance;
         FixBallPosition();
         singlePlayManager.ResetPosition();
         StartCoroutine(WaitSetStartPrepareForTarget(singlePlayManager.enemyInstance));

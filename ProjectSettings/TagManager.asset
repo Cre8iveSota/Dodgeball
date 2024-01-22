@@ -10,6 +10,8 @@ TagManager:
   - GameManager
   - Ground
   - Player2
+  - PlayerSub
+  - EnemySub
   layers:
   - Default
   - TransparentFX

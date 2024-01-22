@@ -4,30 +4,38 @@ using UnityEngine;
 
 public class SpsubController : MonoBehaviour
 {
-    SpManager singlePlayManager;
+    SpManager spManager;
     SpBallController spBallController;
     public bool iAmThrowing;
-
+    SpGroundController spGroundController;
+    SpEnemyController spEnemyController;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        singlePlayManager = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<SpManager>();
-        if (singlePlayManager.realBallInstance != null) spBallController = singlePlayManager.realBallInstance.GetComponent<SpBallController>();
+        spManager = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<SpManager>();
+        if (spManager.realBallInstance != null) spBallController = spManager.realBallInstance.GetComponent<SpBallController>();
+        GameObject ground = GameObject.FindGameObjectWithTag("Ground");
+        if (ground != null) spGroundController = ground.GetComponent<SpGroundController>();
+        spEnemyController = spManager.enemyInstance.GetComponent<SpEnemyController>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        singlePlayManager.CountingTimeOfHoldingShiftKey();
+        spManager.CountingTimeOfHoldingShiftKey();
         if (spBallController == null) return;
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (singlePlayManager.CheckHaveBallAsChildren(this.gameObject))
+            if (spManager.CheckHaveBallAsChildren(this.gameObject))
             {
+                if (spGroundController.ballposition != spGroundController.defenciblePosition && !spBallController.enableCatchBall)
+                {
+                    spEnemyController.EnableDisplayCaution(true);
+                }
                 iAmThrowing = true;
-                StartCoroutine(spBallController.NormalPass(singlePlayManager.subCharaInstance, singlePlayManager.mainCharaInstance));
+                StartCoroutine(spBallController.NormalPass(spManager.subCharaInstance, spManager.mainCharaInstance));
             }
         }
         if (!iAmThrowing)
@@ -37,7 +45,7 @@ public class SpsubController : MonoBehaviour
     }
     private void MoveSubPlayer()
     {
-        if (singlePlayManager.duration < singlePlayManager.Threshold) return;
+        if (spManager.duration < spManager.Threshold) return;
 
         if (Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x < 15)
         {
@@ -52,7 +60,7 @@ public class SpsubController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
 
-        if (spBallController.ThrowMan != null)
+        if (spBallController.throwMan != null)
         {
             Debug.Log("Catch start");
             spBallController.isReceiverCatchSuccess = true;

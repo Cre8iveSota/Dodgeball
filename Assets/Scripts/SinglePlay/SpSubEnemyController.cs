@@ -4,28 +4,32 @@ using UnityEngine;
 
 public class SpSubEnemyController : MonoBehaviour
 {
-    SpManager singlePlayManager;
+    SpManager spManager;
     SpBallController spBallController;
     SpGroundController spGroundController;
-    private bool pseudoPressSpase, pseudoPressRight, pseudoPressLeft = false;
+    private bool pseudoPressRight, pseudoPressLeft = false;
+    public bool pseudoPressSpase = false;
     public bool iAmThrowing;
+    SpMainPlayerController spMainPlayerController;
     void Start()
     {
-        singlePlayManager = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<SpManager>();
-        if (singlePlayManager.realBallInstance != null) spBallController = singlePlayManager.realBallInstance.GetComponent<SpBallController>();
+        spManager = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<SpManager>();
+        if (spManager.realBallInstance != null) spBallController = spManager.realBallInstance.GetComponent<SpBallController>();
         GameObject ground = GameObject.FindGameObjectWithTag("Ground");
         if (ground != null) spGroundController = ground.GetComponent<SpGroundController>();
+        spMainPlayerController = spManager.mainCharaInstance.GetComponent<SpMainPlayerController>();
     }
 
     public void EnemySubThrow()
     {
         Debug.Log("enemy sub throw");
+
         pseudoPressSpase = true;
         if (pseudoPressSpase && !iAmThrowing)
         {
             pseudoPressSpase = false;
             iAmThrowing = true;
-            StartCoroutine(spBallController.NormalPass(singlePlayManager.subEnemyInstance, singlePlayManager.enemyInstance));
+            StartCoroutine(spBallController.NormalPass(spManager.subEnemyInstance, spManager.enemyInstance));
         }
     }
 
@@ -53,7 +57,7 @@ public class SpSubEnemyController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
 
-        if (spBallController.ThrowMan != null)
+        if (spBallController.throwMan != null)
         {
             Debug.Log("Catch start");
             spBallController.isReceiverCatchSuccess = true;

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SpEnemyController : MonoBehaviour
 {
-    SpManager singlePlayManager;
+    SpManager spManager;
     SpBallController spBallController;
     public Animator animator;
     public bool iAmThrowing;
@@ -17,67 +17,81 @@ public class SpEnemyController : MonoBehaviour
     bool isExecute;
     float ballHolderPositionX, fellowOfBallHolderPositionX;
     SpSubEnemyController spSubEnemyController;
+    GameObject caution;
+    SpMainPlayerController spMainPlayerController;
     // Start is called before the first frame update
     void Start()
     {
-        singlePlayManager = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<SpManager>();
-        if (singlePlayManager.realBallInstance != null) spBallController = singlePlayManager.realBallInstance.GetComponent<SpBallController>();
+        spManager = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<SpManager>();
+        caution = spManager.enemyInstance.transform.Find("Caution").gameObject;
+        if (spManager.realBallInstance != null) spBallController = spManager.realBallInstance.GetComponent<SpBallController>();
         animator = GetComponent<Animator>();
         GameObject ground = GameObject.FindGameObjectWithTag("Ground");
         if (ground != null) spGroundController = ground.GetComponent<SpGroundController>();
-        spSubEnemyController = singlePlayManager.subEnemyInstance.GetComponent<SpSubEnemyController>();
+        spSubEnemyController = spManager.subEnemyInstance.GetComponent<SpSubEnemyController>();
+        spMainPlayerController = spManager.mainCharaInstance.GetComponent<SpMainPlayerController>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        Time.fixedDeltaTime = singlePlayManager.actionSpeedEnemy;
+        Time.fixedDeltaTime = spManager.actionSpeedEnemy;
 
-        enemyPoistionX = singlePlayManager.enemyInstance.transform.position.x;
-        enemySubPoistionX = singlePlayManager.subEnemyInstance.transform.position.x;
-        playerSubPositionX = singlePlayManager.subCharaInstance.transform.position.x;
-        playerPositionX = singlePlayManager.mainCharaInstance.transform.position.x;
-        ballHolderPositionX = singlePlayManager.GetBallHolderTeamPlayer(true).transform.position.x;
-        fellowOfBallHolderPositionX = singlePlayManager.GetBallHolderTeamPlayer(false).transform.position.x;
+        if (spBallController.throwMan == null) spMainPlayerController.EnableDisplayCaution(false);
+
+        enemyPoistionX = spManager.enemyInstance.transform.position.x;
+        enemySubPoistionX = spManager.subEnemyInstance.transform.position.x;
+        playerSubPositionX = spManager.subCharaInstance.transform.position.x;
+        playerPositionX = spManager.mainCharaInstance.transform.position.x;
+        ballHolderPositionX = spManager.GetBallHolderTeamPlayer(true).transform.position.x;
+        fellowOfBallHolderPositionX = spManager.GetBallHolderTeamPlayer(false).transform.position.x;
 
         // 自分がボールを持っていたら相手の方向を向く
-        if (singlePlayManager.GetBallHolderTeamPlayer(true) == singlePlayManager.enemyInstance)
+        if (spManager.GetBallHolderTeamPlayer(true) == spManager.enemyInstance)
         {
-            this.gameObject.transform.rotation = singlePlayManager.inverseRotation;
+            this.gameObject.transform.rotation = spManager.inverseRotation;
             this.gameObject.transform.position = new Vector3(transform.position.x, 0, 6f); //new Vector3(transform.position.x, 0, 6f);
+        }
+
+        if (iAmThrowing || spSubEnemyController.iAmThrowing)
+        {
+            if (!spManager.hasPlayer1TeamBall && !spBallController.enableCatchBall)
+            {
+                spMainPlayerController.EnableDisplayCaution(true);
+            }
         }
     }
 
     void FixedUpdate()
     {
         int randomNum = Random.Range(1, 36);
+        Debug.Log("random" + randomNum);
         // Enemy Team has ball
-        if (!singlePlayManager.hasPlayer1TeamBall)
+        if (!spManager.hasPlayer1TeamBall)
         {
             // Enemy main has ball
-            if (singlePlayManager.CheckHaveBallAsChildren(singlePlayManager.enemyInstance))
+            if (spManager.CheckHaveBallAsChildren(spManager.enemyInstance))
             {
                 // if Enemy main is still throwing ball, you cannot do any action
                 if (iAmThrowing) return;
                 // Sometimes enemy main thow ball randomely.
-                if (randomNum % 9 == 0)
+                if (randomNum % 18 == 0)
                 {
                     pseudoPressSpase = true;
                     EnemyThrow();
+                }
+                else if (spGroundController.ballposition == spGroundController.defenciblePosition)
+                {
+                    if (randomNum < 18) DodgeOrTakeUpDefensiveRotation(randomNum);
+                    else if (randomNum % 3 == 0) spSubEnemyController.MoveEnemySubToLeft();
+                    else if (randomNum % 3 == 1) spSubEnemyController.MoveEnemySubToRight();
+                    else if (randomNum % 3 == 2) EnemyThrow();
                 }
                 // if player in the midlle position between enemy and enemySub also player do not prepare for defence, enemy throw ball
-                else if (IsPositionBTWballHolderTeamFromTargetView(singlePlayManager.mainCharaInstance) && spGroundController.ballposition != spGroundController.defenciblePosition)
+                else if (IsPositionBTWballHolderTeamFromTargetView(spManager.mainCharaInstance) && spGroundController.ballposition != spGroundController.defenciblePosition)
                 {
                     pseudoPressSpase = true;
                     EnemyThrow();
-                }
-                // if player in the midlle position between enemy and enemySub also player prepared for defence, enemy play at random
-                else if (IsPositionBTWballHolderTeamFromTargetView(singlePlayManager.mainCharaInstance) && spGroundController.ballposition == spGroundController.defenciblePosition)
-                {
-                    if (randomNum % 4 == 0) MoveEnemyToLeft();
-                    if (randomNum % 4 == 1) MoveEnemyToRight();
-                    if (randomNum % 4 == 2) spSubEnemyController.MoveEnemySubToRight();
-                    if (randomNum % 4 == 3) spSubEnemyController.MoveEnemySubToLeft();
                 }
                 // if enemy position equals player position also it has difference between enemySub and enemy position, make move enemy or enemySub 
                 else if (enemyPoistionX == playerPositionX && enemyPoistionX < enemySubPoistionX)
@@ -107,17 +121,17 @@ public class SpEnemyController : MonoBehaviour
                 }
             }
             // if enemySub has ball
-            else if (singlePlayManager.CheckHaveBallAsChildren(singlePlayManager.subEnemyInstance))
+            else if (spManager.CheckHaveBallAsChildren(spManager.subEnemyInstance))
             {
                 // sometimes enemySub throw ball at random
                 if (randomNum % 9 == 0) { spSubEnemyController.EnemySubThrow(); }
                 // if player is in the middle of enemy and enemySub also player do not prepare for defence, throw ball
-                else if (IsPositionBTWballHolderTeamFromTargetView(singlePlayManager.mainCharaInstance) && spGroundController.ballposition != spGroundController.defenciblePosition)
+                else if (IsPositionBTWballHolderTeamFromTargetView(spManager.mainCharaInstance) && spGroundController.ballposition != spGroundController.defenciblePosition)
                 {
                     spSubEnemyController.EnemySubThrow();
                 }
                 // if player is in the middle of enemy and enemySub also player prepared for defence, move at random
-                else if (IsPositionBTWballHolderTeamFromTargetView(singlePlayManager.mainCharaInstance) && spGroundController.ballposition == spGroundController.defenciblePosition)
+                else if (IsPositionBTWballHolderTeamFromTargetView(spManager.mainCharaInstance) && spGroundController.ballposition == spGroundController.defenciblePosition)
                 {
                     if (randomNum % 4 == 0) MoveEnemyToLeft();
                     if (randomNum % 4 == 1) MoveEnemyToRight();
@@ -155,15 +169,15 @@ public class SpEnemyController : MonoBehaviour
             }
         }
         // if enemy team do not have a ball
-        if (singlePlayManager.hasPlayer1TeamBall)
+        if (spManager.hasPlayer1TeamBall)
         {
+            if (spGroundController.ballposition == spGroundController.defenciblePosition) return;
             DodgeOrTakeUpDefensiveRotation(randomNum);
         }
     }
 
     private void DodgeOrTakeUpDefensiveRotation(int randomNum)
     {
-        if (spGroundController.ballposition == spGroundController.defenciblePosition) return;
         if (CanMoveRightFromTargetView(this.gameObject) && CanMoveLeftFromTargetView(this.gameObject))
         {
             if (randomNum % 3 == 0) { pseudoPressRight = true; MoveEnemyToRight(); }
@@ -185,9 +199,6 @@ public class SpEnemyController : MonoBehaviour
     private bool IsPositionBTWballHolderTeamFromTargetView(GameObject targetInstance)
     {
         float targetPositionX = targetInstance.transform.position.x;
-        Debug.Log("targetPositionX" + targetPositionX);
-        Debug.Log("ballHolderPositionX" + ballHolderPositionX);
-        Debug.Log("fellowOfBallHolderPositionX" + fellowOfBallHolderPositionX);
 
         if ((ballHolderPositionX < targetPositionX && targetPositionX < fellowOfBallHolderPositionX)
         || (fellowOfBallHolderPositionX < targetPositionX && targetPositionX < ballHolderPositionX))
@@ -204,12 +215,12 @@ public class SpEnemyController : MonoBehaviour
     private bool CanMoveRightFromTargetView(GameObject targetInstance)
     {
         // enemy1初期の ↓ 向きで見て右 
-        if (targetInstance == singlePlayManager.enemyInstance)
+        if (targetInstance == spManager.enemyInstance)
         {
             if (enemyPoistionX > -10) { return true; }
             return false;
         }
-        else if (targetInstance == singlePlayManager.subEnemyInstance)
+        else if (targetInstance == spManager.subEnemyInstance)
         {
             if (enemyPoistionX > -20) { return true; }
             return false;
@@ -221,12 +232,12 @@ public class SpEnemyController : MonoBehaviour
     private bool CanMoveLeftFromTargetView(GameObject targetInstance)
     {
         // enemy1初期の ↓ 向きで見て左
-        if (targetInstance == singlePlayManager.enemyInstance)
+        if (targetInstance == spManager.enemyInstance)
         {
             if (enemyPoistionX < 10) { return true; }
             return false;
         }
-        else if (targetInstance == singlePlayManager.subEnemyInstance)
+        else if (targetInstance == spManager.subEnemyInstance)
         {
             if (enemyPoistionX < 20) { return true; }
             return false;
@@ -240,10 +251,10 @@ public class SpEnemyController : MonoBehaviour
         if (pseudoPressSpase)
         {
             pseudoPressSpase = false;
-            if (singlePlayManager.CheckHaveBallAsChildren(this.gameObject))
+            if (spManager.CheckHaveBallAsChildren(this.gameObject))
             {
                 iAmThrowing = true;
-                StartCoroutine(spBallController.NormalPass(singlePlayManager.enemyInstance, singlePlayManager.subEnemyInstance));
+                StartCoroutine(spBallController.NormalPass(spManager.enemyInstance, spManager.subEnemyInstance));
             }
         }
     }
@@ -268,8 +279,8 @@ public class SpEnemyController : MonoBehaviour
 
     private void TurnEnemyToBallHolder(int randomNum)
     {
-        if (!singlePlayManager.hasPlayer1TeamBall) return;
-        if (singlePlayManager.GetBallHolderTeamPlayer(true) == singlePlayManager.mainCharaInstance)
+        if (!spManager.hasPlayer1TeamBall) return;
+        if (spManager.GetBallHolderTeamPlayer(true) == spManager.mainCharaInstance)
         {
             if (playerPositionX < enemyPoistionX) { AntiClockWiseTurn(); return; }
             if (enemyPoistionX < playerPositionX) { ClockWiseTurn(); return; }
@@ -277,7 +288,7 @@ public class SpEnemyController : MonoBehaviour
             if (enemyPoistionX == playerPositionX && randomNum % 2 == 1) { AntiClockWiseTurn(); return; }
 
         }
-        else if (singlePlayManager.GetBallHolderTeamPlayer(true) == singlePlayManager.subCharaInstance)
+        else if (spManager.GetBallHolderTeamPlayer(true) == spManager.subCharaInstance)
         {
             if (playerSubPositionX < enemyPoistionX) { ClockWiseTurn(); return; }
             if (enemyPoistionX < playerSubPositionX) { AntiClockWiseTurn(); return; }
@@ -290,31 +301,31 @@ public class SpEnemyController : MonoBehaviour
     {
         if (!pseudoPressSpase) return;
         pseudoPressSpase = false;
-        if (this.gameObject.transform.localRotation == singlePlayManager.normalRotation)
+        if (this.gameObject.transform.localRotation == spManager.normalRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.normalLeftRotation;
+            this.gameObject.transform.localRotation = spManager.normalLeftRotation;
         }
-        else if (this.gameObject.transform.localRotation == singlePlayManager.normalLeftRotation)
+        else if (this.gameObject.transform.localRotation == spManager.normalLeftRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.inverseRightRotation;
+            this.gameObject.transform.localRotation = spManager.inverseRightRotation;
             this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z + 2f);
         }
-        else if (this.gameObject.transform.localRotation == singlePlayManager.inverseRightRotation)
+        else if (this.gameObject.transform.localRotation == spManager.inverseRightRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.inverseRotation;
+            this.gameObject.transform.localRotation = spManager.inverseRotation;
         }
-        else if (this.gameObject.transform.localRotation == singlePlayManager.inverseRotation)
+        else if (this.gameObject.transform.localRotation == spManager.inverseRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.inverseLeftRotation;
+            this.gameObject.transform.localRotation = spManager.inverseLeftRotation;
         }
-        else if (this.gameObject.transform.localRotation == singlePlayManager.inverseLeftRotation)
+        else if (this.gameObject.transform.localRotation == spManager.inverseLeftRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.normalRightRotation;
+            this.gameObject.transform.localRotation = spManager.normalRightRotation;
             this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z - 2f);
         }
-        else if (this.gameObject.transform.localRotation == singlePlayManager.normalRightRotation)
+        else if (this.gameObject.transform.localRotation == spManager.normalRightRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.normalRotation;
+            this.gameObject.transform.localRotation = spManager.normalRotation;
         }
     }
 
@@ -322,40 +333,40 @@ public class SpEnemyController : MonoBehaviour
     {
         if (!pseudoPressSpase) return;
         pseudoPressSpase = false;
-        if (this.gameObject.transform.localRotation == singlePlayManager.normalRotation)
+        if (this.gameObject.transform.localRotation == spManager.normalRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.normalRightRotation;
+            this.gameObject.transform.localRotation = spManager.normalRightRotation;
             return;
         }
-        else if (this.gameObject.transform.localRotation == singlePlayManager.normalRightRotation)
+        else if (this.gameObject.transform.localRotation == spManager.normalRightRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.inverseLeftRotation;
+            this.gameObject.transform.localRotation = spManager.inverseLeftRotation;
             this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z + 2f);
             return;
 
         }
-        else if (this.gameObject.transform.localRotation == singlePlayManager.inverseLeftRotation)
+        else if (this.gameObject.transform.localRotation == spManager.inverseLeftRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.inverseRotation;
+            this.gameObject.transform.localRotation = spManager.inverseRotation;
             return;
 
         }
-        else if (this.gameObject.transform.localRotation == singlePlayManager.inverseRotation)
+        else if (this.gameObject.transform.localRotation == spManager.inverseRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.inverseRightRotation;
+            this.gameObject.transform.localRotation = spManager.inverseRightRotation;
             return;
 
         }
-        else if (this.gameObject.transform.localRotation == singlePlayManager.inverseRightRotation)
+        else if (this.gameObject.transform.localRotation == spManager.inverseRightRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.normalLeftRotation;
+            this.gameObject.transform.localRotation = spManager.normalLeftRotation;
             this.gameObject.transform.position = new Vector3(transform.position.x, 0f, transform.position.z - 2f);
             return;
 
         }
-        else if (this.gameObject.transform.localRotation == singlePlayManager.normalLeftRotation)
+        else if (this.gameObject.transform.localRotation == spManager.normalLeftRotation)
         {
-            this.gameObject.transform.localRotation = singlePlayManager.normalRotation;
+            this.gameObject.transform.localRotation = spManager.normalRotation;
             return;
 
         }
@@ -363,9 +374,9 @@ public class SpEnemyController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (singlePlayManager == null || singlePlayManager.GetBallHolderTeamPlayer(true) == singlePlayManager.empty) return;
-        if (singlePlayManager.GetBallHolderTeamPlayer(true) == this.gameObject) return;
-        if (!singlePlayManager.hasPlayer1TeamBall) { spBallController.isReceiverCatchSuccess = true; return; }
+        if (spManager == null || spManager.GetBallHolderTeamPlayer(true) == spManager.empty) return;
+        if (spManager.GetBallHolderTeamPlayer(true) == this.gameObject) return;
+        if (!spManager.hasPlayer1TeamBall) { spBallController.isReceiverCatchSuccess = true; return; }
         if (spBallController.enableCatchBall)
         {
             spBallController.enableBallInterupt = true;
@@ -385,5 +396,9 @@ public class SpEnemyController : MonoBehaviour
     {
         animator.SetBool("isHit", false);
         spBallController.ChangeBallOwnerToEnemy();
+    }
+    public void EnableDisplayCaution(bool isActivate)
+    {
+        caution.gameObject.SetActive(isActivate);
     }
 }
