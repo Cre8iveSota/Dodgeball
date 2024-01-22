@@ -7,12 +7,12 @@ public class SpGroundController : MonoBehaviour
     public List<GameObject> grounds;
     public GameObject ballposition;
     public GameObject defenciblePosition;
-    SinglePlayManager singlePlayManager;
+    SpManager singlePlayManager;
     Transform playerDefenciblePoint, enemyDefenciblePoint;
 
     private void Start()
     {
-        singlePlayManager = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<SinglePlayManager>();
+        singlePlayManager = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<SpManager>();
         grounds.Sort(SortByNumber);
     }
 

@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 
 
-public class SinglePlayManager : MonoBehaviour
+public class SpManager : MonoBehaviour
 {
     public bool hasPlayer1TeamBall;
     public Quaternion normalRotation, normalRightRotation, normalLeftRotation, inverseRotation, inverseRightRotation, inverseLeftRotation;
@@ -18,7 +18,7 @@ public class SinglePlayManager : MonoBehaviour
     public int duration = 0;
     private int threshold = 10;
     public int Threshold { get => threshold; }
-    SPballController sPballController;
+    SpBallController spBallController;
     public float actionSpeedEnemy = 0.1f;
 
 
@@ -42,7 +42,7 @@ public class SinglePlayManager : MonoBehaviour
         }
 
         GameObject ball = GameObject.FindGameObjectWithTag("Ball");
-        if (ball != null) sPballController = ball.GetComponent<SPballController>();
+        if (ball != null) spBallController = ball.GetComponent<SpBallController>();
     }
 
     void Update()
@@ -90,19 +90,19 @@ public class SinglePlayManager : MonoBehaviour
     {
         if (isBallholder)
         {
-            if (CheckHaveBallAsChildren(mainCharaInstance) || sPballController.ThrowMan == mainCharaInstance)
+            if (CheckHaveBallAsChildren(mainCharaInstance) || spBallController.ThrowMan == mainCharaInstance)
             {
                 return mainCharaInstance;
             }
-            else if (CheckHaveBallAsChildren(subCharaInstance) || sPballController.ThrowMan == subCharaInstance)
+            else if (CheckHaveBallAsChildren(subCharaInstance) || spBallController.ThrowMan == subCharaInstance)
             {
                 return subCharaInstance;
             }
-            else if (CheckHaveBallAsChildren(enemyInstance) || sPballController.ThrowMan == enemyInstance)
+            else if (CheckHaveBallAsChildren(enemyInstance) || spBallController.ThrowMan == enemyInstance)
             {
                 return enemyInstance;
             }
-            else if (CheckHaveBallAsChildren(subEnemyInstance) || sPballController.ThrowMan == subEnemyInstance)
+            else if (CheckHaveBallAsChildren(subEnemyInstance) || spBallController.ThrowMan == subEnemyInstance)
             {
                 return subEnemyInstance;
             }

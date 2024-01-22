@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class SpsubController : MonoBehaviour
 {
-    SinglePlayManager singlePlayManager;
-    SPballController sPballController;
+    SpManager singlePlayManager;
+    SpBallController spBallController;
     public bool iAmThrowing;
 
 
@@ -13,21 +13,21 @@ public class SpsubController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        singlePlayManager = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<SinglePlayManager>();
-        if (singlePlayManager.realBallInstance != null) sPballController = singlePlayManager.realBallInstance.GetComponent<SPballController>();
+        singlePlayManager = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<SpManager>();
+        if (singlePlayManager.realBallInstance != null) spBallController = singlePlayManager.realBallInstance.GetComponent<SpBallController>();
     }
 
     // Update is called once per frame
     void Update()
     {
         singlePlayManager.CountingTimeOfHoldingShiftKey();
-        if (sPballController == null) return;
+        if (spBallController == null) return;
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (singlePlayManager.CheckHaveBallAsChildren(this.gameObject))
             {
                 iAmThrowing = true;
-                StartCoroutine(sPballController.NormalPass(singlePlayManager.subCharaInstance, singlePlayManager.mainCharaInstance));
+                StartCoroutine(spBallController.NormalPass(singlePlayManager.subCharaInstance, singlePlayManager.mainCharaInstance));
             }
         }
         if (!iAmThrowing)
@@ -52,14 +52,14 @@ public class SpsubController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
 
-        if (sPballController.ThrowMan != null)
+        if (spBallController.ThrowMan != null)
         {
             Debug.Log("Catch start");
-            sPballController.isReceiverCatchSuccess = true;
+            spBallController.isReceiverCatchSuccess = true;
         }
         else
         {
-            sPballController.isReceiverCatchSuccess = false;
+            spBallController.isReceiverCatchSuccess = false;
         }
     }
 }

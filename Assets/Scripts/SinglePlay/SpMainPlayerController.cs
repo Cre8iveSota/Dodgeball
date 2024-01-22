@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SinglePlayMainPlayerController : MonoBehaviour
+public class SpMainPlayerController : MonoBehaviour
 {
-    SinglePlayManager singlePlayManager;
-    SPballController sPballController;
+    SpManager singlePlayManager;
+    SpBallController spBallController;
     public Animator animator;
     public bool iAmThrowing;
 
@@ -14,8 +14,8 @@ public class SinglePlayMainPlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        singlePlayManager = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<SinglePlayManager>();
-        if (singlePlayManager.realBallInstance != null) sPballController = singlePlayManager.realBallInstance.GetComponent<SPballController>();
+        singlePlayManager = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<SpManager>();
+        if (singlePlayManager.realBallInstance != null) spBallController = singlePlayManager.realBallInstance.GetComponent<SpBallController>();
         animator = GetComponent<Animator>();
     }
 
@@ -23,14 +23,14 @@ public class SinglePlayMainPlayerController : MonoBehaviour
     void Update()
     {
         singlePlayManager.CountingTimeOfHoldingShiftKey();
-        if (sPballController == null) return;
+        if (spBallController == null) return;
         if (Input.GetKeyDown(KeyCode.Space))
         {
 
             if (singlePlayManager.CheckHaveBallAsChildren(this.gameObject))
             {
                 iAmThrowing = true;
-                StartCoroutine(sPballController.NormalPass(singlePlayManager.mainCharaInstance, singlePlayManager.subCharaInstance));
+                StartCoroutine(spBallController.NormalPass(singlePlayManager.mainCharaInstance, singlePlayManager.subCharaInstance));
             }
         }
         if (!iAmThrowing)
@@ -140,10 +140,10 @@ public class SinglePlayMainPlayerController : MonoBehaviour
     {
         if (singlePlayManager == null || singlePlayManager.GetBallHolderTeamPlayer(true) == singlePlayManager.empty) return;
         if (singlePlayManager.GetBallHolderTeamPlayer(true) == this.gameObject) return;
-        if (singlePlayManager.hasPlayer1TeamBall) { sPballController.isReceiverCatchSuccess = true; return; }
-        if (sPballController.enableCatchBall)
+        if (singlePlayManager.hasPlayer1TeamBall) { spBallController.isReceiverCatchSuccess = true; return; }
+        if (spBallController.enableCatchBall)
         {
-            sPballController.enableBallInterupt = true;
+            spBallController.enableBallInterupt = true;
         }
         else
         {
@@ -159,6 +159,6 @@ public class SinglePlayMainPlayerController : MonoBehaviour
     private void StandUpChara()
     {
         animator.SetBool("isHit", false);
-        sPballController.ChangeBallOwnerToPlayer();
+        spBallController.ChangeBallOwnerToPlayer();
     }
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SPballController : MonoBehaviour
+public class SpBallController : MonoBehaviour
 {
     [SerializeField] private GameObject tmpBallPosition;
     int cnt = 0;
@@ -14,8 +14,8 @@ public class SPballController : MonoBehaviour
     public bool isMovingBall;
     public bool enableCatchBall, enableBallInterupt;// 相手のボーるをキャッチしたことを知らせるフラグと、パスをインタラプトしたときに知らせるフラグ
     public bool isReceiverCatchSuccess;
-    SinglePlayManager singlePlayManager;
-    SinglePlayMainPlayerController singlePlayMainPlayerController;
+    SpManager singlePlayManager;
+    SpMainPlayerController spMainPlayerController;
     GameObject ground;
     SpsubController spsubController;
     SpEnemyController spEnemyController;
@@ -27,8 +27,8 @@ public class SPballController : MonoBehaviour
         ground = GameObject.FindGameObjectWithTag("Ground");
         if (ground != null) sPgroundController = ground.GetComponent<SpGroundController>();
         GameObject gammeManagerObj = GameObject.FindGameObjectWithTag("GameManager");
-        singlePlayManager = gammeManagerObj.GetComponent<SinglePlayManager>();
-        singlePlayMainPlayerController = singlePlayManager.mainCharaInstance.GetComponent<SinglePlayMainPlayerController>();
+        singlePlayManager = gammeManagerObj.GetComponent<SpManager>();
+        spMainPlayerController = singlePlayManager.mainCharaInstance.GetComponent<SpMainPlayerController>();
         spsubController = singlePlayManager.subCharaInstance.GetComponent<SpsubController>();
         spEnemyController = singlePlayManager.enemyInstance.GetComponent<SpEnemyController>();
         spSubEnemyController = singlePlayManager.subEnemyInstance.GetComponent<SpSubEnemyController>();
@@ -92,7 +92,7 @@ public class SPballController : MonoBehaviour
     private void FixBallPosition()
     {
         isMovingBall = false;
-        if (singlePlayMainPlayerController != null && singlePlayMainPlayerController.iAmThrowing == true) singlePlayMainPlayerController.iAmThrowing = false;
+        if (spMainPlayerController != null && spMainPlayerController.iAmThrowing == true) spMainPlayerController.iAmThrowing = false;
         if (spsubController != null && spsubController.iAmThrowing == true) spsubController.iAmThrowing = false;
         if (spEnemyController != null && spEnemyController.iAmThrowing == true) spEnemyController.iAmThrowing = false;
         if (spSubEnemyController != null && spSubEnemyController.iAmThrowing == true) spSubEnemyController.iAmThrowing = false;

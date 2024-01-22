@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class SpEnemyController : MonoBehaviour
 {
-    SinglePlayManager singlePlayManager;
-    SPballController sPballController;
+    SpManager singlePlayManager;
+    SpBallController spBallController;
     public Animator animator;
     public bool iAmThrowing;
     private float elapsedTime;
@@ -20,8 +20,8 @@ public class SpEnemyController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        singlePlayManager = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<SinglePlayManager>();
-        if (singlePlayManager.realBallInstance != null) sPballController = singlePlayManager.realBallInstance.GetComponent<SPballController>();
+        singlePlayManager = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<SpManager>();
+        if (singlePlayManager.realBallInstance != null) spBallController = singlePlayManager.realBallInstance.GetComponent<SpBallController>();
         animator = GetComponent<Animator>();
         GameObject ground = GameObject.FindGameObjectWithTag("Ground");
         if (ground != null) spGroundController = ground.GetComponent<SpGroundController>();
@@ -243,7 +243,7 @@ public class SpEnemyController : MonoBehaviour
             if (singlePlayManager.CheckHaveBallAsChildren(this.gameObject))
             {
                 iAmThrowing = true;
-                StartCoroutine(sPballController.NormalPass(singlePlayManager.enemyInstance, singlePlayManager.subEnemyInstance));
+                StartCoroutine(spBallController.NormalPass(singlePlayManager.enemyInstance, singlePlayManager.subEnemyInstance));
             }
         }
     }
@@ -365,10 +365,10 @@ public class SpEnemyController : MonoBehaviour
     {
         if (singlePlayManager == null || singlePlayManager.GetBallHolderTeamPlayer(true) == singlePlayManager.empty) return;
         if (singlePlayManager.GetBallHolderTeamPlayer(true) == this.gameObject) return;
-        if (!singlePlayManager.hasPlayer1TeamBall) { sPballController.isReceiverCatchSuccess = true; return; }
-        if (sPballController.enableCatchBall)
+        if (!singlePlayManager.hasPlayer1TeamBall) { spBallController.isReceiverCatchSuccess = true; return; }
+        if (spBallController.enableCatchBall)
         {
-            sPballController.enableBallInterupt = true;
+            spBallController.enableBallInterupt = true;
         }
         else
         {
@@ -384,6 +384,6 @@ public class SpEnemyController : MonoBehaviour
     private void StandUpChara()
     {
         animator.SetBool("isHit", false);
-        sPballController.ChangeBallOwnerToEnemy();
+        spBallController.ChangeBallOwnerToEnemy();
     }
 }
