@@ -19,6 +19,7 @@ public class SinglePlayManager : MonoBehaviour
     private int threshold = 10;
     public int Threshold { get => threshold; }
     SPballController sPballController;
+    public float actionSpeedEnemy = 0.1f;
 
 
     void Start()
@@ -52,7 +53,13 @@ public class SinglePlayManager : MonoBehaviour
         if (GetBallHolderTeamPlayer(true) == mainCharaInstance || GetBallHolderTeamPlayer(true) == subCharaInstance) hasPlayer1TeamBall = true;
         if (GetBallHolderTeamPlayer(true) == enemyInstance || GetBallHolderTeamPlayer(true) == subEnemyInstance) hasPlayer1TeamBall = false;
     }
-
+    public void ResetPosition()
+    {
+        mainCharaInstance.transform.position = new Vector3(0, 0, -6f);
+        subCharaInstance.transform.position = new Vector3(0, 0, 16f);
+        enemyInstance.transform.position = new Vector3(0, 0, 6f);
+        subEnemyInstance.transform.position = new Vector3(0, 0, -16f);
+    }
     public void CountingTimeOfHoldingShiftKey()
     {
         if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))

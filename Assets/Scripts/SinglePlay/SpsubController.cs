@@ -52,7 +52,7 @@ public class SpsubController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
 
-        if (sPballController.IsSomeoneThrowing())
+        if (sPballController.ThrowMan != null)
         {
             Debug.Log("Catch start");
             sPballController.isReceiverCatchSuccess = true;

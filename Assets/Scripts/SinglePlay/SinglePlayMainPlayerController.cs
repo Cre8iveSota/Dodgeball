@@ -154,12 +154,11 @@ public class SinglePlayMainPlayerController : MonoBehaviour
     private void ProcedureOfHit()
     {
         animator.SetBool("isHit", true);
-        singlePlayManager.enemyScore++;
     }
 
     private void StandUpChara()
     {
         animator.SetBool("isHit", false);
-        sPballController.ChangeBallOwnerToMain1();
+        sPballController.ChangeBallOwnerToPlayer();
     }
 }

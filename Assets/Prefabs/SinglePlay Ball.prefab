@@ -151,8 +151,8 @@ MonoBehaviour:
   ballSpeed: 0.5
   ThrowMan: {fileID: 0}
   Reciever: {fileID: 0}
-  tmpBallHolder: {fileID: 0}
   isMovingBall: 0
   enableCatchBall: 0
   enableBallInterupt: 0
   isReceiverCatchSuccess: 0
+  ballSpeedAdjusterForSp: 0.003

@@ -10,7 +10,6 @@ public class SPballController : MonoBehaviour
     Vector3 defeinedSpeed;
     public float ballSpeed = 0.5f;
     public GameObject ThrowMan, Reciever;
-    public GameObject tmpBallHolder;
     SpGroundController sPgroundController;
     public bool isMovingBall;
     public bool enableCatchBall, enableBallInterupt;// 相手のボーるをキャッチしたことを知らせるフラグと、パスをインタラプトしたときに知らせるフラグ
@@ -19,6 +18,9 @@ public class SPballController : MonoBehaviour
     SinglePlayMainPlayerController singlePlayMainPlayerController;
     GameObject ground;
     SpsubController spsubController;
+    SpEnemyController spEnemyController;
+    SpSubEnemyController spSubEnemyController;
+    [SerializeField] private float ballSpeedAdjusterForSp = 0.003f;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,18 +30,39 @@ public class SPballController : MonoBehaviour
         singlePlayManager = gammeManagerObj.GetComponent<SinglePlayManager>();
         singlePlayMainPlayerController = singlePlayManager.mainCharaInstance.GetComponent<SinglePlayMainPlayerController>();
         spsubController = singlePlayManager.subCharaInstance.GetComponent<SpsubController>();
+        spEnemyController = singlePlayManager.enemyInstance.GetComponent<SpEnemyController>();
+        spSubEnemyController = singlePlayManager.subEnemyInstance.GetComponent<SpSubEnemyController>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (transform.position.z > 50f)
+        {
+            //subchara
+            Reciever = singlePlayManager.subCharaInstance;
+            FixBallPosition();
+        }
+        else if (transform.position.z < -50f)
+        {
+            //aub2
+            Reciever = singlePlayManager.subEnemyInstance;
+            FixBallPosition();
+        }
+
         if (isMovingBall)
         {
             transform.position += defeinedSpeed;
         }
 
-        // enableBallInterupt
-        if (isReceiverCatchSuccess)
+        if (enableBallInterupt)
+        {
+            if (ThrowMan == singlePlayManager.mainCharaInstance || ThrowMan == singlePlayManager.subCharaInstance) Reciever = singlePlayManager.enemyInstance;
+            if (ThrowMan == singlePlayManager.enemyInstance || ThrowMan == singlePlayManager.subEnemyInstance) Reciever = singlePlayManager.mainCharaInstance;
+            FixBallPosition();
+            enableBallInterupt = false;
+        }
+        else if (isReceiverCatchSuccess)
         {
             FixBallPosition();
         }
@@ -61,12 +84,8 @@ public class SPballController : MonoBehaviour
         Reciever = recieverGameObject;
         ballDestination = recieverGameObject.transform.position;
         isMovingBall = true;
-        tmpBallHolder = Instantiate(tmpBallPosition, passerGameObject.transform.position, Quaternion.identity);
-        if (tmpBallHolder.transform.position.z == -6 && tmpBallHolder.transform.position.z == -16) transform.localPosition = new Vector3(0f, 1f, 0.4f);
-        if (tmpBallHolder.transform.position.z == 16 && tmpBallHolder.transform.position.z == 6) transform.localPosition = new Vector3(0f, 1f, -0.4f);
-
-        defeinedSpeed = new Vector3((ballDestination.x - transform.position.x) * ballSpeed * Time.deltaTime, 0f, (ballDestination.z - transform.position.z) * ballSpeed * Time.deltaTime);
-
+        // defeinedSpeed = new Vector3((ballDestination.x - transform.position.x) * ballSpeed * Time.deltaTime, 0f, (ballDestination.z - transform.position.z) * ballSpeed * Time.deltaTime);
+        defeinedSpeed = new Vector3((ballDestination.x - transform.position.x) * ballSpeed * ballSpeedAdjusterForSp, 0f, (ballDestination.z - transform.position.z) * ballSpeed * ballSpeedAdjusterForSp);
         yield return new WaitForSeconds(1f);
     }
 
@@ -75,37 +94,50 @@ public class SPballController : MonoBehaviour
         isMovingBall = false;
         if (singlePlayMainPlayerController != null && singlePlayMainPlayerController.iAmThrowing == true) singlePlayMainPlayerController.iAmThrowing = false;
         if (spsubController != null && spsubController.iAmThrowing == true) spsubController.iAmThrowing = false;
-        // if (mainChara2Controller != null && mainChara2Controller.iAmThrowing == true) mainChara2Controller.iAmThrowing = false;
-        // if (subChara2Controller != null && subChara2Controller.iAmThrowing == true) subChara2Controller.iAmThrowing = false;
+        if (spEnemyController != null && spEnemyController.iAmThrowing == true) spEnemyController.iAmThrowing = false;
+        if (spSubEnemyController != null && spSubEnemyController.iAmThrowing == true) spSubEnemyController.iAmThrowing = false;
 
         GameObject tmpReciever = Reciever;
         transform.SetParent(tmpReciever.transform, false);
         transform.localPosition = new Vector3(0f, 1f, 0.4f);
-
-        Destroy(tmpBallHolder);
 
         isReceiverCatchSuccess = false;
         enableCatchBall = false;
         ThrowMan = null;
     }
 
-    public void ChangeBallOwnerToMain1()
+    public void ChangeBallOwnerToPlayer()
     {
         Reciever = singlePlayManager.mainCharaInstance;
         FixBallPosition();
+        singlePlayManager.ResetPosition();
+        StartCoroutine(WaitSetStartPrepareForTarget(singlePlayManager.mainCharaInstance));
+    }
+    public void ChangeBallOwnerToEnemy()
+    {
+        Reciever = singlePlayManager.enemyInstance;
+        FixBallPosition();
+        singlePlayManager.ResetPosition();
+        StartCoroutine(WaitSetStartPrepareForTarget(singlePlayManager.enemyInstance));
     }
 
-    public bool IsSomeoneThrowing()
+    IEnumerator WaitSetStartPrepareForTarget(GameObject targetInstance)
     {
-        if (tmpBallHolder == null)
+        if (targetInstance == singlePlayManager.mainCharaInstance)
         {
-            return false;
+            while (singlePlayManager.GetBallHolderTeamPlayer(targetInstance) != singlePlayManager.mainCharaInstance)
+            {
+                yield return new WaitForSeconds(1f);
+            }
+            singlePlayManager.enemyScore++;
         }
-        Debug.Log("Player throw ball; the player name is" + ThrowMan);
-        if (tmpBallHolder != null)
+        else if (targetInstance == singlePlayManager.enemyInstance)
         {
-            return true;
+            while (singlePlayManager.GetBallHolderTeamPlayer(targetInstance) != singlePlayManager.enemyInstance)
+            {
+                yield return new WaitForSeconds(1f);
+            }
+            singlePlayManager.playerScore++;
         }
-        return false;
     }
 }

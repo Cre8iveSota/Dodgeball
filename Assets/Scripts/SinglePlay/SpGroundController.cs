@@ -29,19 +29,16 @@ public class SpGroundController : MonoBehaviour
         }
         if (!isExecuted)
         {
-            // Debug.Log("singlePlayManager.enemyInstance " + singlePlayManager.enemyInstance);
-            // Debug.Log("singlePlayManager.enemyInstance " + singlePlayManager.enemyInstance.transform.Find("Defencivle Point"));
             enemyDefenciblePoint = singlePlayManager.enemyInstance.transform.Find("Defencivle Point");
             playerDefenciblePoint = singlePlayManager.mainCharaInstance.transform.Find("Defencivle Point");
             isExecuted = true;
         }
-
-        if (singlePlayManager.realBallInstance != null && grounds.Find(i => Vector3.Distance(i.transform.position, singlePlayManager.realBallInstance.transform.position) < 10f))
+        if (singlePlayManager.realBallInstance != null && grounds.Find(i => Vector3.Distance(i.transform.position, singlePlayManager.realBallInstance.transform.position) < 8f))
         {
-            ballposition = grounds.Find(i => Vector3.Distance(i.transform.position, singlePlayManager.realBallInstance.transform.position) < 10f);
+            ballposition = grounds.Find(i => Vector3.Distance(i.transform.position, singlePlayManager.realBallInstance.transform.position) < 8f);
             ballposition.transform.GetChild(0).gameObject.SetActive(true);
         }
-        List<GameObject> noBallArea = grounds.FindAll(i => Vector3.Distance(i.transform.position, singlePlayManager.realBallInstance.transform.position) > 10f);
+        List<GameObject> noBallArea = grounds.FindAll(i => Vector3.Distance(i.transform.position, singlePlayManager.realBallInstance.transform.position) > 8f);
         noBallArea.ForEach(i => i.transform.GetChild(0).gameObject.SetActive(false));
 
         if (singlePlayManager.GetBallHolderTeamPlayer(true) == singlePlayManager.mainCharaInstance || singlePlayManager.GetBallHolderTeamPlayer(true) == singlePlayManager.subCharaInstance)
