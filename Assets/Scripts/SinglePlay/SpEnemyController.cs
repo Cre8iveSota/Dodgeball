@@ -65,7 +65,6 @@ public class SpEnemyController : MonoBehaviour
     void FixedUpdate()
     {
         int randomNum = Random.Range(1, 36);
-        Debug.Log("random" + randomNum);
         // Enemy Team has ball
         if (!spManager.hasPlayer1TeamBall)
         {
@@ -75,17 +74,17 @@ public class SpEnemyController : MonoBehaviour
                 // if Enemy main is still throwing ball, you cannot do any action
                 if (iAmThrowing) return;
                 // Sometimes enemy main thow ball randomely.
-                if (randomNum % 18 == 0)
+                if (randomNum % 36 == 0)
                 {
                     pseudoPressSpase = true;
                     EnemyThrow();
                 }
                 else if (spGroundController.ballposition == spGroundController.defenciblePosition)
                 {
-                    if (randomNum < 18) DodgeOrTakeUpDefensiveRotation(randomNum);
-                    else if (randomNum % 3 == 0) spSubEnemyController.MoveEnemySubToLeft();
-                    else if (randomNum % 3 == 1) spSubEnemyController.MoveEnemySubToRight();
-                    else if (randomNum % 3 == 2) EnemyThrow();
+                    if (randomNum % 9 == 0) { pseudoPressSpase = true; EnemyThrow(); }
+                    else if (randomNum % 10 == 0) spSubEnemyController.MoveEnemySubToRight();
+                    else if (randomNum % 11 == 0) spSubEnemyController.MoveEnemySubToLeft();
+                    else { DodgeOrTakeUpDefensiveRotation(randomNum, false); }
                 }
                 // if player in the midlle position between enemy and enemySub also player do not prepare for defence, enemy throw ball
                 else if (IsPositionBTWballHolderTeamFromTargetView(spManager.mainCharaInstance) && spGroundController.ballposition != spGroundController.defenciblePosition)
@@ -172,27 +171,46 @@ public class SpEnemyController : MonoBehaviour
         if (spManager.hasPlayer1TeamBall)
         {
             if (spGroundController.ballposition == spGroundController.defenciblePosition) return;
-            DodgeOrTakeUpDefensiveRotation(randomNum);
+            DodgeOrTakeUpDefensiveRotation(randomNum, true);
         }
     }
 
-    private void DodgeOrTakeUpDefensiveRotation(int randomNum)
+    private void DodgeOrTakeUpDefensiveRotation(int randomNum, bool isInDefence)
     {
-        if (CanMoveRightFromTargetView(this.gameObject) && CanMoveLeftFromTargetView(this.gameObject))
+        if (isInDefence)
         {
-            if (randomNum % 3 == 0) { pseudoPressRight = true; MoveEnemyToRight(); }
-            else if (randomNum % 3 == 1) { pseudoPressLeft = true; MoveEnemyToLeft(); }
-            else if (randomNum % 3 == 2) { pseudoPressSpase = true; TurnEnemyToBallHolder(randomNum); }
+            if (CanMoveRightFromTargetView(this.gameObject) && CanMoveLeftFromTargetView(this.gameObject))
+            {
+                if (randomNum % 3 == 0) { pseudoPressRight = true; MoveEnemyToRight(); }
+                else if (randomNum % 3 == 1) { pseudoPressLeft = true; MoveEnemyToLeft(); }
+                else if (randomNum % 3 == 2) { pseudoPressSpase = true; TurnEnemyToBallHolder(randomNum); }
+            }
+            else if (CanMoveRightFromTargetView(this.gameObject) && !CanMoveLeftFromTargetView(this.gameObject))
+            {
+                if (randomNum % 2 == 0) { pseudoPressRight = true; MoveEnemyToRight(); }
+                else if (randomNum % 2 == 1) { pseudoPressSpase = true; TurnEnemyToBallHolder(randomNum); }
+            }
+            else if (!CanMoveRightFromTargetView(this.gameObject) && CanMoveLeftFromTargetView(this.gameObject))
+            {
+                if (randomNum % 2 == 0) { pseudoPressLeft = true; MoveEnemyToLeft(); }
+                else if (randomNum % 2 == 1) { pseudoPressSpase = true; TurnEnemyToBallHolder(randomNum); }
+            }
         }
-        else if (CanMoveRightFromTargetView(this.gameObject) && !CanMoveLeftFromTargetView(this.gameObject))
+        else
         {
-            if (randomNum % 2 == 0) { pseudoPressRight = true; MoveEnemyToRight(); }
-            else if (randomNum % 2 == 1) { pseudoPressSpase = true; TurnEnemyToBallHolder(randomNum); }
-        }
-        else if (!CanMoveRightFromTargetView(this.gameObject) && CanMoveLeftFromTargetView(this.gameObject))
-        {
-            if (randomNum % 2 == 0) { pseudoPressLeft = true; MoveEnemyToLeft(); }
-            else if (randomNum % 2 == 1) { pseudoPressSpase = true; TurnEnemyToBallHolder(randomNum); }
+            if (CanMoveRightFromTargetView(this.gameObject) && CanMoveLeftFromTargetView(this.gameObject))
+            {
+                if (randomNum % 2 == 0) { pseudoPressRight = true; MoveEnemyToRight(); }
+                else if (randomNum % 2 == 1) { pseudoPressLeft = true; MoveEnemyToLeft(); }
+            }
+            else if (CanMoveRightFromTargetView(this.gameObject) && !CanMoveLeftFromTargetView(this.gameObject))
+            {
+                pseudoPressRight = true; MoveEnemyToRight();
+            }
+            else if (!CanMoveRightFromTargetView(this.gameObject) && CanMoveLeftFromTargetView(this.gameObject))
+            {
+                pseudoPressLeft = true; MoveEnemyToLeft();
+            }
         }
     }
 

@@ -59,7 +59,7 @@ public class SpSubEnemyController : MonoBehaviour
 
         if (spBallController.throwMan != null)
         {
-            Debug.Log("Catch start");
+            spBallController.reciever = spManager.subEnemyInstance;
             spBallController.isReceiverCatchSuccess = true;
         }
         else

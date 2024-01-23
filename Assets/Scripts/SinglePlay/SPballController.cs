@@ -21,6 +21,8 @@ public class SpBallController : MonoBehaviour
     SpEnemyController spEnemyController;
     SpSubEnemyController spSubEnemyController;
     [SerializeField] private float ballSpeedAdjusterForSp = 0.003f;
+
+    GameObject ballTrail;
     // Start is called before the first frame update
     void Start()
     {
@@ -32,6 +34,7 @@ public class SpBallController : MonoBehaviour
         spsubController = singlePlayManager.subCharaInstance.GetComponent<SpsubController>();
         spEnemyController = singlePlayManager.enemyInstance.GetComponent<SpEnemyController>();
         spSubEnemyController = singlePlayManager.subEnemyInstance.GetComponent<SpSubEnemyController>();
+        ballTrail = GameObject.FindGameObjectWithTag("BallTrail");
     }
 
     // Update is called once per frame
@@ -52,7 +55,12 @@ public class SpBallController : MonoBehaviour
 
         if (isMovingBall)
         {
+            ballTrail.SetActive(true);
             transform.position += defeinedSpeed;
+        }
+        else
+        {
+            ballTrail.SetActive(false);
         }
 
         if (enableBallInterupt)
