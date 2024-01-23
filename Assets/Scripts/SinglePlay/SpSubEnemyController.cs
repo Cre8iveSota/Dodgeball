@@ -39,6 +39,7 @@ public class SpSubEnemyController : MonoBehaviour
         pseudoPressRight = true;
         if (pseudoPressRight && transform.position.x > -20)
         {
+            SoundManager.instance.PlaySE(3);
             transform.position = new Vector3(transform.position.x - 10, transform.position.y, transform.position.z);
             pseudoPressRight = false;
         }
@@ -50,6 +51,7 @@ public class SpSubEnemyController : MonoBehaviour
         pseudoPressLeft = true;
         if (pseudoPressLeft && transform.position.x < 20)
         {
+            SoundManager.instance.PlaySE(3);
             transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z);
             pseudoPressLeft = false;
         }

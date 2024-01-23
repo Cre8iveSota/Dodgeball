@@ -46,13 +46,14 @@ public class SpsubController : MonoBehaviour
     private void MoveSubPlayer()
     {
         if (spManager.duration < spManager.Threshold) return;
-
         if (Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x < 15)
         {
+            SoundManager.instance.PlaySE(3);
             transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z);
         }
         if (Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x > -15)
         {
+            SoundManager.instance.PlaySE(3);
             transform.position = new Vector3(transform.position.x - 10, transform.position.y, transform.position.z);
         }
     }

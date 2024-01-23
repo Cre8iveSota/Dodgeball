@@ -182,6 +182,7 @@ public class MainPlayerController : MonoBehaviour
     [PunRPC]
     private void ProcedureOfHit()
     {
+        SoundManager.instance.PlaySE(2);
         animator.SetBool("isHit", true);
         gameManager.main2score++;
     }

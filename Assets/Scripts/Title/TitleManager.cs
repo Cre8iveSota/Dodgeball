@@ -7,6 +7,7 @@ public class TitleManager : MonoBehaviour
 {
     public void LoadScene(string name)
     {
+        SoundManager.instance.PlaySE(1);
         SceneManager.LoadScene(name);
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 
 public class SpManager : MonoBehaviour
@@ -21,12 +22,13 @@ public class SpManager : MonoBehaviour
     public int Threshold { get => threshold; }
     SpBallController spBallController;
     public float actionSpeedEnemy = 0.6f;
-    public GameObject changeLevelPanel, lvImg, readyImg, goImg, gameOverPanel, gameClearPanel;
-    public TMP_Text lvText;
+    public GameObject changeLevelPanel, displayTextImg, gameOverPanel, gameClearPanel, instractionsImgObjInCanvas;
+    public TMP_Text displayText;
     public int currentEnemyLv = 0;
     bool isActiveDisplyaImg = false;
     bool isActiveChangeLvPanel = false;
-
+    public UnityEvent gameover, gameClear;
+    private Instractions instractions;
 
     void Start()
     {
@@ -55,11 +57,19 @@ public class SpManager : MonoBehaviour
         GameObject ball = GameObject.FindGameObjectWithTag("Ball");
         if (ball != null) spBallController = ball.GetComponent<SpBallController>();
 
-        ChangeEnemyLv();
+        instractions = instractionsImgObjInCanvas.GetComponent<Instractions>();
+        if (instractions != null) { instractions.StartInstractions(); StopCharacters(); }
+        SoundManager.instance.PlayBGM(1);
     }
 
     void Update()
     {
+        if (instractions.isDoneInstractions)
+        {
+            ChangeEnemyLv();
+            instractions.isDoneInstractions = false;
+        }
+
         scoreText.text = $"You {playerScore} - {enemyScore} Enemy";
         enemyLvText.text = $"Enemy\nLv.{currentEnemyLv}";
 
@@ -73,30 +83,49 @@ public class SpManager : MonoBehaviour
         }
         else if (enemyScore == 3)
         {
-            gameOverPanel.SetActive(true);
+            gameover.Invoke();
+            StopCharacters();
         }
     }
+
+    public void StopCharacters()
+    {
+        mainCharaInstance.GetComponent<SpMainPlayerController>().enabled = false;
+        enemyInstance.GetComponent<SpEnemyController>().enabled = false;
+        subCharaInstance.GetComponent<SpsubController>().enabled = false;
+        subEnemyInstance.GetComponent<SpSubEnemyController>().enabled = false;
+    }
+    private void PlayCharacters()
+    {
+        mainCharaInstance.GetComponent<SpMainPlayerController>().enabled = true;
+        enemyInstance.GetComponent<SpEnemyController>().enabled = true;
+        subCharaInstance.GetComponent<SpsubController>().enabled = true;
+        subEnemyInstance.GetComponent<SpSubEnemyController>().enabled = true;
+    }
+
     public void ChangeEnemyLv()
     {
         if (currentEnemyLv == 5)
         {
             currentEnemyLv = 4;
-            gameClearPanel.SetActive(true);
+            gameClear.Invoke();
         }
         currentEnemyLv++;
         actionSpeedEnemy -= 0.1f;
-        lvText.text = $"Lv.{currentEnemyLv}";
         spBallController.reciever = mainCharaInstance;
-        mainCharaInstance.GetComponent<SpMainPlayerController>().enabled = false;
-        enemyInstance.GetComponent<SpEnemyController>().enabled = false;
+        StopCharacters();
         changeLevelPanel.SetActive(true);
-        StartCoroutine(DisplayImgForSecond(lvImg, 2f, false));
-        StartCoroutine(DisplayImgForSecond(readyImg, 3f, false));
-        StartCoroutine(DisplayImgForSecond(goImg, 1f, true));
+        StartCoroutine(DisplayImgForSecond(displayTextImg, 2f, $"Lv.{currentEnemyLv}", false));
+        StartCoroutine(DisplayImgForSecond(displayTextImg, 2f, "Ready", false));
+        StartCoroutine(DisplayImgForSecond(displayTextImg, 1f, "Go!!!", true));
 
+        if (currentEnemyLv == 5)
+        {
+            SoundManager.instance.PlayBGM(0);
+        }
     }
 
-    IEnumerator DisplayImgForSecond(GameObject imgs, float seconds, bool isLastImg)
+    IEnumerator DisplayImgForSecond(GameObject imgs, float seconds, string text, bool isLastImg)
     {
         while (isActiveDisplyaImg)
         {
@@ -104,8 +133,8 @@ public class SpManager : MonoBehaviour
         }
         isActiveDisplyaImg = true;
         imgs.SetActive(true);
+        displayText.text = text;
         yield return new WaitForSeconds(seconds);
-        imgs.SetActive(false);
         isActiveDisplyaImg = false;
         if (isLastImg)
         {
@@ -117,8 +146,7 @@ public class SpManager : MonoBehaviour
     {
         isActiveChangeLvPanel = true;
         changeLevelPanel.SetActive(false);
-        mainCharaInstance.GetComponent<SpMainPlayerController>().enabled = true;
-        enemyInstance.GetComponent<SpEnemyController>().enabled = true;
+        PlayCharacters();
         isActiveChangeLvPanel = false;
     }
 

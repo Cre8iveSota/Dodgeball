@@ -81,6 +81,7 @@ public class SpBallController : MonoBehaviour
         cnt = 0;
         throwMan = passerGameObject;
 
+        SoundManager.instance.PlaySE(4);
         if (sPgroundController != null)
         {
             if (sPgroundController.defenciblePosition == sPgroundController.ballposition)

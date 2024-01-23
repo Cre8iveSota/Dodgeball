@@ -62,13 +62,14 @@ public class SpMainPlayerController : MonoBehaviour
     private void MoveMainPlayer()
     {
         if (spManager.duration > spManager.Threshold) return;
-
         if (Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x < 10)
         {
+            SoundManager.instance.PlaySE(3);
             transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z);
         }
         if (Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x > -10)
         {
+            SoundManager.instance.PlaySE(3);
             transform.position = new Vector3(transform.position.x - 10, transform.position.y, transform.position.z);
         }
     }
@@ -166,6 +167,7 @@ public class SpMainPlayerController : MonoBehaviour
 
     private void ProcedureOfHit()
     {
+        SoundManager.instance.PlaySE(2);
         animator.SetBool("isHit", true);
     }
 
@@ -177,6 +179,7 @@ public class SpMainPlayerController : MonoBehaviour
 
     public void EnableDisplayCaution(bool isActivate)
     {
+        if (isActivate) { SoundManager.instance.PlayOnlyThisSE(0); }
         caution.gameObject.SetActive(isActivate);
     }
 }

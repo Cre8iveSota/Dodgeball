@@ -95,26 +95,26 @@ public class SpEnemyController : MonoBehaviour
                 // if enemy position equals player position also it has difference between enemySub and enemy position, make move enemy or enemySub 
                 else if (enemyPoistionX == playerPositionX && enemyPoistionX < enemySubPoistionX)
                 {
-                    if (randomNum % 2 == 0) MoveEnemyToRight();
+                    if (randomNum % 2 == 0) { pseudoPressRight = true; MoveEnemyToRight(); }
                     if (randomNum % 2 == 1) spSubEnemyController.MoveEnemySubToRight();
                     return;
                 }
                 else if (enemyPoistionX == playerPositionX && enemySubPoistionX < enemyPoistionX)
                 {
-                    MoveEnemyToLeft();
+                    { pseudoPressLeft = true; MoveEnemyToLeft(); }
                     spSubEnemyController.MoveEnemySubToLeft();
                     return;
                 }
                 // if enemy position not equal player position, make move enemy or enemySub 
                 else if (enemyPoistionX < playerPositionX)
                 {
-                    if (randomNum % 2 == 0) MoveEnemyToLeft();
+                    if (randomNum % 2 == 0) { pseudoPressLeft = true; MoveEnemyToLeft(); }
                     if (randomNum % 2 == 1) spSubEnemyController.MoveEnemySubToLeft();
                     return;
                 }
                 else if (playerPositionX < enemyPoistionX)
                 {
-                    if (randomNum % 2 == 0) MoveEnemyToRight();
+                    if (randomNum % 2 == 0) { pseudoPressRight = true; MoveEnemyToRight(); }
                     if (randomNum % 2 == 1) spSubEnemyController.MoveEnemySubToRight();
                     return;
                 }
@@ -132,21 +132,21 @@ public class SpEnemyController : MonoBehaviour
                 // if player is in the middle of enemy and enemySub also player prepared for defence, move at random
                 else if (IsPositionBTWballHolderTeamFromTargetView(spManager.mainCharaInstance) && spGroundController.ballposition == spGroundController.defenciblePosition)
                 {
-                    if (randomNum % 4 == 0) MoveEnemyToLeft();
-                    if (randomNum % 4 == 1) MoveEnemyToRight();
+                    if (randomNum % 4 == 0) { pseudoPressLeft = true; MoveEnemyToLeft(); }
+                    if (randomNum % 4 == 1) { pseudoPressRight = true; MoveEnemyToRight(); }
                     if (randomNum % 4 == 2) spSubEnemyController.MoveEnemySubToRight();
                     if (randomNum % 4 == 3) spSubEnemyController.MoveEnemySubToLeft();
                 }
                 // if enemySub position is as same as player, however enemy position is in left side from enemySub, make move enemy or enemySub
                 else if (enemySubPoistionX == playerPositionX && enemyPoistionX < enemySubPoistionX)
                 {
-                    if (randomNum % 2 == 0) MoveEnemyToLeft();
+                    if (randomNum % 2 == 0) { pseudoPressLeft = true; MoveEnemyToLeft(); }
                     if (randomNum % 2 == 1) spSubEnemyController.MoveEnemySubToLeft();
                     return;
                 }
                 else if (enemySubPoistionX == playerPositionX && enemySubPoistionX < enemyPoistionX)
                 {
-                    if (randomNum % 2 == 0) MoveEnemyToRight();
+                    if (randomNum % 2 == 0) { pseudoPressRight = true; MoveEnemyToRight(); }
                     if (randomNum % 2 == 1) spSubEnemyController.MoveEnemySubToRight();
                     return;
                 }
@@ -154,14 +154,14 @@ public class SpEnemyController : MonoBehaviour
                 else if (enemySubPoistionX < playerPositionX)
                 {
                     Debug.Log("hew");
-                    if (randomNum % 2 == 0) MoveEnemyToLeft();
+                    if (randomNum % 2 == 0) { pseudoPressLeft = true; MoveEnemyToLeft(); }
                     if (randomNum % 2 == 1) spSubEnemyController.MoveEnemySubToLeft();
                     return;
                 }
                 else if (playerPositionX < enemySubPoistionX)
                 {
                     Debug.Log("hew2");
-                    if (randomNum % 2 == 0) MoveEnemyToRight();
+                    if (randomNum % 2 == 0) { pseudoPressRight = true; MoveEnemyToRight(); }
                     if (randomNum % 2 == 1) spSubEnemyController.MoveEnemySubToRight();
                     return;
                 }
@@ -279,19 +279,24 @@ public class SpEnemyController : MonoBehaviour
 
     private void MoveEnemyToRight()
     {
+        if (!pseudoPressRight) return;
         if (pseudoPressLeft && transform.position.x > -10)
         {
+            SoundManager.instance.PlaySE(3);
             transform.position = new Vector3(transform.position.x - 10, transform.position.y, transform.position.z);
-            pseudoPressLeft = false;
+            pseudoPressRight = false;
+
         }
     }
 
     private void MoveEnemyToLeft()
     {
+        if (!pseudoPressLeft) return;
         if (pseudoPressRight && transform.position.x < 10)
         {
+            SoundManager.instance.PlaySE(3);
             transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z);
-            pseudoPressRight = false;
+            pseudoPressLeft = false;
         }
     }
 
@@ -407,6 +412,7 @@ public class SpEnemyController : MonoBehaviour
 
     private void ProcedureOfHit()
     {
+        SoundManager.instance.PlaySE(2);
         animator.SetBool("isHit", true);
     }
 
@@ -417,6 +423,7 @@ public class SpEnemyController : MonoBehaviour
     }
     public void EnableDisplayCaution(bool isActivate)
     {
+        if (isActivate) SoundManager.instance.PlayOnlyThisSE(0);
         caution.gameObject.SetActive(isActivate);
     }
 }
