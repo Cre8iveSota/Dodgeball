@@ -84,6 +84,7 @@ public class SpManager : MonoBehaviour
         else if (enemyScore == 3)
         {
             gameover.Invoke();
+            SoundManager.instance.PlayBGM(3);
             StopCharacters();
         }
     }
@@ -108,6 +109,7 @@ public class SpManager : MonoBehaviour
         if (currentEnemyLv == 5)
         {
             currentEnemyLv = 4;
+            SoundManager.instance.PlayBGM(2);
             gameClear.Invoke();
         }
         else if (currentEnemyLv == 4)

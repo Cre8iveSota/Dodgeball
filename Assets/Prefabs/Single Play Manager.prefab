@@ -1,0 +1,156 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &155944404750179555
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 388088991932740901}
+  - component: {fileID: 1958806849145879793}
+  m_Layer: 0
+  m_Name: Single Play Manager
+  m_TagString: GameManager
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &388088991932740901
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155944404750179555}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 5, z: 5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1958806849145879793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155944404750179555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75fdf5a09243e46bd97d97d080dfd41a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasPlayer1TeamBall: 0
+  normalRotation: {x: 0, y: 0, z: 0, w: 0}
+  normalRightRotation: {x: 0, y: 0, z: 0, w: 0}
+  normalLeftRotation: {x: 0, y: 0, z: 0, w: 0}
+  inverseRotation: {x: 0, y: 0, z: 0, w: 0}
+  inverseRightRotation: {x: 0, y: 0, z: 0, w: 0}
+  inverseLeftRotation: {x: 0, y: 0, z: 0, w: 0}
+  mainChara: {fileID: 5199059239656598423, guid: ae0ec00ad7e9a4ebe99716b02be916fa, type: 3}
+  subChara: {fileID: 7580201760323037392, guid: 51a86b9842a094de89d0e4a95ff06099, type: 3}
+  enemy: {fileID: 1915788662312501823, guid: 3ad0ca9d440b04d4dacc7561064f05e5, type: 3}
+  enemySub: {fileID: 1915788662312501823, guid: 200745d031ff345d2a84506337d1f151, type: 3}
+  mainCharaInstance: {fileID: 0}
+  subCharaInstance: {fileID: 0}
+  enemyInstance: {fileID: 0}
+  subEnemyInstance: {fileID: 0}
+  empty: {fileID: 0}
+  realBall: {fileID: 837818206858460503, guid: 17031ccd2c780475aa6b119421ac2b0d, type: 3}
+  realBallInstance: {fileID: 0}
+  scoreText: {fileID: 3583607411021104497, guid: d4d66f66f34d74a1198ee6fa747f89e1, type: 3}
+  enemyLvText: {fileID: 1135434399385744456, guid: 07ea63b333ac94057817a3846fb5f31d, type: 3}
+  playerScore: 0
+  enemyScore: 0
+  enemyLv: 1
+  duration: 0
+  actionSpeedEnemy: 0.5
+  changeLevelPanel: {fileID: 3255570219005787842, guid: 2f704600d1d6f4429bf50c30f5dacc25, type: 3}
+  displayTextImg: {fileID: 8730714685882062068, guid: 1addc008a31a64688b1fb322cd505dda, type: 3}
+  gameOverPanel: {fileID: 2128123563331494781, guid: 0ed62ee900a824cd2bda7261d67e7f89, type: 3}
+  gameClearPanel: {fileID: 6700633314724345631, guid: 8c562082143cd482f946dc65d3841659, type: 3}
+  instractionsImgObjInCanvas: {fileID: 5950842560392253507, guid: 7588da1fdbea14b8c9b69f9a399c79f9, type: 3}
+  displayText: {fileID: 1790029052283021206, guid: 4cae1d5ccf7db498f855fe89afd3618c, type: 3}
+  currentEnemyLv: 1
+  gameover:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1958806849145879793}
+        m_TargetAssemblyTypeName: SpManager, Assembly-CSharp
+        m_MethodName: StopCharacters
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: SoundManager, Assembly-CSharp
+        m_MethodName: PlayBGM
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  gameClear:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1958806849145879793}
+        m_TargetAssemblyTypeName: SpManager, Assembly-CSharp
+        m_MethodName: StopCharacters
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: SoundManager, Assembly-CSharp
+        m_MethodName: PlayBGM
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2

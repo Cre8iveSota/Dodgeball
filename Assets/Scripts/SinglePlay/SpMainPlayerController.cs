@@ -11,6 +11,7 @@ public class SpMainPlayerController : MonoBehaviour
     GameObject caution;
     SpGroundController spGroundController;
     SpEnemyController spEnemyController;
+    SpSubEnemyController spSubEnemyController;
 
 
     // Start is called before the first frame update
@@ -23,6 +24,7 @@ public class SpMainPlayerController : MonoBehaviour
         GameObject ground = GameObject.FindGameObjectWithTag("Ground");
         if (ground != null) spGroundController = ground.GetComponent<SpGroundController>();
         spEnemyController = spManager.enemyInstance.GetComponent<SpEnemyController>();
+        spSubEnemyController = spManager.subEnemyInstance.GetComponent<SpSubEnemyController>();
     }
 
     // Update is called once per frame

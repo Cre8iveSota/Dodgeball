@@ -18,7 +18,7 @@ public class SoundManager : MonoBehaviour
         {
             instance = this;
             //Ensure that sound is not interrupted when transitioning between scenes
-            DontDestroyOnLoad(this.gameObject.transform.GetChild(0));
+            // DontDestroyOnLoad(this.gameObject.transform.GetChild(0));
             DontDestroyOnLoad(this.gameObject);
 
             // DOTweenの初期化

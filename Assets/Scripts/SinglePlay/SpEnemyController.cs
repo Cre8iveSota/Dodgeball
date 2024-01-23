@@ -35,7 +35,8 @@ public class SpEnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Time.fixedDeltaTime = spManager.actionSpeedEnemy;
+        elapsedTime += Time.deltaTime;
+        // Time.fixedDeltaTime = spManager.actionSpeedEnemy;
 
         if (spBallController.throwMan == null) spMainPlayerController.EnableDisplayCaution(false);
 
@@ -60,9 +61,20 @@ public class SpEnemyController : MonoBehaviour
                 spMainPlayerController.EnableDisplayCaution(true);
             }
         }
+
+        if (elapsedTime > spManager.actionSpeedEnemy)
+        {
+            EnemyAction();
+            elapsedTime = 0;
+        }
     }
 
-    void FixedUpdate()
+    // void FixedUpdate()
+    // {
+    //     EnemyAction();
+    // }
+
+    private void EnemyAction()
     {
         int randomNum = Random.Range(1, 36);
         // Enemy Team has ball

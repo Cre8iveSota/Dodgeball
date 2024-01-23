@@ -8,7 +8,7 @@ public class SpBallController : MonoBehaviour
     int cnt = 0;
     public Vector3 ballDestination = Vector3.zero;
     Vector3 defeinedSpeed;
-    public float ballSpeed = 0.5f;
+    public float ballSpeed = 3f;
     public GameObject throwMan, reciever;
     SpGroundController sPgroundController;
     public bool isMovingBall;
@@ -93,8 +93,8 @@ public class SpBallController : MonoBehaviour
         reciever = recieverGameObject;
         ballDestination = recieverGameObject.transform.position;
         isMovingBall = true;
-        // defeinedSpeed = new Vector3((ballDestination.x - transform.position.x) * ballSpeed * Time.deltaTime, 0f, (ballDestination.z - transform.position.z) * ballSpeed * Time.deltaTime);
-        defeinedSpeed = new Vector3((ballDestination.x - transform.position.x) * ballSpeed * ballSpeedAdjusterForSp, 0f, (ballDestination.z - transform.position.z) * ballSpeed * ballSpeedAdjusterForSp);
+        defeinedSpeed = new Vector3((ballDestination.x - transform.position.x) * ballSpeed * Time.deltaTime, 0f, (ballDestination.z - transform.position.z) * ballSpeed * Time.deltaTime);
+        // defeinedSpeed = new Vector3((ballDestination.x - transform.position.x) * ballSpeed * ballSpeedAdjusterForSp, 0f, (ballDestination.z - transform.position.z) * ballSpeed * ballSpeedAdjusterForSp);
         yield return new WaitForSeconds(1f);
     }
 
