@@ -19,6 +19,8 @@ public class SpEnemyController : MonoBehaviour
     SpSubEnemyController spSubEnemyController;
     GameObject caution;
     SpMainPlayerController spMainPlayerController;
+    SpsubController spsubController;
+    Vector3 spGroundBallPosition;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,6 +32,8 @@ public class SpEnemyController : MonoBehaviour
         if (ground != null) spGroundController = ground.GetComponent<SpGroundController>();
         spSubEnemyController = spManager.subEnemyInstance.GetComponent<SpSubEnemyController>();
         spMainPlayerController = spManager.mainCharaInstance.GetComponent<SpMainPlayerController>();
+        spsubController = spManager.subCharaInstance.GetComponent<SpsubController>();
+        spGroundBallPosition = spGroundController.ballposition.transform.position;
     }
 
     // Update is called once per frame
@@ -182,7 +186,8 @@ public class SpEnemyController : MonoBehaviour
         // if enemy team do not have a ball
         if (spManager.hasPlayer1TeamBall)
         {
-            if (spGroundController.ballposition == spGroundController.defenciblePosition) return;
+            if (spBallController.throwMan == null && spGroundController.ballposition == spGroundController.defenciblePosition) return;
+            if (spBallController.enableCatchBall) return;
             DodgeOrTakeUpDefensiveRotation(randomNum, true);
         }
     }
@@ -191,6 +196,12 @@ public class SpEnemyController : MonoBehaviour
     {
         if (isInDefence)
         {
+            // if (!spManager.CheckHaveBallAsChildren(gameObject) && 0 < spGroundBallPosition.z && spGroundBallPosition.z < 10)
+            // {
+            //     if (spGroundBallPosition.x < enemyPoistionX && CanMoveLeftFromTargetView(this.gameObject)) { pseudoPressLeft = true; MoveEnemyToLeft(); return; }
+            //     else if (enemyPoistionX < spGroundBallPosition.x && CanMoveRightFromTargetView(this.gameObject)) { pseudoPressRight = true; MoveEnemyToRight(); return; }
+            // }
+            // else
             if (ballHolderPositionX > enemyPoistionX + 10 && spBallController.throwMan == null) { pseudoPressLeft = true; MoveEnemyToLeft(); }
             else if (ballHolderPositionX < enemyPoistionX - 10 && spBallController.throwMan == null) { pseudoPressRight = true; MoveEnemyToRight(); }
             else if (CanMoveRightFromTargetView(this.gameObject) && CanMoveLeftFromTargetView(this.gameObject))
@@ -408,7 +419,6 @@ public class SpEnemyController : MonoBehaviour
 
         }
     }
-
     private void OnTriggerEnter(Collider other)
     {
         if (spManager == null || spManager.GetBallHolderTeamPlayer(true) == spManager.empty) return;
@@ -423,6 +433,7 @@ public class SpEnemyController : MonoBehaviour
             ProcedureOfHit();
         }
     }
+
 
     private void ProcedureOfHit()
     {

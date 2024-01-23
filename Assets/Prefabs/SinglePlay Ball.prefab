@@ -149,7 +149,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tmpBallPosition: {fileID: 2043612275371719635, guid: 2eeb88a3aed27458db5f1d0148c476c2, type: 3}
   ballDestination: {x: 0, y: 0, z: 0}
-  ballSpeed: 0.3
+  ballSpeed: 0.25
   throwMan: {fileID: 0}
   reciever: {fileID: 0}
   isMovingBall: 0

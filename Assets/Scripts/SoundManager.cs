@@ -66,7 +66,7 @@ public class SoundManager : MonoBehaviour
 
     public void PlayOnlyThisSE(int index)
     {
-        audioSourceSE.Stop();
+        audioSourceSE.Stop(); // スペースキーを連打すると、alertが多重起動してうるさいため
         audioSourceSE.PlayOneShot(audioClipsSE[index]); // SEを一度だけ鳴らす   
     }
 

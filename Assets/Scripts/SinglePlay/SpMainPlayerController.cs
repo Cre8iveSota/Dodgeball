@@ -181,7 +181,7 @@ public class SpMainPlayerController : MonoBehaviour
 
     public void EnableDisplayCaution(bool isActivate)
     {
-        if (isActivate) { SoundManager.instance.PlayOnlyThisSE(0); }
         caution.gameObject.SetActive(isActivate);
+        if (isActivate) { SoundManager.instance.PlayOnlyThisSE(0); }
     }
 }

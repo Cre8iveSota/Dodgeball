@@ -26,7 +26,7 @@ public class Instractions : MonoBehaviour
         {
             backButton.SetActive(false);
         }
-        else if (num == 6)
+        else if (num == 5)
         {
             nextText.text = "OK";
         }
@@ -50,8 +50,8 @@ public class Instractions : MonoBehaviour
     public void NextInstractions()
     {
         SoundManager.instance.PlaySE(1);
-        if (num < instractions.Length - 1) { num++; image.sprite = instractions[num]; }
         if (num == instractions.Length - 1) { instractionsPanel.SetActive(false); isDoneInstractions = true; }
+        else if (num < instractions.Length) { num++; image.sprite = instractions[num]; }
     }
     public void BackInstractions()
     {
