@@ -179,7 +179,9 @@ public class SpEnemyController : MonoBehaviour
     {
         if (isInDefence)
         {
-            if (CanMoveRightFromTargetView(this.gameObject) && CanMoveLeftFromTargetView(this.gameObject))
+            if (ballHolderPositionX > enemyPoistionX + 10 && spBallController.throwMan == null) { pseudoPressLeft = true; MoveEnemyToLeft(); }
+            else if (ballHolderPositionX < enemyPoistionX - 10 && spBallController.throwMan == null) { pseudoPressRight = true; MoveEnemyToRight(); }
+            else if (CanMoveRightFromTargetView(this.gameObject) && CanMoveLeftFromTargetView(this.gameObject))
             {
                 if (randomNum % 3 == 0) { pseudoPressRight = true; MoveEnemyToRight(); }
                 else if (randomNum % 3 == 1) { pseudoPressLeft = true; MoveEnemyToLeft(); }
@@ -280,7 +282,7 @@ public class SpEnemyController : MonoBehaviour
     private void MoveEnemyToRight()
     {
         if (!pseudoPressRight) return;
-        if (pseudoPressLeft && transform.position.x > -10)
+        if (pseudoPressRight && transform.position.x > -10)
         {
             SoundManager.instance.PlaySE(3);
             transform.position = new Vector3(transform.position.x - 10, transform.position.y, transform.position.z);
@@ -292,7 +294,7 @@ public class SpEnemyController : MonoBehaviour
     private void MoveEnemyToLeft()
     {
         if (!pseudoPressLeft) return;
-        if (pseudoPressRight && transform.position.x < 10)
+        if (pseudoPressLeft && transform.position.x < 10)
         {
             SoundManager.instance.PlaySE(3);
             transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z);

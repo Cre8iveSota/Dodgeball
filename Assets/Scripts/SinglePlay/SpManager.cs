@@ -110,8 +110,16 @@ public class SpManager : MonoBehaviour
             currentEnemyLv = 4;
             gameClear.Invoke();
         }
+        else if (currentEnemyLv == 4)
+        {
+            // 5戦目の敵の速度を指定
+            actionSpeedEnemy = 0.05f;
+        }
+        else
+        {
+            actionSpeedEnemy -= 0.1f;
+        }
         currentEnemyLv++;
-        actionSpeedEnemy -= 0.1f;
         spBallController.reciever = mainCharaInstance;
         StopCharacters();
         changeLevelPanel.SetActive(true);
