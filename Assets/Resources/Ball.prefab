@@ -35,7 +35,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 1, z: 0.4}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
-  m_Children: []
+  m_Children:
+  - {fileID: 4530120708537321921}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2723607353858883102
@@ -107,7 +108,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
+  m_Radius: 0.6
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &4983639454345931744
 MonoBehaviour:
@@ -123,7 +124,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tmpBallPosition: {fileID: 2043612275371719635, guid: 7f2246951b41442a08eb746faecd6de7, type: 3}
   isMovingBall: 0
-  ballSpeed: 0.5
+  ballSpeed: 0.2
   ballDestination: {x: 0, y: 0, z: 0}
   rb: {fileID: 0}
   ballForce: {x: 0, y: 0, z: 0}
@@ -133,6 +134,17 @@ MonoBehaviour:
   isBallReady: 0
   enableCatchBall: 0
   enableBallInterupt: 0
+  player1mainPositionX: 0
+  player1SubPositionX: 0
+  player2mainPositionX: 0
+  player2subPositionX: 0
+  prePlayer1mainPositionX: 0
+  prePlayer1SubPositionX: 0
+  prePlayer2mainPositionX: 0
+  prePlayer2subPositionX: 0
+  ballTrail: {fileID: 3538089411548590756}
+  isMainHit: 0
+  isMain2Hit: 0
 --- !u!54 &545763186324929306
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -216,3 +228,78 @@ MonoBehaviour:
     InterpolateOption: 0
     InterpolateMoveTowardsSpeed: 1
     InterpolateLerpSpeed: 0
+--- !u!1001 &2283692360226147410
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5524928986915465537}
+    m_Modifications:
+    - target: {fileID: 2409274971148748179, guid: dbb3f802a9e734f45a571cb07bced4ea, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2409274971148748179, guid: dbb3f802a9e734f45a571cb07bced4ea, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2409274971148748179, guid: dbb3f802a9e734f45a571cb07bced4ea, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2409274971148748179, guid: dbb3f802a9e734f45a571cb07bced4ea, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2409274971148748179, guid: dbb3f802a9e734f45a571cb07bced4ea, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2409274971148748179, guid: dbb3f802a9e734f45a571cb07bced4ea, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2409274971148748179, guid: dbb3f802a9e734f45a571cb07bced4ea, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2409274971148748179, guid: dbb3f802a9e734f45a571cb07bced4ea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2409274971148748179, guid: dbb3f802a9e734f45a571cb07bced4ea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2409274971148748179, guid: dbb3f802a9e734f45a571cb07bced4ea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3362112532010581750, guid: dbb3f802a9e734f45a571cb07bced4ea, type: 3}
+      propertyPath: m_Name
+      value: Ball Trails
+      objectReference: {fileID: 0}
+    - target: {fileID: 3362112532010581750, guid: dbb3f802a9e734f45a571cb07bced4ea, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3362112532010581750, guid: dbb3f802a9e734f45a571cb07bced4ea, type: 3}
+      propertyPath: m_TagString
+      value: BallTrail
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: dbb3f802a9e734f45a571cb07bced4ea, type: 3}
+--- !u!1 &3538089411548590756 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3362112532010581750, guid: dbb3f802a9e734f45a571cb07bced4ea, type: 3}
+  m_PrefabInstance: {fileID: 2283692360226147410}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4530120708537321921 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2409274971148748179, guid: dbb3f802a9e734f45a571cb07bced4ea, type: 3}
+  m_PrefabInstance: {fileID: 2283692360226147410}
+  m_PrefabAsset: {fileID: 0}

@@ -27,6 +27,7 @@ public class SubPlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (gameManager.isGameEnd) return;
         if (photonView.IsMine)
         {
             if (groundController != null)

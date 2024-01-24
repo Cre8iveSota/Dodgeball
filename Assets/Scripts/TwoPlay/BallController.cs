@@ -28,6 +28,10 @@ public class BallController : MonoBehaviour
     SubPlayerController subCharaController, subChara2Controller;
     GroundController groundController;
     public bool enableCatchBall, enableBallInterupt;// 相手のボーるをキャッチしたことを知らせるフラグと、パスをインタラプトしたときに知らせるフラグ
+    public float player1mainPositionX, player1SubPositionX, player2mainPositionX, player2subPositionX = 0;
+    public float prePlayer1mainPositionX, prePlayer1SubPositionX, prePlayer2mainPositionX, prePlayer2subPositionX = 0;
+    [SerializeField] private GameObject ballTrail;
+    public bool isMainHit, isMain2Hit;
 
     int cnt = 0;
     // Start is called before the first frame update
@@ -35,9 +39,12 @@ public class BallController : MonoBehaviour
     {
         players = GameObject.FindGameObjectsWithTag("Player");
         gammeManagerObj = GameObject.FindGameObjectWithTag("GameManager");
-        gameManager = gammeManagerObj.GetComponent<GameManager>();
-        mainCharaController = gameManager.mainCharaInstance.GetComponent<MainPlayerController>();
-        subCharaController = gameManager.subCharaInstance.GetComponent<SubPlayerController>();
+        if (gammeManagerObj != null) gameManager = gammeManagerObj.GetComponent<GameManager>();
+        if (gameManager != null)
+        {
+            mainCharaController = gameManager.mainCharaInstance.GetComponent<MainPlayerController>();
+            subCharaController = gameManager.subCharaInstance.GetComponent<SubPlayerController>();
+        }
         rb = GetComponent<Rigidbody>();
         photonView = GetComponent<PhotonView>();
     }
@@ -45,6 +52,18 @@ public class BallController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isMainHit)
+        {
+            ChangeBallOwnerToMain1();
+            isMainHit = false;
+        }
+        if (isMain2Hit)
+        {
+            ChangeBallOwnerToMain2();
+            isMain2Hit = false;
+        }
+        photonView.RPC("CallSoundForMove", RpcTarget.All);
+        photonView.RPC("PlayersPositionXTracker", RpcTarget.All);
         if (transform.position.z > 80f)
         {
             //subchara
@@ -100,7 +119,7 @@ public class BallController : MonoBehaviour
         photonView.RPC("DestroyTmpBallHolder", RpcTarget.All, Reciever.GetPhotonView().ViewID);
         isReceiverCatchSuccess = false;
         enableCatchBall = false;
-        // photonView.RPC("SyncronizeBallPosition", RpcTarget.All);
+        photonView.RPC("SyncronizeBallPosition", RpcTarget.All);
         ThrowMan = null;
     }
 
@@ -110,11 +129,19 @@ public class BallController : MonoBehaviour
         if (isMovingBall)
         {
             transform.position += defeinedSpeed;
+            ballTrail.SetActive(true);
         }
+        else
+        {
+            transform.localPosition = new Vector3(0f, 1f, 0.4f);
+            ballTrail.SetActive(false);
+        }
+
     }
 
     public IEnumerator NormalPass(GameObject passerGameObject, GameObject recieverGameObject)
     {
+        SoundManager.instance.PlaySE(4);
         cnt = 0;
         ThrowMan = passerGameObject;
 
@@ -151,13 +178,34 @@ public class BallController : MonoBehaviour
     public void ChangeBallOwnerToMain1()
     {
         Reciever = gameManager.mainCharaInstance;
-        FixBallPosition();
+        photonView.RPC("WaitSetStartPrepareForTarget", RpcTarget.All, Reciever.GetPhotonView().ViewID);
     }
     public void ChangeBallOwnerToMain2()
     {
         Reciever = gameManager.mainChara2Instance;
-        FixBallPosition();
+        photonView.RPC("WaitSetStartPrepareForTarget", RpcTarget.All, Reciever.GetPhotonView().ViewID);
     }
+
+    [PunRPC]
+    void WaitSetStartPrepareForTarget(int viewID)
+    {
+        PhotonView recieverView = PhotonView.Find(viewID);
+        if (recieverView != null)
+        {
+            gameManager.ResetPosition();
+            Reciever = recieverView.gameObject;
+            FixBallPosition();
+            if (Reciever == gameManager.mainCharaInstance)
+            {
+                gameManager.main2score++;
+            }
+            else
+            {
+                gameManager.main1score++;
+            }
+        }
+    }
+
     [PunRPC]
     void SetTrueForEnableBallCatch()
     {
@@ -206,6 +254,15 @@ public class BallController : MonoBehaviour
     }
 
     [PunRPC]
+    private void CallSoundForMove()
+    {
+        if (prePlayer1mainPositionX != player1mainPositionX) SoundManager.instance.PlaySE(3);
+        if (prePlayer1SubPositionX != player1SubPositionX) SoundManager.instance.PlaySE(3);
+        if (prePlayer2mainPositionX != player2mainPositionX) SoundManager.instance.PlaySE(3);
+        if (prePlayer2subPositionX != player2subPositionX) SoundManager.instance.PlaySE(3);
+    }
+
+    [PunRPC]
     private void SyncronizePlayer2()
     {
         PhotonView main2PhotonView = PhotonView.Find(mainChara2Controller.gameObject.GetPhotonView().ViewID);
@@ -213,6 +270,20 @@ public class BallController : MonoBehaviour
         {
             gameManager.mainChara2Instance = main2PhotonView.gameObject;
         }
+    }
+
+    [PunRPC]
+    private void PlayersPositionXTracker()
+    {
+        prePlayer1mainPositionX = player1mainPositionX;
+        prePlayer1SubPositionX = player1SubPositionX;
+        prePlayer2mainPositionX = player2mainPositionX;
+        prePlayer2subPositionX = player2subPositionX;
+
+        player1mainPositionX = gameManager.mainCharaInstance.transform.position.x;
+        player1SubPositionX = gameManager.subCharaInstance.transform.position.x;
+        player2mainPositionX = gameManager.mainChara2Instance.transform.position.x;
+        player2subPositionX = gameManager.subChara2Instance.transform.position.x;
     }
 
     private void OnTriggerEnter(Collider other)

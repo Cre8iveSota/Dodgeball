@@ -16,6 +16,10 @@ public class MainPlayer2Controller : MonoBehaviour
     public Animator animator;
     public bool pleaseEnable;
     GroundController groundController;
+    public GameObject caution;
+    public bool isCationActivated;
+
+    public int cautionCount = 0; // 一回しか処理したくないのにいっぱい呼ばれるため、無理やりカウントで1回に収める
 
     // Start is called before the first frame update
     void Start()
@@ -24,25 +28,36 @@ public class MainPlayer2Controller : MonoBehaviour
         gameManager = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<GameManager>();
         if (gameManager.realBallInstance != null) ballController = gameManager.realBallInstance.GetComponent<BallController>();
         isfaccingFront = true;
-
         animator = GetComponent<Animator>();
+        subPlayerController = gameManager.subChara2Instance.GetComponent<SubPlayerController>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (gameManager.isGameEnd) return;
         if (!photonView.IsMine) return;
         gameManager.CountingTimeOfHoldingShiftKey();
         if (ballController == null) return;
+
+        ballView = gameManager.realBallInstance.GetPhotonView();
+        if (gameManager.GetBallHolderTeamPlayer(true) == gameManager.mainChara2Instance || gameManager.GetBallHolderTeamPlayer(true) == gameManager.subChara2Instance) ballView.TransferOwnership(PhotonNetwork.LocalPlayer);
+
+        // if (isCationActivated)
+        // {
+        //     caution.SetActive(true);
+        // }
+        // else
+        // {
+        //     caution.SetActive(false);
+        // }
+
+        // ActivateCautionForOpponent();
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
 
             // Client側がボールを投げる時、マスター側でボールが消えないようにBallのパスを行うための所有権をボール所持側に譲渡する
-            ballView = gameManager.realBallInstance.GetPhotonView();
-            if (gameManager.GetBallHolderTeamPlayer(true) == gameManager.mainCharaInstance || gameManager.GetBallHolderTeamPlayer(true) == gameManager.subCharaInstance) ballView.TransferOwnership(PhotonNetwork.MasterClient);
-            if (gameManager.GetBallHolderTeamPlayer(true) == gameManager.mainChara2Instance || gameManager.GetBallHolderTeamPlayer(true) == gameManager.subChara2Instance) ballView.TransferOwnership(PhotonNetwork.LocalPlayer);
-
-
             if (gameManager.CheckHaveBallAsChildren(this.gameObject))
             {
                 iAmThrowing = true;
@@ -63,6 +78,19 @@ public class MainPlayer2Controller : MonoBehaviour
         }
     }
 
+
+    private void ActivateCautionForOpponent()
+    {
+        if (ballController.enableCatchBall)
+        {
+            gameManager.mainCharaInstance.GetComponent<MainPlayerController>().isCationActivated = false;
+            return;
+        }
+        else if (iAmThrowing || subPlayerController.iAmThrowing)
+        {
+            gameManager.mainCharaInstance.GetComponent<MainPlayerController>().isCationActivated = true;
+        }
+    }
 
     private void MoveMainPlayer()
     {
@@ -183,15 +211,15 @@ public class MainPlayer2Controller : MonoBehaviour
     {
         SoundManager.instance.PlaySE(2);
         animator.SetBool("isHit", true);
-        gameManager.main1score++;
     }
 
     private void StandUpChara()
     {
         if (photonView.IsMine)
         {
+            ballView.TransferOwnership(PhotonNetwork.LocalPlayer);
             animator.SetBool("isHit", false);
-            ballController.ChangeBallOwnerToMain2();
+            ballController.isMain2Hit = true;
         }
     }
 }

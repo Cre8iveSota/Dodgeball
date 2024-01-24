@@ -6,6 +6,7 @@ using Photon.Pun;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -34,9 +35,12 @@ public class GameManager : MonoBehaviour
     float elapsedTime;
     public int main1score, main2score = 0;
     public GameObject FinishPanel;
+    public bool isGameEnd;
 
     void Start()
     {
+        isGameEnd = false;
+
         normalRotation = Quaternion.Euler(0f, 0f, 0f);
         normalRightRotation = Quaternion.Euler(0f, 45f, 0f);
         normalLeftRotation = Quaternion.Euler(0f, 315f, 0f);
@@ -68,18 +72,28 @@ public class GameManager : MonoBehaviour
     {
         elapsedTime += Time.deltaTime;
         timer.text = $"Time: {(30 - elapsedTime):0}";
-        score.text = $"{main1score} - {main2score}";
+        score.text = $"Blue {main1score} - {main2score} Red";
 
         if (30 - elapsedTime < 0)
         {
+            Time.timeScale = 0;
             timer.text = "Time: 00";
             Debug.Log("GameEnd");
             FinishPanel.SetActive(true);
+            isGameEnd = true;
         }
 
         if (mainChara2Instance == null || subChara2Instance == null) return;
         if (GetBallHolderTeamPlayer(true) == mainCharaInstance || GetBallHolderTeamPlayer(true) == subCharaInstance) hasPlayer1TeamBall = true;
         if (GetBallHolderTeamPlayer(true) == mainChara2Instance || GetBallHolderTeamPlayer(true) == subChara2Instance) hasPlayer1TeamBall = false;
+    }
+
+    public void ResetPosition()
+    {
+        mainCharaInstance.transform.position = new Vector3(0, 0, -6f);
+        subCharaInstance.transform.position = new Vector3(0, 0, 16f);
+        mainChara2Instance.transform.position = new Vector3(0, 0, 6f);
+        subChara2Instance.transform.position = new Vector3(0, 0, -16f);
     }
     public IEnumerator WaitForRealBallInstanceAndContinue()
     {
@@ -138,12 +152,15 @@ public class GameManager : MonoBehaviour
         if (ballView != null)
         {
             realBallInstance = ballView.gameObject;
-            BallController playingBall = realBallInstance.GetComponent<BallController>();
-            if (playingBall != null)
+            if (realBallInstance != null)
             {
-                realBallInstance.transform.SetParent(mainCharaInstance.transform, false);
-                realBallInstance.transform.localPosition = new Vector3(0f, 1f, 0.4f);
-                playingBall.isBallReady = true;
+                BallController playingBall = realBallInstance.GetComponent<BallController>();
+                if (playingBall != null)
+                {
+                    realBallInstance.transform.SetParent(mainCharaInstance.transform, false);
+                    realBallInstance.transform.localPosition = new Vector3(0f, 1f, 0.4f);
+                    playingBall.isBallReady = true;
+                }
             }
         }
     }
@@ -194,6 +211,7 @@ public class GameManager : MonoBehaviour
     {
         Transform[] allChildren = targetObject.GetComponentsInChildren<Transform>();
         bool ballExists = false;
+        if (allChildren.Length == 0) return false;
         foreach (Transform child in allChildren)
         {
             if (child.CompareTag("Ball"))
