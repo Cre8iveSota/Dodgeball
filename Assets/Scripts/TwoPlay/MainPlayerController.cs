@@ -19,7 +19,6 @@ public class MainPlayerController : MonoBehaviour
     public int cautionCount = 0; // 一回しか処理したくないのにいっぱい呼ばれるため、無理やりカウントで1回に収める
 
 
-
     // Start is called before the first frame update
     void Start()
     {
@@ -52,7 +51,7 @@ public class MainPlayerController : MonoBehaviour
         //     caution.SetActive(false);
         // }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && gameManager.canMove)
         {
 
             // Client側がボールを投げる時、マスター側でボールが消えないようにBallのパスを行うための所有権をボール所持側に譲渡する
@@ -63,7 +62,7 @@ public class MainPlayerController : MonoBehaviour
                 StartCoroutine(ballController.NormalPass(gameManager.mainCharaInstance, gameManager.subCharaInstance));
             }
         }
-        if (!iAmThrowing)
+        if (!iAmThrowing && gameManager.canMove)
         {
             MoveMainPlayer();
             TurnMainPlayer();

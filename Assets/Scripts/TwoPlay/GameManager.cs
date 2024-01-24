@@ -36,6 +36,11 @@ public class GameManager : MonoBehaviour
     public int main1score, main2score = 0;
     public GameObject FinishPanel;
     public bool isGameEnd;
+    public GameObject countDownPanel;
+    public TMP_Text countDownText;
+    public bool canMove = false;
+    bool isDoneCountDown = false;
+
 
     void Start()
     {
@@ -66,15 +71,19 @@ public class GameManager : MonoBehaviour
             subCamera.gameObject.SetActive(true);
             StartCoroutine(WaitForRealBallInstanceAndContinue());
         }
+
+        countDownPanel.SetActive(true);
+        StartCoroutine(CountDownForStart());
     }
 
     private void Update()
     {
-        elapsedTime += Time.deltaTime;
-        timer.text = $"Time: {(30 - elapsedTime):0}";
+
+        if (isDoneCountDown) elapsedTime += Time.deltaTime;
+        timer.text = $"Time: {elapsedTime / 60f:00}:{elapsedTime % 60:00}";
         score.text = $"Blue {main1score} - {main2score} Red";
 
-        if (30 - elapsedTime < 0)
+        if (main1score == 3 || main2score == 3)
         {
             Time.timeScale = 0;
             timer.text = "Time: 00";
@@ -103,6 +112,28 @@ public class GameManager : MonoBehaviour
         }
         // ボールが生成されるのを待つ
         StartCoroutine(WaitForGenerateBall());
+    }
+    IEnumerator CountDownForStart()
+    {
+        for (int i = 3; i >= 0; i--)
+        {
+            if (i == 0)
+            {
+                countDownText.text = $"Start";
+                isDoneCountDown = true;
+            }
+            else
+            {
+                countDownText.text = $"{i}";
+                yield return new WaitForSeconds(1);
+            }
+
+            if (isDoneCountDown)
+            {
+                countDownPanel.SetActive(false);
+                canMove = true;
+            }
+        }
     }
 
     IEnumerator JustWaitForCreationTargetInstance(GameObject targetInstance, Func<IEnumerator> delayExecuteMethod)

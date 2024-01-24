@@ -43,7 +43,7 @@ public class SubPlayerController : MonoBehaviour
                         if (this.gameObject == gameManager.subChara2Instance) StartCoroutine(ballController.NormalPass(gameManager.subChara2Instance, gameManager.mainChara2Instance));
                     }
                 }
-                if (!iAmThrowing)
+                if (!iAmThrowing && gameManager.canMove)
                 {
                     MoveSubPlayer();
                 }

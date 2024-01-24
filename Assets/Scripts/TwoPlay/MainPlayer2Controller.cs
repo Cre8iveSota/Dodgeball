@@ -54,7 +54,7 @@ public class MainPlayer2Controller : MonoBehaviour
 
         // ActivateCautionForOpponent();
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && gameManager.canMove)
         {
 
             // Client側がボールを投げる時、マスター側でボールが消えないようにBallのパスを行うための所有権をボール所持側に譲渡する
@@ -64,7 +64,7 @@ public class MainPlayer2Controller : MonoBehaviour
                 StartCoroutine(ballController.NormalPass(gameManager.mainChara2Instance, gameManager.subChara2Instance));
             }
         }
-        if (!iAmThrowing)
+        if (!iAmThrowing && gameManager.canMove)
         {
             MoveMainPlayer();
             TurnMainPlayer();
