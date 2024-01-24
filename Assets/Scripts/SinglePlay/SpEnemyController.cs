@@ -10,7 +10,7 @@ public class SpEnemyController : MonoBehaviour
     public bool iAmThrowing;
     private float elapsedTime;
 
-    private bool pseudoPressSpase, pseudoPressRight, pseudoPressLeft = false;
+    public bool pseudoPressSpase, pseudoPressRight, pseudoPressLeft = false;
     public bool canAttack;
     SpGroundController spGroundController;
     float enemyPoistionX, enemySubPoistionX, playerSubPositionX, playerPositionX;
@@ -42,7 +42,11 @@ public class SpEnemyController : MonoBehaviour
         elapsedTime += Time.deltaTime;
         // Time.fixedDeltaTime = spManager.actionSpeedEnemy;
 
-        if (spBallController.throwMan == null) spMainPlayerController.EnableDisplayCaution(false);
+        if (spBallController.throwMan == null)
+        {
+            spMainPlayerController.EnableDisplayCaution(false);
+            spMainPlayerController.cautionCount = 0;
+        }
 
         enemyPoistionX = spManager.enemyInstance.transform.position.x;
         enemySubPoistionX = spManager.subEnemyInstance.transform.position.x;
@@ -62,6 +66,7 @@ public class SpEnemyController : MonoBehaviour
         {
             if (!spManager.hasPlayer1TeamBall && !spBallController.enableCatchBall)
             {
+                spMainPlayerController.cautionCount++;
                 spMainPlayerController.EnableDisplayCaution(true);
             }
         }

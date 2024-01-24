@@ -13,6 +13,8 @@ public class SpMainPlayerController : MonoBehaviour
     SpEnemyController spEnemyController;
     SpSubEnemyController spSubEnemyController;
 
+    public int cautionCount = 0; // 一回しか処理したくないのにいっぱい呼ばれるため、無理やりカウントで1回に収める
+
 
     // Start is called before the first frame update
     void Start()
@@ -182,6 +184,13 @@ public class SpMainPlayerController : MonoBehaviour
     public void EnableDisplayCaution(bool isActivate)
     {
         caution.gameObject.SetActive(isActivate);
-        if (isActivate) { SoundManager.instance.PlayOnlyThisSE(0); }
+        if (cautionCount == 1)
+        {
+            if (isActivate) { SoundManager.instance.PlayOnlyThisSE(0); }
+        }
+        else
+        {
+            return;
+        }
     }
 }
