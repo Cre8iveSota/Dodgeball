@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class SubPlayerController : MonoBehaviour
 {
-    GameManager gameManager;
     public bool isPositionAuto = true;
+    public bool iAmThrowing;
+    GameManager gameManager;
     BallController ballController;
     PhotonView photonView;
     GroundController groundController;
-    public bool iAmThrowing;
 
     // Start is called before the first frame update
     void Start()

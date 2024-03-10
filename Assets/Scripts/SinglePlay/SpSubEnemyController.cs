@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class SpSubEnemyController : MonoBehaviour
 {
+    public bool pseudoPressSpase = false;
+    public bool iAmThrowing;
     SpManager spManager;
     SpBallController spBallController;
     SpGroundController spGroundController;
     private bool pseudoPressRight, pseudoPressLeft = false;
-    public bool pseudoPressSpase = false;
-    public bool iAmThrowing;
     SpMainPlayerController spMainPlayerController;
     void Start()
     {

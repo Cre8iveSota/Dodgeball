@@ -7,31 +7,31 @@ using UnityEngine;
 public class BallController : MonoBehaviour
 {
     [SerializeField] private GameObject tmpBallPosition;
+    [SerializeField] private GameObject ballTrail;
     public bool isMovingBall;
     public float ballSpeed = 0.5f;
     public Vector3 ballDestination = Vector3.zero;
-    GameObject[] players;
-    GameObject gammeManagerObj;
-    GameManager gameManager;
     public Rigidbody rb;
     public Vector3 ballForce;
     public bool isReceiverCatchSuccess;
     public GameObject tmpBallHolder;
     public GameObject ThrowMan;
+    public bool isBallReady;
+    public bool enableCatchBall, enableBallInterupt;// 相手のボーるをキャッチしたことを知らせるフラグと、パスをインタラプトしたときに知らせるフラグ
+    public float player1mainPositionX, player1SubPositionX, player2mainPositionX, player2subPositionX = 0;
+    public float prePlayer1mainPositionX, prePlayer1SubPositionX, prePlayer2mainPositionX, prePlayer2subPositionX = 0;
+    public bool isMainHit, isMain2Hit;
+    GameObject[] players;
+    GameObject gammeManagerObj;
+    GameManager gameManager;
     GameObject Reciever;
     PhotonView photonView;
-    public bool isBallReady;
 
     Vector3 defeinedSpeed;
     MainPlayerController mainCharaController;
     MainPlayer2Controller mainChara2Controller;
     SubPlayerController subCharaController, subChara2Controller;
     GroundController groundController;
-    public bool enableCatchBall, enableBallInterupt;// 相手のボーるをキャッチしたことを知らせるフラグと、パスをインタラプトしたときに知らせるフラグ
-    public float player1mainPositionX, player1SubPositionX, player2mainPositionX, player2subPositionX = 0;
-    public float prePlayer1mainPositionX, prePlayer1SubPositionX, prePlayer2mainPositionX, prePlayer2subPositionX = 0;
-    [SerializeField] private GameObject ballTrail;
-    public bool isMainHit, isMain2Hit;
 
     int cnt = 0;
     // Start is called before the first frame update
@@ -52,7 +52,7 @@ public class BallController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isMainHit)
+        if (isMainHit) // Master Hit 時
         {
             ChangeBallOwnerToMain1();
             isMainHit = false;

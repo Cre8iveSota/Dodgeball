@@ -18,16 +18,16 @@ public class SpManager : MonoBehaviour
     public int playerScore, enemyScore = 0;
     public int enemyLv = 1;
     public int duration = 0;
-    private int threshold = 10;
     public int Threshold { get => threshold; }
-    SpBallController spBallController;
     public float actionSpeedEnemy = 0.6f;
     public GameObject changeLevelPanel, displayTextImg, gameOverPanel, gameClearPanel, instractionsImgObjInCanvas;
     public TMP_Text displayText;
-    public int currentEnemyLv = 0;
-    bool isActiveDisplyaImg = false;
-    bool isActiveChangeLvPanel = false;
     public UnityEvent gameover, gameClear;
+    public int currentEnemyLv = 0;
+    private int threshold = 10;
+    SpBallController spBallController;
+    bool isActiveChangeLvPanel = false;
+    bool isActiveDisplyaImg = false;
     private Instractions instractions;
 
     void Start()

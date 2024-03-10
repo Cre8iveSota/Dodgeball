@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class SpBallController : MonoBehaviour
 {
-    [SerializeField] private GameObject tmpBallPosition;
-    int cnt = 0;
     public Vector3 ballDestination = Vector3.zero;
-    Vector3 defeinedSpeed;
     public float ballSpeed = 3f;
     public GameObject throwMan, reciever;
-    SpGroundController sPgroundController;
     public bool isMovingBall;
     public bool enableCatchBall, enableBallInterupt;// 相手のボーるをキャッチしたことを知らせるフラグと、パスをインタラプトしたときに知らせるフラグ
     public bool isReceiverCatchSuccess;
+    [SerializeField] private GameObject tmpBallPosition;
+    int cnt = 0;
+    Vector3 defeinedSpeed;
+    SpGroundController sPgroundController;
     SpManager singlePlayManager;
     SpMainPlayerController spMainPlayerController;
     GameObject ground;

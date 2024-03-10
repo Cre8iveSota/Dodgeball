@@ -6,17 +6,17 @@ using UnityEngine;
 public class MainPlayerController : MonoBehaviour
 {
     public bool isActiveCharacter = true;
-    BallController ballController;
-    GameManager gameManager;
     public PhotonView photonView;
-    SubPlayerController subPlayerController;
     public bool iAmThrowing;
     public bool isfaccingFront;
-    PhotonView ballView;
     public Animator animator;
     public GameObject caution;
     public bool isCationActivated;
     public int cautionCount = 0; // 一回しか処理したくないのにいっぱい呼ばれるため、無理やりカウントで1回に収める
+    BallController ballController;
+    GameManager gameManager;
+    SubPlayerController subPlayerController;
+    PhotonView ballView;
 
 
     // Start is called before the first frame update
@@ -38,6 +38,8 @@ public class MainPlayerController : MonoBehaviour
         gameManager.CountingTimeOfHoldingShiftKey();
         if (ballController == null) return;
         ballView = gameManager.realBallInstance.GetPhotonView();
+
+        // Master側がボールを投げる時、Client側でボールが消えないようにBallのパスを行うための所有権をボール所持側に譲渡する
         if (gameManager.GetBallHolderTeamPlayer(true) == gameManager.mainCharaInstance || gameManager.GetBallHolderTeamPlayer(true) == gameManager.subCharaInstance) ballView.TransferOwnership(PhotonNetwork.MasterClient);
 
         // ActivateCautionForOpponent();
@@ -53,9 +55,6 @@ public class MainPlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) && gameManager.canMove)
         {
-
-            // Client側がボールを投げる時、マスター側でボールが消えないようにBallのパスを行うための所有権をボール所持側に譲渡する
-
             if (gameManager.CheckHaveBallAsChildren(this.gameObject))
             {
                 iAmThrowing = true;

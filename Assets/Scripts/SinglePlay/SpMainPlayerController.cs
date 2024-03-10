@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class SpMainPlayerController : MonoBehaviour
 {
-    SpManager spManager;
-    SpBallController spBallController;
     public Animator animator;
     public bool iAmThrowing;
+    public int cautionCount = 0; // 一回しか処理したくないのにいっぱい呼ばれるため、無理やりカウントで1回に収める
+    SpManager spManager;
+    SpBallController spBallController;
     GameObject caution;
     SpGroundController spGroundController;
     SpEnemyController spEnemyController;
     SpSubEnemyController spSubEnemyController;
 
-    public int cautionCount = 0; // 一回しか処理したくないのにいっぱい呼ばれるため、無理やりカウントで1回に収める
 
 
     // Start is called before the first frame update

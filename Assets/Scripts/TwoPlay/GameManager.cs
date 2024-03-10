@@ -11,34 +11,31 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] Camera mainCamera;
+    [SerializeField] Camera subCamera;
     public bool hasPlayer1TeamBall;
-    GameObject[] playerTeamMembers;
     public GameObject enemyTeamMember;
     public GameObject mainChara, subChara, mainChara2, subChara2;
     // public GameObject ball;
     public GameObject realBall;
     public GameObject realBallInstance;
     public GameObject mainCharaInstance, subCharaInstance, mainChara2Instance, subChara2Instance;
-    BallController ballControllerForMaster;
-
-    public int duration = 0;
-    private int threshold = 10;
-
     public int Threshold { get => threshold; }
-    PhotonView photonView;
     public Quaternion normalRotation, normalRightRotation, normalLeftRotation, inverseRotation, inverseRightRotation, inverseLeftRotation;
 
-    [SerializeField] Camera mainCamera;
-    [SerializeField] Camera subCamera;
-
     public TMP_Text timer, score;
-    float elapsedTime;
     public int main1score, main2score = 0;
     public GameObject FinishPanel;
     public bool isGameEnd;
     public GameObject countDownPanel;
     public TMP_Text countDownText;
     public bool canMove = false;
+    public int duration = 0;
+    private int threshold = 10;
+    GameObject[] playerTeamMembers;
+    BallController ballControllerForMaster;
+    PhotonView photonView;
+    float elapsedTime;
     bool isDoneCountDown = false;
 
 

@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class SpEnemyController : MonoBehaviour
 {
-    SpManager spManager;
-    SpBallController spBallController;
     public Animator animator;
     public bool iAmThrowing;
-    private float elapsedTime;
-
     public bool pseudoPressSpase, pseudoPressRight, pseudoPressLeft = false;
     public bool canAttack;
+    SpManager spManager;
+    SpBallController spBallController;
+    private float elapsedTime;
+
     SpGroundController spGroundController;
     float enemyPoistionX, enemySubPoistionX, playerSubPositionX, playerPositionX;
     bool isExecute;

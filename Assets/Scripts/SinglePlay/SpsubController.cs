@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class SpsubController : MonoBehaviour
 {
+    public bool iAmThrowing;
     SpManager spManager;
     SpBallController spBallController;
-    public bool iAmThrowing;
     SpGroundController spGroundController;
     SpEnemyController spEnemyController;
 

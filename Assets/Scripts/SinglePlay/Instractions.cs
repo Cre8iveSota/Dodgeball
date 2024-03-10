@@ -7,12 +7,12 @@ using UnityEngine.UI;
 
 public class Instractions : MonoBehaviour
 {
-    public Sprite[] instractions;
-    Image image;
-    [SerializeField] private int num = 0;
-    public bool isDoneInstractions;
-    public GameObject instractionsPanel, backButton;
     [SerializeField] private TMP_Text nextText;
+    [SerializeField] private int num = 0;
+    public Sprite[] instractions;
+    public GameObject instractionsPanel, backButton;
+    public bool isDoneInstractions;
+    Image image;
     // Start is called before the first frame update
     void Start()
     {
